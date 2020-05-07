@@ -1,0 +1,13 @@
+name = "LatentGPs"
+uuid = "45b822f7-b0f9-4a40-9473-dffa0412f8e7"
+authors = ["willtebbutt <wt0881@my.bristol.ac.uk>"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
