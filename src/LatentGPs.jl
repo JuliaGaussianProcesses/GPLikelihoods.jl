@@ -10,7 +10,7 @@ import Statistics
 
 export LatentGP
 export logpdf, rand
-export gaussian
+export GaussianLikelihood
 
 
 include("latent_gp.jl")

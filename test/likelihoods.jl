@@ -1,10 +1,12 @@
 @testset "likelihoods" begin
     @testset "GaussianLikelihood" begin
-        # f = GP(SqExponentialKernel())
-        # x = rand(10)
-        # y = rand(10)
-        # fx = LatentGP(f, x, 0.1)
+        gp = GP(SqExponentialKernel())
+        x = rand(10)
+        y = rand(10)
+        fx = gp(x, 1e-6)
+        lik = GaussianLikelihood(first(fx.Σy))
+        lgp = LatentGP(fx, lik)
         
-        # @test gaussian(fx, y) ≈ AbstractGPs.logpdf(f, y) atol=1e-5
+        @test typeof(logpdf(lik, y, mean(fx))) <: Real
     end
 end

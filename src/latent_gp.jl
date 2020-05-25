@@ -8,25 +8,26 @@
 struct LatentGP{T<:AbstractGPs.FiniteGP}
     fx::T
     Φ
-    function LatentGP(fx::AbstractGPs.FiniteGP, Φ) where Tx
-        return new{typeof(fx)}(fx, Φ)
-    end    
-end
-
-function LatentGP(f::GP, x::AbstractVector{Tx}, σ², Φ) where Tx
-        return LatentGP(f(x, σ²), Φ)
-end
-
-function LatentGP(f::GP, x::AbstractVector{Tx}, Φ) where Tx
-        return LatentGP(f(x), Φ)
 end
 
 function Distributions.rand(rng::AbstractRNG, lgp::LatentGP)
-    v = rand(rng, lgp.fx)
-    y = rand(rng, lgp.Φ(v))
-    return (v=v, y=y)
+    f = rand(rng, lgp.fx)
+    y = rand(rng, lgp.Φ(f))
+    return (f=f, y=y)
 end
 
-function Distributions.logpdf(lgp::LatentGP, y::NamedTuple{(:v, :y)})
-    return logpdf(lgp.fx, y.v) + logpdf(lgp.Φ(y.v), y.y)
+"""
+    logpdf(lgp::LatentGP, y::NamedTuple{(:f, :y)})
+
+```math
+    log p(y, f; x)
+```
+Return the the joint log density of the gaussian process output `f` and real output `y`.
+"""
+function Distributions.logpdf(lgp::LatentGP, y::NamedTuple{(:f, :y)})
+    return logpdf(lgp.fx, y.f) + logpdf(lgp.Φ(y.f), y.y)
+end
+
+function Distributions.logpdf(lgp::LatentGP, y, f)
+    return logpdf(lgp.fx, f) + logpdf(lgp.Φ(f), y)
 end
