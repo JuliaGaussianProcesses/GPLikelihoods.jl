@@ -4,11 +4,12 @@ using Distributions
 using KernelFunctions
 using AbstractGPs
 using LinearAlgebra
+using Random
 
 import Statistics
 
 export LatentGP
-export log_density, logpdf, mean, cov
+export logpdf, rand
 export gaussian
 
 

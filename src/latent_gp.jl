@@ -1,30 +1,32 @@
 """
     LatentGP(f<:GP, x<:AbstractVector, Φ)
 
- - `f` is a Gaussian Process.
- - `x` is an `AbstractVector` of inputs of type `Tx`.
+ - `fx` is a `FiniteGP`.
  - `Φ` is the log likelihood function which maps input of type `Tx` to `Real`.
     
 """
-struct LatentGP{T<:GP,Tx}
-    f::T
-    x::AbstractVector{Tx}
-    σ²
+struct LatentGP{T<:AbstractGPs.FiniteGP}
+    fx::T
     Φ
-    function LatentGP(f::GP, x::AbstractVector{Tx}, σ², Φ) where Tx
-        return new{typeof(f),Tx}(f, x, σ², Φ)
-    end
+    function LatentGP(fx::AbstractGPs.FiniteGP, Φ) where Tx
+        return new{typeof(fx)}(fx, Φ)
+    end    
+end
+
+function LatentGP(f::GP, x::AbstractVector{Tx}, σ², Φ) where Tx
+        return LatentGP(f(x, σ²), Φ)
 end
 
 function LatentGP(f::GP, x::AbstractVector{Tx}, Φ) where Tx
-        return LatentGP(f, x, 0.1, Φ)
-    end
-
-
-function mean(fx::LatentGP)
-    return AbstractGPs.mean(fx.f, fx.x)
+        return LatentGP(f(x), Φ)
 end
 
-function cov(fx::LatentGP)
-    return AbstractGPs.cov(fx.f, fx.x)
+function Distributions.rand(rng::AbstractRNG, lgp::LatentGP)
+    v = rand(rng, lgp.fx)
+    y = rand(rng, lgp.Φ(v))
+    return (v=v, y=y)
+end
+
+function Distributions.logpdf(lgp::LatentGP, y::NamedTuple{(:v, :y)})
+    return logpdf(lgp.fx, y.v) + logpdf(lgp.Φ(y.v), y.y)
 end
