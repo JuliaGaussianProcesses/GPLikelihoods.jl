@@ -14,7 +14,7 @@ export LatentGP
 
 export logpdf, rand, trainable
 
-export GaussianLikelihood
+export GaussianLikelihood, PoissonLikelihood
 
 
 include("latent_gp.jl")

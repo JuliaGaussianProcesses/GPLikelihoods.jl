@@ -29,3 +29,22 @@ GaussianLikelihood() = GaussianLikelihood(1e-6)
 (l::GaussianLikelihood)(f::Real) = Normal(f, first(l.σ²))
 
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = Product([Normal(f, first(l.σ²)) for f in fs])
+
+"""
+    PoissonLikelihood(λ=1.0)
+
+Poisson likelihood with rate `λ`. This is to be used if we assume that the uncertainity 
+associated with the data follows a Poisson distribution.
+"""
+struct PoissonLikelihood{T<:Real} <: Likelihood
+    λ::Vector{T}
+    function PoissonLikelihood(λ::T) where {T<:Real}
+        new{typeof(λ)}([λ])
+    end
+end
+
+PoissonLikelihood() = GaussianLikelihood(1.0)
+
+(l::PoissonLikelihood)(f::Real) = Poisson(first(l.λ) * σ(f))
+
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product([Poisson(first(l.λ) * σ(f)) for f in fs])
