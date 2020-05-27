@@ -11,7 +11,5 @@
     @test typeof(lgp.fx) <: AbstractGPs.FiniteGP
     f = rand(10)
     @test typeof(logpdf(lgp, (f=f, y=y))) <: Real
-    @test logpdf(lgp, (f=f, y=y)) ≈ logpdf(lgp, y, f) atol=1e-5
-
     @test typeof(rand(lgp)) <: NamedTuple{(:f, :y)}
 end

@@ -27,7 +27,3 @@ Returns the joint log density of the gaussian process output `f` and real output
 function Distributions.logpdf(lgp::LatentGP, y::NamedTuple{(:f, :y)})
     return logpdf(lgp.fx, y.f) + logpdf(lgp.Φ(y.f), y.y)
 end
-
-function Distributions.logpdf(lgp::LatentGP, y, f)
-    return logpdf(lgp.fx, f) + logpdf(lgp.Φ(f), y)
-end

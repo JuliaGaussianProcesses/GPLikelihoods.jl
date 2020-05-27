@@ -7,6 +7,7 @@
         lik = GaussianLikelihood(first(fx.Σy))
         lgp = LatentGP(fx, lik)
         
-        @test typeof(logpdf(lik, y, mean(fx))) <: Real
+        @test typeof(lik(rand(fx))) <: Distribution
+        @test length(rand(lik(rand(fx)))) == 10
     end
 end
