@@ -43,8 +43,10 @@ struct PoissonLikelihood{T<:Real} <: Likelihood
     end
 end
 
-PoissonLikelihood() = GaussianLikelihood(1.0)
+PoissonLikelihood() = PoissonLikelihood(1.0)
 
-(l::PoissonLikelihood)(f::Real) = Poisson(first(l.λ) * σ(f))
+logistic(x::Real) = 1 / (1 + exp(-x))
 
-(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product([Poisson(first(l.λ) * σ(f)) for f in fs])
+(l::PoissonLikelihood)(f::Real) = Poisson(first(l.λ) * logistic(f))
+
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product([Poisson(first(l.λ) * logistic(f)) for f in fs])
