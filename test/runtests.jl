@@ -10,7 +10,12 @@ using Distributions
 @testset "LatentGPs.jl" begin
 
     include("latent_gp.jl")
-    include("likelihoods.jl")
+
+    @testset "likelihoods" begin
+        include("likelihoods/gaussian.jl")
+        include("likelihoods/poisson.jl")
+    end
+
     include("trainable.jl")
 
 end
