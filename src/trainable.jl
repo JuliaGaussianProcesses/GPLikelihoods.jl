@@ -1,5 +1,5 @@
 import .Flux.trainable
 
-Flux.trainable(lik::GaussianLikelihood) = (lik.σ²,)
+Flux.trainable(::Likelihood) = ()
 
-Flux.trainable(lik::PoissonLikelihood) = (lik.λ,)
+Flux.trainable(lik::GaussianLikelihood) = (lik.σ²,)
