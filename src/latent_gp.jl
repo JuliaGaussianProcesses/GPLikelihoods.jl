@@ -16,14 +16,6 @@ function Distributions.rand(rng::AbstractRNG, lgp::LatentGP)
     return (f=f, y=y)
 end
 
-randf(rng::AbstractRNG, lgp::LatentGP) = rand(rng, lgp.fx)
-
-randf(lgp::LatentGP) = rand(lgp.fx)
-
-randy(rng::AbstractRNG, lgp::LatentGP) = rand(rng, lgp).y
-
-randy(lgp::LatentGP) = rand(lgp).y
-
 """
     logpdf(lgp::LatentGP, y::NamedTuple{(:f, :y)})
 
