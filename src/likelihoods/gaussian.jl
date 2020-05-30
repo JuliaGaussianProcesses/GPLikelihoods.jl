@@ -1,8 +1,8 @@
 """
     GaussianLikelihood(σ²)
 
-Gaussian likelihood with `σ²` variance. This is to be used if we assume that the uncertainity 
-associated with the data follows a Gaussian distribution.
+Gaussian likelihood with `σ²` variance. This is to be used if we assume that the 
+uncertainity associated with the data follows a Gaussian distribution.
 
 ```math
     p(y|f) = Normal(y | f, σ²)
