@@ -1,10 +1,10 @@
 using LatentGPs
 using KernelFunctions
 using AbstractGPs
-using Flux
 using LinearAlgebra
 using Test
 using Random
+using Functors
 using Distributions
 
 @testset "LatentGPs.jl" begin
@@ -15,7 +15,5 @@ using Distributions
         include("likelihoods/gaussian.jl")
         include("likelihoods/poisson.jl")
     end
-
-    include("trainable.jl")
 
 end

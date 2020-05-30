@@ -5,7 +5,7 @@ using KernelFunctions
 using AbstractGPs
 using LinearAlgebra
 using Random
-using Requires
+using Functors
 
 import Statistics
 import Distributions
@@ -19,10 +19,5 @@ export GaussianLikelihood, PoissonLikelihood
 
 include("latent_gp.jl")
 include("likelihoods/likelihoods.jl")
-
-function __init__()
-    @require Flux="587475ba-b771-5e3f-ad9e-33799f191a9c" include("trainable.jl")
-end
-
 
 end # module

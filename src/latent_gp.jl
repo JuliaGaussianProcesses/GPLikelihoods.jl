@@ -1,8 +1,9 @@
 """
-    LatentGP(f<:GP, x<:AbstractVector, lik)
+    LatentGP(f<:GP, lik)
 
  - `fx` is a `FiniteGP`.
- - `lik` is the log likelihood function which maps input of type `Tx` to `Real`.
+ - `lik` is the log likelihood function which maps sample from f to corresposing 
+ conditional likelihood distributions.
     
 """
 struct LatentGP{T<:AbstractGPs.FiniteGP, S}
