@@ -9,7 +9,7 @@ uncertainity associated with the data follows a Gaussian distribution.
 ```
 On calling, this would return a normal distribution with mean `f` and variance σ².
 """
-struct GaussianLikelihood{T<:Real} <: Likelihood
+struct GaussianLikelihood{T<:Real}
     σ²::T
 end
 

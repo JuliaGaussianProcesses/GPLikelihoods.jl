@@ -18,6 +18,9 @@ export GaussianLikelihood, PoissonLikelihood
 
 
 include("latent_gp.jl")
-include("likelihoods/likelihoods.jl")
+
+# Likelihoods
+include("likelihoods/gaussian.jl")
+include("likelihoods/poisson.jl")
 
 end # module
