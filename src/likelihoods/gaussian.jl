@@ -17,6 +17,6 @@ GaussianLikelihood() = GaussianLikelihood(1e-6)
 
 @functor GaussianLikelihood
 
-(l::GaussianLikelihood)(f::Real) = Normal(f, l.σ²)
+(l::GaussianLikelihood)(f::Real) = Normal(f, sqrt(l.σ²))
 
-(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = Product([Normal(f, l.σ²) for f in fs])
+(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(l.σ²))

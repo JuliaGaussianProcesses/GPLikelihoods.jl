@@ -12,7 +12,7 @@ import Distributions
 
 export LatentGP
 
-export logpdf, rand, trainable, randf, randy
+export logpdf, rand
 
 export GaussianLikelihood, PoissonLikelihood
 
