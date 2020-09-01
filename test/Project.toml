@@ -10,5 +10,5 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 [compat]
 AbstractGPs = "0.1.1"
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23"
-KernelFunctions = "0.4"
+KernelFunctions = "0.4, 0.7"
 julia = "1.3"
