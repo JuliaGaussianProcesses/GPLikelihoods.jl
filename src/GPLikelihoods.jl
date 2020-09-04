@@ -1,4 +1,4 @@
-module NonConjugateGPs
+module GPLikelihoods
 
 using Distributions
 using KernelFunctions

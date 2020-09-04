@@ -1,8 +1,8 @@
-# NonConjugateGPs.jl
+# GPLikelihoods.jl
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [NonConjugateGPs]
+Modules = [GPLikelihoods]
 ```
