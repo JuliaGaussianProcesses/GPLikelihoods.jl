@@ -1,8 +1,8 @@
-# LatentGPs.jl
+# NonConjugateGPs.jl
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [LatentGPs]
+Modules = [NonConjugateGPs]
 ```

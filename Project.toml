@@ -1,5 +1,5 @@
-name = "LatentGPs"
-uuid = "45b822f7-b0f9-4a40-9473-dffa0412f8e7"
+name = "NonConjugateGPs"
+uuid = "6031954c-0455-49d7-b3b9-3e1c99afaf40"
 authors = ["willtebbutt <wt0881@my.bristol.ac.uk>"]
 version = "0.1.0"
 
@@ -8,13 +8,11 @@ AbstractGPs = "99985d1d-32ba-4be9-9821-2ec096f28918"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
 KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-AbstractGPs = "0.1.1"
+AbstractGPs = "0.2"
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23"
 Functors = "0.1"
-KernelFunctions = "0.4"
+KernelFunctions = "0.7"
 julia = "1.3"
