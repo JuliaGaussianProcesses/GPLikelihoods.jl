@@ -1,8 +1,8 @@
-# LatentGPs.jl
+# GPLikelihoods.jl
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [LatentGPs]
+Modules = [GPLikelihoods]
 ```

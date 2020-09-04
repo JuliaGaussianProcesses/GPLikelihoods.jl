@@ -1,15 +1,11 @@
-using LatentGPs
-using KernelFunctions
+using GPLikelihoods
 using AbstractGPs
-using LinearAlgebra
 using Test
 using Random
 using Functors
 using Distributions
 
-@testset "LatentGPs.jl" begin
-
-    include("latent_gp.jl")
+@testset "GPLikelihoods.jl" begin
 
     @testset "likelihoods" begin
         include("likelihoods/gaussian.jl")
