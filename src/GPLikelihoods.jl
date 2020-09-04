@@ -1,7 +1,6 @@
 module GPLikelihoods
 
 using Distributions
-using KernelFunctions
 using AbstractGPs
 using Random
 using Functors

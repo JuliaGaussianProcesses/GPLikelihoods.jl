@@ -1,5 +1,4 @@
 using GPLikelihoods
-using KernelFunctions
 using AbstractGPs
 using Test
 using Random

@@ -2,7 +2,6 @@
 AbstractGPs = "99985d1d-32ba-4be9-9821-2ec096f28918"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
-KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
@@ -10,5 +9,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 AbstractGPs = "0.2"
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23"
 Functors = "0.1"
-KernelFunctions = "0.7"
 julia = "1.3"
