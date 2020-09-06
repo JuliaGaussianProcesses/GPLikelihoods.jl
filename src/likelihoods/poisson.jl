@@ -4,8 +4,14 @@
 Poisson likelihood with rate as exponential of samples from GP `f`. This is to be used if
 we assume that the uncertainity associated with the data follows a Poisson distribution.
 """
-struct PoissonLikelihood end
+struct PoissonLikelihood{L<:AbstractLink}
+    link::L
+end
 
-(l::PoissonLikelihood)(f::Real) = Poisson(exp(f))
+PoissonLikelihood() = PoissonLikelihood(Link(exp))
 
-(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(Poisson.(exp.(fs)))
+PoissonLikelihood(f::Function)  = PoissonLikelihood(Link(f))
+
+(l::PoissonLikelihood)(f::Real) = Poisson(l.link(f))
+
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(Poisson.(l.link.(fs)))
