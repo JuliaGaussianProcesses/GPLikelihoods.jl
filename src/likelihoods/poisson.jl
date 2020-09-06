@@ -12,6 +12,8 @@ PoissonLikelihood() = PoissonLikelihood(Link(exp))
 
 PoissonLikelihood(f::Function)  = PoissonLikelihood(Link(f))
 
+@functor PoissonLikelihood
+
 (l::PoissonLikelihood)(f::Real) = Poisson(l.link(f))
 
 (l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(Poisson.(l.link.(fs)))

@@ -9,6 +9,7 @@ using StatsFuns: logistic
 import Distributions
 
 export GaussianLikelihood, PoissonLikelihood
+export Link, LogisticLink
 
 # Links
 include(joinpath("likelihoods", "link.jl"))
