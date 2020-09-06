@@ -18,4 +18,4 @@ LogisticLink(λ::Real) = LogisticLink([λ])
 
 @functor LogisticLink
 
-apply(l::LogisticLink) = first(l.λ) * logistic(x)
+apply(l::LogisticLink, x) = first(l.λ) * logistic(x)

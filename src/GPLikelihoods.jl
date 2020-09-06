@@ -10,8 +10,9 @@ import Distributions
 
 export GaussianLikelihood, PoissonLikelihood
 
+# Links
+include(joinpath("likelihoods", "link.jl"))
 # Likelihoods
 include(joinpath("likelihoods", "gaussian.jl"))
 include(joinpath("likelihoods", "poisson.jl"))
-include(joinpath("likelihoods", "link.jl"))
 end # module

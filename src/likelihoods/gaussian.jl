@@ -21,4 +21,4 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 
 (l::GaussianLikelihood)(f::Real) = Normal(f, sqrt(first(l.σ²)))
 
-(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(l.σ²))
+(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(first(l.σ²)))

@@ -13,5 +13,5 @@
 
     # Test default constructore
     l = GaussianLikelihood()
-    @test l.σ² = [1e-6]
+    @test l.σ² == [1e-6]
 end
