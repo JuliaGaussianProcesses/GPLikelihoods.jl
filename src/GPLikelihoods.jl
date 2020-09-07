@@ -7,9 +7,10 @@ using Functors
 
 import Distributions
 
-export GaussianLikelihood, PoissonLikelihood
+export BernoulliLikelihood, GaussianLikelihood, PoissonLikelihood
 
 # Likelihoods
+include("likelihoods/bernoulli.jl")
 include("likelihoods/gaussian.jl")
 include("likelihoods/poisson.jl")
 
