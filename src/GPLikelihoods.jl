@@ -4,6 +4,7 @@ using Distributions
 using AbstractGPs
 using Random
 using Functors
+using StatsFuns: logistic
 
 import Distributions
 

@@ -13,8 +13,6 @@ struct BernoulliLikelihood end
 
 @functor BernoulliLikelihood
 
-_logistic(logit::Real) = 1/(1 + exp(-logit))
+(l::BernoulliLikelihood)(f::Real) = Bernoulli(logistic(f))
 
-(l::BernoulliLikelihood)(f::Real) = Bernoulli(_logistic(f))
-
-(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(Bernoulli.(_logistic.(fs)))
+(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(Bernoulli.(logistic.(fs)))
