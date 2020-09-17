@@ -29,14 +29,12 @@ uncertainity associated with the data follows a Gaussian distribution where the
 variance varies according to the input.
 
 ```math
-    p(y|[f, σ]) = Normal(y | f, σ)
+    p(y|[f, g]) = Normal(y | f, exp(g))
 ```
 On calling, this would return a normal distribution with mean `f` and variance σ.
 """
 struct HeteroscedasticGaussianLikelihood end
 
-@functor HeteroscedasticGaussianLikelihood
-
 (::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], exp(f[2]))
 
-(::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal([f[1]  for f in fs], exp.([f[2]  for f in fs]))
+(::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), exp.(last.(fs)))
