@@ -7,7 +7,7 @@
     lgp = LatentGP(gp, lik, 1e-5)
     lfgp = lgp(x)
 
-    @test typeof(lik(rand(rng, lfgp.fx))) <: Distribution
+    @test lik(rand(rng, lfgp.fx)) isa Distribution
     @test length(rand(rng, lik(rand(rng, lfgp.fx)))) == 10
     @test keys(Functors.functor(lik)[1]) == (:σ²,)
 end
