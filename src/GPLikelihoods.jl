@@ -7,7 +7,7 @@ using Functors
 
 import Distributions
 
-export GaussianLikelihood, PoissonLikelihood
+export GaussianLikelihood, HeteroscedasticGaussianLikelihood, PoissonLikelihood
 
 # Likelihoods
 include("likelihoods/gaussian.jl")
