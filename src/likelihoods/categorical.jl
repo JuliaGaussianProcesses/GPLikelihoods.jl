@@ -1,18 +1,15 @@
-
 """
     CategoricalLikelihood
 
 Categorical likelihood is to be used if we assume that the 
 uncertainity associated with the data follows a Categorical distribution.
 ```math
-    p(y|f_1, f_2, \\dots, f_n) = Categorical(y | f_1, f_2, \\dots, f_n)
+    p(y|f_1, f_2, \\dots, f_n) = Categorical(y | softmax(f_1, f_2, \\dots, f_n))
 ```
 On calling, this would return a Categorical distribution with `f_i` 
 probability of `i` category.
 """
 struct CategoricalLikelihood end
-
-@functor CategoricalLikelihood
 
 (l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(softmax(f))
 
