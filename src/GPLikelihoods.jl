@@ -8,7 +8,10 @@ using StatsFuns: logistic
 
 import Distributions
 
-export BernoulliLikelihood, GaussianLikelihood, PoissonLikelihood
+export BernoulliLikelihood,
+    GaussianLikelihood, 
+    HeteroscedasticGaussianLikelihood, 
+    PoissonLikelihood
 
 # Likelihoods
 include("likelihoods/bernoulli.jl")
