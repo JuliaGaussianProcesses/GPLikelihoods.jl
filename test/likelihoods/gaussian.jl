@@ -18,7 +18,7 @@ end
     IN_DIM = 3
     OUT_DIM = 2 # one for the mean the other for the log-standard deviation
     N = 10
-    x = [rand(rng, IN_DIM) for _=1:N]
+    x = [rand(rng, IN_DIM) for _ in 1:N]
     X = MOInput(x, OUT_DIM)
     lik = HeteroscedasticGaussianLikelihood()
     lgp = LatentGP(gp, lik, 1e-5)

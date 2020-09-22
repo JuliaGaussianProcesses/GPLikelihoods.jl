@@ -24,9 +24,9 @@ GaussianLikelihood() = GaussianLikelihood(1e-6)
 """
     HeteroscedasticGaussianLikelihood(σ²)
 
-Heteroscedastic Gaussian likelihood. This is to be used if we assume that the 
-uncertainity associated with the data follows a Gaussian distribution where the 
-variance varies according to the input.
+Heteroscedastic Gaussian likelihood. 
+This is a Gaussian likelihood whose mean and the log of whose variance are functions of the
+latent process.
 
 ```math
     p(y|[f, g]) = Normal(y | f, exp(g))
