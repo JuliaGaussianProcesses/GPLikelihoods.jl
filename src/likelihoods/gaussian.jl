@@ -31,7 +31,7 @@ variance varies according to the input.
 ```math
     p(y|[f, g]) = Normal(y | f, exp(g))
 ```
-On calling, this would return a normal distribution with mean `f` and variance σ.
+On calling, this would return a normal distribution with mean `f` and variance `exp(g)`.
 """
 struct HeteroscedasticGaussianLikelihood end
 
