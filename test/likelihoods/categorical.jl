@@ -15,6 +15,7 @@
     y = [Y[[i + j*N for j in 0:(OUT_DIM - 1)]] for i in 1:N]
     # Replace with mo_inverse_transform once it is merged
 
+    @test length(lik(rand(3)).p) == 4
     @test lik(y) isa Distribution
     @test length(rand(rng, lik(y))) == 10
     @test Functors.functor(lik)[1] == ()
