@@ -11,6 +11,6 @@ probability of `i` category.
 """
 struct CategoricalLikelihood end
 
-(l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(softmax(append!(f, 0)))
+(l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(softmax(vcat(f, 0)))
 
-(l::CategoricalLikelihood)(fs::AbstractVector) = Product(Categorical.(softmax.(append!.(fs, 0))))
+(l::CategoricalLikelihood)(fs::AbstractVector) = Product(Categorical.(softmax.(vcat.(fs, 0))))
