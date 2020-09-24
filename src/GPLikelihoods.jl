@@ -8,7 +8,10 @@ using StatsFuns: logistic, softmax
 
 import Distributions
 
-export CategoricalLikelihood, GaussianLikelihood, PoissonLikelihood
+export CategoricalLikelihood,
+    GaussianLikelihood, 
+    HeteroscedasticGaussianLikelihood, 
+    PoissonLikelihood
 
 # Likelihoods
 include("likelihoods/categorical.jl")
