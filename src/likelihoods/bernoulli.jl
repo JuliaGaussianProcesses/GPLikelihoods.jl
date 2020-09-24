@@ -11,8 +11,6 @@ On calling, this would return a Bernoulli distribution with `f` probability of `
 """
 struct BernoulliLikelihood end
 
-@functor BernoulliLikelihood
-
 (l::BernoulliLikelihood)(f::Real) = Bernoulli(logistic(f))
 
 (l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(Bernoulli.(logistic.(fs)))
