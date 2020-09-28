@@ -9,11 +9,11 @@ function test_interface(
     lgp = LatentGP(gp, lik, 1e-5)
     lfgp = lgp(x)
 
-    # Likelihood produces a distribution
+    # Check if likelihood produces a distribution
     @test lik(rand(rng, lfgp.fx)) isa Distribution
 
-    y = rand(rng, lfgp.fx)
     N = length(x)
+    y = rand(rng, lfgp.fx)
 
     if x isa MOInput
         # TODO: replace with mo_inverse_transform
@@ -21,10 +21,10 @@ function test_interface(
         y = [y[[i + j*N for j in 0:(x.out_dim - 1)]] for i in 1:N]
     end
 
-    # The distribution sampples are of correct length
+    # Check if the likelihood samples are of correct length
     @test length(rand(rng, lik(y))) == N
     
-    # Functor works properly
+    # Check if functor works properly
     if functor_args == ()
         @test Functors.functor(lik)[1] == functor_args
     else
