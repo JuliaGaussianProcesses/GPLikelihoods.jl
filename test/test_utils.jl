@@ -32,6 +32,18 @@ function test_interface(
     end
 end
 
+"""
+    test_interface(
+        lik,
+        k::Kernel,
+        x::AbstractVector;
+        functor_args=(),
+    )
+
+This function provides unified method to check the interface of the various likelihoods 
+defined. It checks if the likelihood produces a distribution, length of likelihood 
+samples is correct and if the functor works as intended.  
+"""
 function test_interface(
     lik,
     k::KernelFunctions.Kernel,
