@@ -1,9 +1,5 @@
 function test_interface(
-    rng::AbstractRNG,
-    lik,
-    k::KernelFunctions.Kernel,
-    x::AbstractVector;
-    functor_args=(),
+    rng::AbstractRNG, lik, k::Kernel, x::AbstractVector; functor_args=(),
 )
     gp = GP(k)
     lgp = LatentGP(gp, lik, 1e-5)
@@ -33,12 +29,7 @@ function test_interface(
 end
 
 """
-    test_interface(
-        lik,
-        k::Kernel,
-        x::AbstractVector;
-        functor_args=(),
-    )
+    test_interface(lik, k::Kernel, x::AbstractVector; functor_args=())
 
 This function provides unified method to check the interface of the various likelihoods 
 defined. It checks if the likelihood produces a distribution, length of likelihood 
@@ -50,11 +41,5 @@ function test_interface(
     x::AbstractVector;
     kwargs...
 )
-    test_interface(
-        Random.GLOBAL_RNG,
-        lik,
-        k,
-        x;
-        kwargs...
-    )
+    test_interface(Random.GLOBAL_RNG, lik, k, x; kwargs...)
 end
