@@ -34,6 +34,13 @@ end
 This function provides unified method to check the interface of the various likelihoods 
 defined. It checks if the likelihood produces a distribution, length of likelihood 
 samples is correct and if the functor works as intended.  
+...
+# Arguments
+- `lik`: the likelihood to test the interface of
+- `k::Kernel`: the kernel to use for the GP
+- `x::AbstractVector`: intputs to compute the likelihood on
+- `functor_args=()`: a collection of symbols of arguments to match functor parameters with.
+...
 """
 function test_interface(
     lik,
