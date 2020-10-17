@@ -1,8 +1,22 @@
 [deps]
+AbstractGPs = "99985d1d-32ba-4be9-9821-2ec096f28918"
+AdvancedHMC = "0bf59076-c3b1-5ca4-86bd-e02cd72cde3d"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+GPLikelihoods = "6031954c-0455-49d7-b3b9-3e1c99afaf40"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 PalmerPenguins = "8b842266-38fa-440a-9b57-31493939ab85"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 [compat]
+AbstractGPs = "0.2"
+AdvancedHMC = "0.2"
+DataFrames = "0.21"
+Distributions = "0.19, 0.20, 0.21, 0.22, 0.23, 0.24"
 Documenter = "0.25"
+ForwardDiff = "0.10"
 Literate = "2.5"
+PalmerPenguins = "0.1"
+Plots = "1"
