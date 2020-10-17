@@ -1,8 +1,8 @@
 # GPLikelihoods.jl
 
-```@index
-```
+*Provides likelihood functions for Gaussian Processes.*
 
-```@autodocs
-Modules = [GPLikelihoods]
+## Index
+
+```@index
 ```
