@@ -87,7 +87,7 @@ function effective_sample_size(x::AbstractVector, v = var(x))
 end
 ess = effective_sample_size.(eachrow(samples_mat))
 plt = scatter(ess, label="ESS", size=(300,300))
-hline!(plt, [mean(ess)], label="Mean")
+hline!(plt, [mean(ess)], label="Mean", yaxis="ESS", xaxis="Parameters")
 # -
 
 mean_params = mean(samples)
