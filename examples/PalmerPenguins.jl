@@ -14,8 +14,13 @@ first(df, 5)
 unique(df[!,:sex])
 
 
-x = RowVecs(Array(df[:, [:bill_length_mm, :bill_depth_mm, :flipper_length_mm, :body_mass_g]]))
-y = y = df[!,:sex] .== "female"
+x = RowVecs(Array(df[:, [
+                :bill_length_mm, 
+                :bill_depth_mm, 
+                :flipper_length_mm, 
+                :body_mass_g
+                ]]))
+y = df[!,:sex] .== "female"
 scatter(
     df[!, :bill_length_mm],
     df[!, :bill_depth_mm],
@@ -46,22 +51,63 @@ function ℓ(params; x=x_train, y=y_train)
     )
     f = LatentGP(GP(kernel), BernoulliLikelihood(), 0.1)
     fx = f(x)
-#     return mean(logpdf(fx, (f=rand(fx.fx), y=y)) for _ in 1:1)
-    return logpdf(fx, (f=rand(fx.fx), y=y))
+    return logpdf(fx, (f=params[3:end], y=y))
 end
 
-contour(-4:0.1:4, -4:0.1:4, (x, y) -> ℓ([x,y]))
-
-prior = MvNormal(2, 2)
+prior = MvNormal(2+length(x_train), 1)
 ℓ(rand(prior)) # sanity check
 
-samples = sample(ESSModel(prior, ℓ), ESS(), 10; progress=true)
+# +
+# contour(0:0.5:10, 0:0.5:10, (x, y) -> ℓ([x,y]))
+
+# +
+# (f_, y_) = rand(fx)
+# plt = plot()
+# plot!(plt, f_)
+# scatter!(plt, y_.-0.5)
+# -
+
+samples = sample(ESSModel(prior, ℓ), ESS(), 1_000; progress=true)
 samples_mat = reduce(hcat, samples)';
 
 mean_params = mean(samples_mat; dims=1)
 
-plt = histogram(samples_mat; layout=2, labels= "Param")
-vline!(plt, mean_params; layout=2, label="Mean")
+ℓ(mean_params)
+
+plt = histogram(samples_mat[:, 1:2]; layout=2, labels= "Param", bins=10)
+vline!(plt, mean_params[:, 1:2]; layout=2, label="Mean")
+
+function posterior_mean(posterior_params)
+    ys = Vector(undef, size(posterior_params, 1))
+    for i in 1:size(posterior_params, 1)
+        kernel = ScaledKernel(
+                KernelFunctions.transform(
+                    SqExponentialKernel(),
+                    ScaleTransform(exp(posterior_params[i,1]))
+                ),
+                exp(posterior_params[i,2])
+            )
+        p_fx = posterior(GP(kernel)(x_train), posterior_params[i,3:end])
+        l_p_fx = LatentGP(p_fx, BernoulliLikelihood(), 0.01)
+        (_, ys[i]) = rand(l_p_fx(x))
+    end
+    mean(ys)
+end
+
+mean_ys = posterior_mean(samples_mat);
+
+gr()
+plt = scatter(
+        df[!, :bill_length_mm],
+        df[!, :bill_depth_mm],
+        df[!, :flipper_length_mm],
+        marker_z=mean_ys,
+        m = (0.5, :h, 5),
+        colorbar=:left
+    )
+
+# Accuracy
+mean(((mean_ys .> 0.5) .== y))
 
 # +
 # Multi class classification using Categorical likelihood - species and/or island
