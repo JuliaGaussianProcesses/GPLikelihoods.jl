@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 using Pkg; Pkg.activate("../docs")
-using PalmerPenguins, Plots, DataFrames, Random, StatsPlots
+using PalmerPenguins, Plots, DataFrames, Random
 using KernelFunctions, AbstractGPs, GPLikelihoods
 using EllipticalSliceSampling, Distributions
 df = dropmissing(DataFrame(PalmerPenguins.load()))
@@ -26,7 +26,7 @@ scatter(
     df[!, :bill_depth_mm],
     df[!, :flipper_length_mm],
     group = df[!, :sex],
-    m = (0.5, [:+ :h :star7], 5),
+    m = (0.5, :h, 5),
 )
 
 x_train, y_train = x[1:266], y[1:266]
@@ -36,7 +36,7 @@ x_test, y_test = x[267:end], y[267:end];
 # logpdf without any parameters
 
 k = SqExponentialKernel()
-f = LatentGP(GP(k), BernoulliLikelihood(), 0.001)
+f = LatentGP(GP(k), BernoulliLikelihood(), 0.1)
 fx = f(x_test)
 logpdf(fx, (f=rand(fx.fx), y=y_test))
 
@@ -57,49 +57,72 @@ end
 prior = MvNormal(2+length(x_train), 1)
 ℓ(rand(prior)) # sanity check
 
-# +
-# contour(0:0.5:10, 0:0.5:10, (x, y) -> ℓ([x,y]))
-
-# +
-# (f_, y_) = rand(fx)
-# plt = plot()
-# plot!(plt, f_)
-# scatter!(plt, y_.-0.5)
-# -
-
 samples = sample(ESSModel(prior, ℓ), ESS(), 1_000; progress=true)
-samples_mat = reduce(hcat, samples)';
+samples_mat = reduce(hcat, samples);
 
-mean_params = mean(samples_mat; dims=1)
-
-# train data accuracy w.r.t latent vector
-mean((mean_params[1,3:end] .> 0) .== y_train)
-
-ℓ(mean_params)
-
-plt = histogram(samples_mat[:, 1:2]; layout=2, labels= "Param", bins=10)
-vline!(plt, mean_params[:, 1:2]; layout=2, label="Mean")
-
-function posterior_mean(posterior_params)
-    ys = Vector(undef, size(posterior_params, 1))
-    for i in 1:size(posterior_params, 1)
-        kernel = ScaledKernel(
-                KernelFunctions.transform(
-                    SqExponentialKernel(),
-                    ScaleTransform(exp(posterior_params[i,1]))
-                ),
-                exp(posterior_params[i,2])
-            )
-        p_fx = posterior(GP(kernel)(x_train), posterior_params[i,3:end])
-        l_p_fx = LatentGP(p_fx, BernoulliLikelihood(), 0.01)
-        (_, ys[i]) = rand(l_p_fx(x))
-    end
-    mean(ys)
+# +
+# source: https://github.com/tpapp/MCMCDiagnostics.jl/blob/master/src/MCMCDiagnostics.jl
+function autocorrelation(x::AbstractVector, k::Integer, v = var(x))
+    x1 = @view(x[1:(end-k)])
+    x2 = @view(x[(1+k):end])
+    V = sum((x1 .- x2).^2) / length(x1)
+    1 - V / (2*v)
 end
 
+function effective_sample_size(x::AbstractVector, v = var(x))
+    N = length(x)
+    τ_inv = 1 + 2 * autocorrelation(x, 1, v)
+    K = 2
+    while K < N - 2
+        Δ = autocorrelation(x, K, v) + autocorrelation(x, K + 1, v)
+        if Δ < 0
+            break
+        else
+            τ_inv += 2*Δ
+            K += 2
+        end
+    end
+    τ = min(1 / τ_inv, one(τ_inv))
+    τ * length(x)
+end
+ess = effective_sample_size.(eachrow(samples_mat))
+plt = scatter(ess, label="ESS", size=(300,300))
+hline!(plt, [mean(ess)], label="Mean")
+# -
+
+mean_params = mean(samples)
+ℓ(mean_params)
+
+plt = histogram(samples_mat[1:2,:]'; layout=2, labels= "Param", bins=10)
+vline!(plt, mean_params[1:2]'; layout=2, label="Mean", size=(500,250))
+
+function posterior_mean(posterior_params)
+    ys = [
+        begin
+            kernel = ScaledKernel(
+                    KernelFunctions.transform(
+                        SqExponentialKernel(),
+                        ScaleTransform(exp(params[1]))
+                    ),
+                    exp(params[2])
+                )
+            p_fx = posterior(GP(kernel)(x_train), params[3:end])
+            l_p_fx = LatentGP(p_fx, BernoulliLikelihood(), 0.1)
+            (_, y) = rand(l_p_fx(x))
+            y
+        end
+        for params in eachcol(posterior_params)
+    ]
+    return mean(ys)
+end
 mean_ys = posterior_mean(samples_mat);
 
-gr()
+# train data accuracy
+mean(((mean_ys[1:length(y_train)] .> 0.5) .== y_train))
+
+# test data accuracy
+mean(((mean_ys[end-length(y_test)+1:end] .> 0.5) .== y_test))
+
 plt = scatter(
         df[!, :bill_length_mm],
         df[!, :bill_depth_mm],
@@ -109,17 +132,4 @@ plt = scatter(
         colorbar=:left
     )
 
-# train data accuracy
-mean(((mean_ys[end-length(y_test)+1:end] .> 0.5) .== y_test))
 
-# +
-# Multi class classification using Categorical likelihood - species and/or island
-# -
-
-scatter(
-    df[:bill_length_mm],
-    df[:bill_depth_mm],
-    df[:flipper_length_mm],
-    group = df[:species],
-    m = (0.5, [:+ :h :star7], 5),
-)
