@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 using Pkg; Pkg.activate("../docs")
-using PalmerPenguins, Plots, DataFrames, Random
+using PalmerPenguins, Plots, DataFrames, Random, StatsPlots
 using KernelFunctions, AbstractGPs, GPLikelihoods
 using EllipticalSliceSampling, Distributions
 df = dropmissing(DataFrame(PalmerPenguins.load()))
 df = df[randperm(nrow(df)), :]
+df[!,:flipper_length_mm] = convert(Vector{Float64}, df[!,:flipper_length_mm])
+df[!,:body_mass_g] = convert(Vector{Float64}, df[!,:body_mass_g])
 first(df, 5)
 
 # ## Binary classification using Bernoulli likelihood
@@ -40,15 +42,15 @@ function ℓ(params; x=x_train, y=y_train)
         ),
         exp(params[2])
     )
-    f = LatentGP(GP(k), BernoulliLikelihood(), 0.001)
+    f = LatentGP(GP(k), BernoulliLikelihood(), 0.1)
     fx = f(x_train)
     return mean(logpdf(fx, (f=rand(fx.fx), y=y)) for _ in 1:10)
 end
 
-prior = MvNormal(2, 1)
-ℓ(rand(prior))
+contour(2:0.1:4, 2:0.1:4, (x, y) -> ℓ([x,y]))
 
-grid = ℓ.(Iterators.product(-1:0.01:1, -1:0.01:1))
+prior = MvNormal(2, 2)
+ℓ(rand(prior)) # sanity check
 
 samples = sample(ESSModel(prior, ℓ), ESS(), 10; progress=true)
 samples_mat = reduce(hcat, samples)';
@@ -57,16 +59,3 @@ mean_params = mean(samples_mat; dims=1)
 
 plt = histogram(samples_mat; layout=2, labels= "Param")
 vline!(plt, mean_params; layout=2, label="Mean")
-
-# Multi class classification using Categorical likelihood - species and/or island
-unique(df[:species])
-
-unique(df[:island])
-
-scatter(
-    df[:bill_length_mm],
-    df[:bill_depth_mm],
-    df[:flipper_length_mm],
-    group = df[:species],
-    m = (0.5, [:+ :h :star7], 5),
-)
