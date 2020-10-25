@@ -72,6 +72,9 @@ samples_mat = reduce(hcat, samples)';
 
 mean_params = mean(samples_mat; dims=1)
 
+# train data accuracy w.r.t latent vector
+mean((mean_params[1,3:end] .> 0) .== y_train)
+
 ℓ(mean_params)
 
 plt = histogram(samples_mat[:, 1:2]; layout=2, labels= "Param", bins=10)
@@ -106,8 +109,8 @@ plt = scatter(
         colorbar=:left
     )
 
-# Accuracy
-mean(((mean_ys .> 0.5) .== y))
+# train data accuracy
+mean(((mean_ys[end-length(y_test)+1:end] .> 0.5) .== y_test))
 
 # +
 # Multi class classification using Categorical likelihood - species and/or island
