@@ -2,7 +2,7 @@
 using Pkg; Pkg.activate("../docs")
 using PalmerPenguins, Plots, DataFrames, Random
 using KernelFunctions, AbstractGPs, GPLikelihoods
-using EllipticalSliceSampling, Distributions
+using EllipticalSliceSampling, Distributions, MCMCChains
 df = dropmissing(DataFrame(PalmerPenguins.load()))
 df = df[randperm(nrow(df)), :]
 df[!,:flipper_length_mm] = convert(Vector{Float64}, df[!,:flipper_length_mm])
@@ -60,35 +60,12 @@ prior = MvNormal(2+length(x_train), 1)
 samples = sample(ESSModel(prior, ℓ), ESS(), 1_000; progress=true)
 samples_mat = reduce(hcat, samples);
 
-# +
-# source: https://github.com/tpapp/MCMCDiagnostics.jl/blob/master/src/MCMCDiagnostics.jl
-function autocorrelation(x::AbstractVector, k::Integer, v = var(x))
-    x1 = @view(x[1:(end-k)])
-    x2 = @view(x[(1+k):end])
-    V = sum((x1 .- x2).^2) / length(x1)
-    1 - V / (2*v)
-end
-
-function effective_sample_size(x::AbstractVector, v = var(x))
-    N = length(x)
-    τ_inv = 1 + 2 * autocorrelation(x, 1, v)
-    K = 2
-    while K < N - 2
-        Δ = autocorrelation(x, K, v) + autocorrelation(x, K + 1, v)
-        if Δ < 0
-            break
-        else
-            τ_inv += 2*Δ
-            K += 2
-        end
-    end
-    τ = min(1 / τ_inv, one(τ_inv))
-    τ * length(x)
-end
-ess = effective_sample_size.(eachrow(samples_mat))
-plt = scatter(ess, label="ESS", size=(300,300))
-hline!(plt, [mean(ess)], label="Mean", yaxis="ESS", xaxis="Parameters")
-# -
+ess_rhat = ess(Chains(samples))
+ess_plt = scatter(ess_rhat[:,[:ess]], label="", m=(0.8,:dot,3), color=:black)
+hline!(ess_plt, [mean(ess_rhat[:,[:ess]])], label="Mean", yaxis="ESS", xaxis="Parameters", color=:red)
+rhat_plt = scatter(ess_rhat[:,[:rhat]], label="", m=(0.8,:dot,3), color=:black)
+hline!(rhat_plt, [mean(ess_rhat[:,[:rhat]])], label="Mean", yaxis="Rhat", xaxis="Parameters", color=:red)
+plot(ess_plt, rhat_plt, size=(600,300),)
 
 mean_params = mean(samples)
 ℓ(mean_params)
