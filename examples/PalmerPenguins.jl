@@ -65,7 +65,7 @@ end
 # We will use [elliptical slice sampling](http://proceedings.mlr.press/v9/murray10a/murray10a.pdf) to infer the kernel parameters along with the outputs. [EllipticalSliceSampling.jl](https://github.com/TuringLang/EllipticalSliceSampling.jl/) gives us a easy to use implementation of this.
 
 prior = MvNormal(2+length(x_train), 1)
-samples = sample(ESSModel(prior, ℓ), ESS(), 1_000; progress=true)
+samples = sample(ESSModel(prior, ℓ), ESS(), 1_000)
 samples_mat = reduce(hcat, samples);
 
 # We visualize the effective sample size (ess) and Gelman-Rubin statistic ($\hat{R}$)
