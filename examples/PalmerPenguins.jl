@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# # Palmer Penguins
+
+# Import necessery packages and PalmerPenguins dataset.
+
 using Pkg; Pkg.activate("../docs")
 using PalmerPenguins, Plots, DataFrames, Random
 using KernelFunctions, AbstractGPs, GPLikelihoods
@@ -9,7 +13,11 @@ df[!,:flipper_length_mm] = convert(Vector{Float64}, df[!,:flipper_length_mm])
 df[!,:body_mass_g] = convert(Vector{Float64}, df[!,:body_mass_g])
 first(df, 5)
 
+# The Palmer penguins dataset consists of measurements of 344 penguins from three islands in the Palmer Archipelago, Antarctica, that were collected by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER (Gorman, Williams, & Fraser (2014)). The simplified version of the dataset contains at most seven measurements for each penguin, namely the species (Adelie, Chinstrap, and Gentoo), the island (Torgersen, Biscoe, and Dream), the bill length (measured in mm), the bill depth (measured in mm), the flipper length (measured in mm), the body mass (measured in g), and the sex (male and female). [Source](https://widmann.dev/blog/2020/07/palmerpenguins/)
+
 # ## Binary classification using Bernoulli likelihood
+
+# In this example we will demonstrate binary classfication on the sex of thee penguins based on their bill length & depth. flipper length and body mass.
 
 unique(df[!,:sex])
 
@@ -29,17 +37,15 @@ scatter(
     m = (0.5, :h, 5),
 )
 
+# A visualization of three of the four input parameters.
+
+# We split the dataset in train and test. Approximately 20% of the dataset is held out as test data.
+
 x_train, y_train = x[1:266], y[1:266]
 x_test, y_test = x[267:end], y[267:end];
 
 
-# logpdf without any parameters
-
-k = SqExponentialKernel()
-f = LatentGP(GP(k), BernoulliLikelihood(), 0.1)
-fx = f(x_test)
-logpdf(fx, (f=rand(fx.fx), y=y_test))
-
+# Defining log density function. 
 
 function ℓ(params; x=x_train, y=y_train)
     kernel = ScaledKernel(
@@ -54,15 +60,19 @@ function ℓ(params; x=x_train, y=y_train)
     return logpdf(fx, (f=params[3:end], y=y))
 end
 
-prior = MvNormal(2+length(x_train), 1)
-ℓ(rand(prior)) # sanity check
+# # Elliptical Slice Sampling
 
+# We will use [elliptical slice sampling](http://proceedings.mlr.press/v9/murray10a/murray10a.pdf) to infer the kernel parameters along with the outputs. [EllipticalSliceSampling.jl](https://github.com/TuringLang/EllipticalSliceSampling.jl/) gives us a easy to use implementation of this.
+
+prior = MvNormal(2+length(x_train), 1)
 samples = sample(ESSModel(prior, ℓ), ESS(), 1_000; progress=true)
 samples_mat = reduce(hcat, samples);
 
+# We visualize the effective sample size (ess) and Gelman-Rubin statistic ($\hat{R}$)
+
 ess_rhat = ess(Chains(samples))
 ess_plt = scatter(ess_rhat[:,[:ess]], label="", m=(0.8,:dot,3), color=:black)
-hline!(ess_plt, [mean(ess_rhat[:,[:ess]])], label="Mean", yaxis="ESS", xaxis="Parameters", color=:red)
+hline!(ess_plt, [mean(ess_rhat[:,[:ess]])], label="Mean", yaxis="ess", xaxis="Parameters", color=:red)
 rhat_plt = scatter(ess_rhat[:,[:rhat]], label="", m=(0.8,:dot,3), color=:black)
 hline!(rhat_plt, [mean(ess_rhat[:,[:rhat]])], label="Mean", yaxis="Rhat", xaxis="Parameters", color=:red)
 plot(ess_plt, rhat_plt, size=(600,300),)
@@ -70,8 +80,12 @@ plot(ess_plt, rhat_plt, size=(600,300),)
 mean_params = mean(samples)
 ℓ(mean_params)
 
-plt = histogram(samples_mat[1:2,:]'; layout=2, labels= "Param", bins=10)
+# A histogram of the posterior samples of the kernel parameters
+
+plt = histogram(samples_mat[1:2,:]'; layout=2, labels= "", bins=10)
 vline!(plt, mean_params[1:2]'; layout=2, label="Mean", size=(500,250))
+
+# A helper function to compute the mean posterior predictions of the binary classification task. This gives the probability of a particular penguin being a female.
 
 function posterior_mean(posterior_params)
     ys = [
@@ -94,11 +108,15 @@ function posterior_mean(posterior_params)
 end
 mean_ys = posterior_mean(samples_mat);
 
-# train data accuracy
+# Train Data Accuracy:
+
 mean(((mean_ys[1:length(y_train)] .> 0.5) .== y_train))
 
-# test data accuracy
+# Test Data Accuracy:
+
 mean(((mean_ys[end-length(y_test)+1:end] .> 0.5) .== y_test))
+
+# A visualzation of the mean of the posterior predictions of the sex of each penguin. 
 
 plt = scatter(
         df[!, :bill_length_mm],
@@ -108,5 +126,3 @@ plt = scatter(
         m = (0.5, :h, 5),
         colorbar=:left
     )
-
-
