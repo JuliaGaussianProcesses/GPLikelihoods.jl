@@ -4,7 +4,7 @@
 # Import necessery packages and PalmerPenguins dataset.
 
 using PalmerPenguins, Plots, DataFrames, Random
-using KernelFunctions, AbstractGPs, GPLikelihoods
+using AbstractGPs, GPLikelihoods
 using EllipticalSliceSampling, Distributions, MCMCChains
 df = dropmissing(DataFrame(PalmerPenguins.load()))
 df = df[randperm(nrow(df)), :]
