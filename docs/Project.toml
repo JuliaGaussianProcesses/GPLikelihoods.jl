@@ -12,7 +12,7 @@ PalmerPenguins = "8b842266-38fa-440a-9b57-31493939ab85"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 [compat]
-AbstractGPs == "0.2"
+AbstractGPs = "0.2"
 AdvancedHMC = "0.2"
 DataFrames = "0.21"
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23, 0.24"
