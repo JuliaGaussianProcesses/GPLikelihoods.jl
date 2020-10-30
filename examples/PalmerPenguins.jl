@@ -3,7 +3,6 @@
 
 # Import necessery packages and PalmerPenguins dataset.
 
-using Pkg; Pkg.activate("../docs")
 using PalmerPenguins, Plots, DataFrames, Random
 using KernelFunctions, AbstractGPs, GPLikelihoods
 using EllipticalSliceSampling, Distributions, MCMCChains
