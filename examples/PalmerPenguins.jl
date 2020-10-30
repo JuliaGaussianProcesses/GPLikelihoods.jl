@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 # # Palmer Penguins
 
 # Import necessery packages and PalmerPenguins dataset.
 
 using PalmerPenguins, Plots, DataFrames, Random
 using AbstractGPs, GPLikelihoods
+ENV["DATADEPS_ALWAYS_ACCEPT"] = true
 using EllipticalSliceSampling, Distributions, MCMCChains
 df = dropmissing(DataFrame(PalmerPenguins.load()))
 df = df[randperm(nrow(df)), :]
