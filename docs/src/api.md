@@ -1,5 +1,5 @@
 # API
 
 ```@autodocs
-Modules = [AbstractGPs]
+Modules = [GPLikelihoods]
 ```
