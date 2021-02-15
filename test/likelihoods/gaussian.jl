@@ -1,17 +1,13 @@
 @testset "GaussianLikelihood" begin
-    rng = MersenneTwister(123)
-    gp = GP(SqExponentialKernel())
-    x = rand(rng, 10)
-    y = rand(rng, 10)
     lik = GaussianLikelihood(1e-5)
-    lgp = LatentGP(gp, lik, 1e-5)
-    lfgp = lgp(x)
+    test_interface(lik, SqExponentialKernel(), rand(10); functor_args=(:σ²,))
+end
 
-    @test typeof(lik(rand(rng, lfgp.fx))) <: Distribution
-    @test length(rand(rng, lik(rand(rng, lfgp.fx)))) == 10
-    @test keys(Functors.functor(lik)[1]) == (:σ²,)
-
-    # Test default constructore
-    l = GaussianLikelihood()
-    @test l.σ² == [1e-6]
+@testset "HeteroscedasticGaussianLikelihood" begin
+    lik = HeteroscedasticGaussianLikelihood()
+    IN_DIM = 3
+    OUT_DIM = 2 # one for the mean the other for the log-standard deviation
+    N = 10
+    X = MOInput([rand(IN_DIM) for _ in 1:N], OUT_DIM)
+    test_interface(lik, IndependentMOKernel(SqExponentialKernel()), X)
 end

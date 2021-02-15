@@ -22,3 +22,21 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 (l::GaussianLikelihood)(f::Real) = Normal(f, sqrt(first(l.σ²)))
 
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(first(l.σ²)))
+
+"""
+    HeteroscedasticGaussianLikelihood(σ²)
+
+Heteroscedastic Gaussian likelihood. 
+This is a Gaussian likelihood whose mean and the log of whose variance are functions of the
+latent process.
+
+```math
+    p(y|[f, g]) = Normal(y | f, exp(g))
+```
+On calling, this would return a normal distribution with mean `f` and variance `exp(g)`.
+"""
+struct HeteroscedasticGaussianLikelihood end
+
+(::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], exp(f[2]))
+
+(::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), exp.(last.(fs)))

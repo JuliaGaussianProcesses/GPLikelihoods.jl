@@ -8,12 +8,19 @@ using StatsFuns: logistic
 
 import Distributions
 
-export GaussianLikelihood, PoissonLikelihood
+export BernoulliLikelihood,
+    CategoricalLikelihood,
+    GaussianLikelihood, 
+    HeteroscedasticGaussianLikelihood, 
+    PoissonLikelihood
 export Link, LogisticLink
 
 # Links
 include(joinpath("likelihoods", "link.jl"))
 # Likelihoods
-include(joinpath("likelihoods", "gaussian.jl"))
-include(joinpath("likelihoods", "poisson.jl"))
+include("likelihoods/bernoulli.jl")
+include("likelihoods/categorical.jl")
+include("likelihoods/gaussian.jl")
+include("likelihoods/poisson.jl")
+
 end # module
