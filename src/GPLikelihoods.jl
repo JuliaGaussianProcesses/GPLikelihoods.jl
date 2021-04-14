@@ -16,7 +16,7 @@ export BernoulliLikelihood,
 export Link, LogisticLink
 
 # Links
-include(joinpath("likelihoods", "link.jl"))
+include("links.jl")
 # Likelihoods
 include("likelihoods/bernoulli.jl")
 include("likelihoods/categorical.jl")

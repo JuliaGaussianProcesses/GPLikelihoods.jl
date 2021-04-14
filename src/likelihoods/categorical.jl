@@ -9,8 +9,12 @@ uncertainity associated with the data follows a Categorical distribution.
 On calling, this would return a Categorical distribution with `f_i` 
 probability of `i` category.
 """
-struct CategoricalLikelihood end
+struct CategoricalLikelihood{Tl<:AbtractLink}
+    invlink::Tl
+end
 
-(l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(softmax(vcat(f, 0)))
+CategoricalLikelihood(invlink::T=SoftMaxLink()) where{T<:AbstractLink} = CategoricalLikelihood{T}(invlink)
 
-(l::CategoricalLikelihood)(fs::AbstractVector) = Product(Categorical.(softmax.(vcat.(fs, 0))))
+(l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
+
+(l::CategoricalLikelihood)(fs::AbstractVector) = Product(Categorical.(l.invlink.(vcat.(fs, 0))))

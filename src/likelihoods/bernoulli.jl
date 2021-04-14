@@ -9,8 +9,10 @@ uncertainity associated with the data follows a Bernoulli distribution.
 ```
 On calling, this would return a Bernoulli distribution with `f` probability of `true`.
 """
-struct BernoulliLikelihood end
+struct BernoulliLikelihood{Tl<:AbstractLink}
+    invlink::Tl
+end
 
-(l::BernoulliLikelihood)(f::Real) = Bernoulli(logistic(f))
+(l::BernoulliLikelihood)(f::Real) = Bernoulli(l.invlink(f))
 
-(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(Bernoulli.(logistic.(fs)))
+(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(Bernoulli.(l.invlink.(fs)))
