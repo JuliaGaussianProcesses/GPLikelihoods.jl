@@ -10,6 +10,15 @@ abstract type AbstractLink end
 
 (f::AbstractLink)(x) = apply(f, x)
 
+struct ChainLink{Tls} <: AbstractLink
+    links::Tls
+end
+
+apply(l::ChainLink, x) = foldl((x, l) -> l(x), l.ls; init=x)
+
+apply(::ChainLink{<:Tuple{LogLink, NormalCDFLink}}, x) = normlogcdf(x) 
+
+
 """
     Link(f)
 
@@ -81,7 +90,7 @@ Base.inv(::SquareLink) = SqrtLink()
 """
     LogitLink()
 
-Determines the `logit` link, i.e `log(x/(1-x)`, f:[0,1]->ℝ
+Determines the `logit` link, i.e `log(x/(1-x))`, f:[0,1]->ℝ
 Its inverse is the [`LogisticLink`](@ref).
 """
 struct LogitLink <: AbstractLink end
@@ -104,7 +113,21 @@ Base.inv(::LogisticLink) = LogitLink()
 
 struct ProbitLink <: AbstractLink end
 
-apply(::ProbitLink, x) = erf(x)
+apply(::ProbitLink, x) = norminvcdf(x)
+
+Base.inv(::ProbitLink, x) = NormalCDFLink()
+
+"""
+    NormalCDFLink()
+
+Determines the `cdf` of a normal, i.e ∫₋∞ˣ p(x')dx'. f:ℝ->[0,1]
+Its inverse is the [`Logit`](@ref).
+"""
+struct NormalCDFLink <: AbstractLink end
+
+apply(::NormalCDFLink, x) = normcdf(x)
+
+Base.inv(::NormalCDFLink) = ProbitLink()
 
 """
     SoftMaxLink()

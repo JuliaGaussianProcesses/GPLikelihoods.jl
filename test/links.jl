@@ -5,9 +5,10 @@
     x = rand()
     @test l(x) == f(x)
 
-    λ = 2.0
-    l = LogisticLink(λ)
-    @test l(x) == λ * logistic(x)
     l = LogisticLink()
     @test l(x) == logistic(x)
+    @test inv(l) isa LogitLink
+    l = LogitLink()
+    @test l(x) == logit(x)
+    @test inv(l) isa LogisticLink
 end
