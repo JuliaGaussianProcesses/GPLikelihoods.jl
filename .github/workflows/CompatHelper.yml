@@ -20,7 +20,7 @@ jobs:
       - name: "Run CompatHelper"
         run: |
           import CompatHelper
-          CompatHelper.main(; subdirs=["", "test", "test/ppl", "docs"])
+          CompatHelper.main(; subdirs=["", "test", "docs"])
         shell: julia --color=yes {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
