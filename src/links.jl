@@ -8,13 +8,11 @@ A series of definitions are given in http://web.pdx.edu/~newsomj/mvclass/ho_link
 """
 abstract type AbstractLink end
 
-(f::AbstractLink)(x) = apply(f, x)
-
 struct ChainLink{Tls} <: AbstractLink
     links::Tls
 end
 
-apply(l::ChainLink, x) = foldl((x, l) -> l(x), l.ls; init=x)
+(l::ChainLink)(x) = foldl((x, l) -> l(x), l.ls; init=x)
 
 """
     Link(f)
@@ -25,7 +23,7 @@ struct Link{F} <: AbstractLink
     f::F
 end
 
-apply(l::Link, x) = l.f(x)
+(l::Link)(x) = l.f(x)
 
 """
     LogLink()
@@ -34,7 +32,7 @@ apply(l::Link, x) = l.f(x)
 """
 struct LogLink <: AbstractLink end
 
-apply(::LogLink, x) = log(x)
+(::LogLink)(x) = log(x)
 
 Base.inv(::LogLink) = ExpLink()
 
@@ -45,7 +43,7 @@ Base.inv(::LogLink) = ExpLink()
 """
 struct ExpLink <: AbstractLink end
 
-apply(::ExpLink, x) = exp(x)
+(::ExpLink)(x) = exp(x)
 
 Base.inv(::ExpLink) = LogLink()
 
@@ -56,7 +54,7 @@ Base.inv(::ExpLink) = LogLink()
 """
 struct InvLink <: AbstractLink end
 
-apply(::InvLink, x) = inv(x)
+(::InvLink)(x) = inv(x)
 
 Base.inv(::InvLink) = InvLink()
 
@@ -67,7 +65,7 @@ Base.inv(::InvLink) = InvLink()
 """
 struct SqrtLink <: AbstractLink end
 
-apply(::SqrtLink, x) = sqrt(x)
+(::SqrtLink)(x) = sqrt(x)
 
 Base.inv(::SqrtLink) = SquareLink()
 
@@ -78,7 +76,7 @@ Base.inv(::SqrtLink) = SquareLink()
 """
 struct SquareLink <: AbstractLink end
 
-apply(::SquareLink, x) = x^2
+(::SquareLink)(x) = x^2
 
 Base.inv(::SquareLink) = SqrtLink()
 
@@ -89,7 +87,7 @@ Base.inv(::SquareLink) = SqrtLink()
 """
 struct LogitLink <: AbstractLink end
 
-apply(::LogitLink, x) = logit(x)
+(::LogitLink)(x) = logit(x)
 
 Base.inv(::LogitLink) = LogisticLink()
 
@@ -100,7 +98,7 @@ Base.inv(::LogitLink) = LogisticLink()
 """
 struct LogisticLink <: AbstractLink end
 
-apply(::LogisticLink, x) = logistic(x)
+(::LogisticLink)(x) = logistic(x)
 
 Base.inv(::LogisticLink) = LogitLink()
 
@@ -112,7 +110,7 @@ Its inverse is the [`NormalCDFLink`](@ref).
 """
 struct ProbitLink <: AbstractLink end
 
-apply(::ProbitLink, x) = norminvcdf(x)
+(::ProbitLink)(x) = norminvcdf(x)
 
 Base.inv(::ProbitLink) = NormalCDFLink()
 
@@ -124,19 +122,19 @@ Its inverse is the [`ProbitLink`](@ref).
 """
 struct NormalCDFLink <: AbstractLink end
 
-apply(::NormalCDFLink, x) = normcdf(x)
+(::NormalCDFLink)(x) = normcdf(x)
 
 Base.inv(::NormalCDFLink) = ProbitLink()
 
-apply(::ChainLink{<:Tuple{LogLink,NormalCDFLink}}, x) = normlogcdf(x) # Specialisation for log + normal cdf
+(::ChainLink{<:Tuple{LogLink,NormalCDFLink}})(x) = normlogcdf(x) # Specialisation for log + normal cdf
 
 """
     SoftMaxLink()
 
 `softmax` link, i.e `f(x)ᵢ = exp(xᵢ)/∑ⱼexp(xⱼ)`.
-f:ℝⁿ->Sⁿ, where Sⁿ is an n-simplex
+f:ℝⁿ->Sⁿ⁻¹, where Sⁿ⁻¹ is an [(n-1)-simplex](https://en.wikipedia.org/wiki/Simplex)
 It has no defined inverse
 """
 struct SoftMaxLink <: AbstractLink end
 
-apply(::SoftMaxLink, x::AbstractVector{<:Real}) = softmax(x)
+(::SoftMaxLink)(x::AbstractVector{<:Real}) = softmax(x)
