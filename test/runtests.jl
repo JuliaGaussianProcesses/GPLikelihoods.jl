@@ -14,6 +14,8 @@ using Distributions
         include("likelihoods/categorical.jl")
         include("likelihoods/gaussian.jl")
         include("likelihoods/poisson.jl")
+        include("likelihoods/gamma.jl")
+        include("likelihoods/exponential.jl")
     end
 
 end
