@@ -21,11 +21,15 @@ function test_interface(
     @test length(rand(rng, lik(y))) == N
     
     # Check if functor works properly
-    if functor_args == ()
-        @test Functors.functor(lik)[1] == functor_args
+    xs, re = Functors.functor(lik)
+    @test lik == re(xs)
+    if isempty(functor_args)
+        @test xs === ()
     else
-        @test keys(Functors.functor(lik)[1]) == functor_args
+        @test keys(xs) == functor_args
     end
+    
+    return
 end
 
 """
