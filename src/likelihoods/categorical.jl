@@ -17,4 +17,6 @@ CategoricalLikelihood() = CategoricalLikelihood(SoftMaxLink())
 
 (l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
 
-(l::CategoricalLikelihood)(fs::AbstractVector) = Product(Categorical.(l.invlink.(vcat.(fs, 0))))
+function (l::CategoricalLikelihood)(fs::AbstractVector)
+    return Product(Categorical.(l.invlink.(vcat.(fs, 0))))
+end

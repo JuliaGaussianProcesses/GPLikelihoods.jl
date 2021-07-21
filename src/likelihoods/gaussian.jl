@@ -42,6 +42,10 @@ end
 
 HeteroscedasticGaussianLikelihood() = HeteroscedasticGaussianLikelihood(ExpLink())
 
-(l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], l.invlink(f[2]))
+function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
+    return Normal(f[1], l.invlink(f[2]))
+end
 
-(l::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), l.invlink.(last.(fs)))
+function (l::HeteroscedasticGaussianLikelihood)(fs::AbstractVector)
+    return MvNormal(first.(fs), l.invlink.(last.(fs)))
+end

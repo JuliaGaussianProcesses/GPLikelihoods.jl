@@ -15,4 +15,6 @@ ExponentialLikelihood() = ExponentialLikelihood(ExpLink())
 
 (l::ExponentialLikelihood)(f::Real) = Exponential(l.invlink(f))
 
-(l::ExponentialLikelihood)(fs::AbstractVector{<:Real}) = Product(Exponential.(l.invlink.(fs)))
+function (l::ExponentialLikelihood)(fs::AbstractVector{<:Real})
+    return Product(Exponential.(l.invlink.(fs)))
+end

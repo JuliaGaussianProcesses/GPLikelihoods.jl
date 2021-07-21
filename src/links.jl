@@ -16,7 +16,6 @@ end
 
 apply(l::ChainLink, x) = foldl((x, l) -> l(x), l.ls; init=x)
 
-
 """
     Link(f)
 
@@ -127,7 +126,7 @@ apply(::NormalCDFLink, x) = normcdf(x)
 
 Base.inv(::NormalCDFLink) = ProbitLink()
 
-apply(::ChainLink{<:Tuple{LogLink, NormalCDFLink}}, x) = normlogcdf(x) # Specialisation for log + normal cdf
+apply(::ChainLink{<:Tuple{LogLink,NormalCDFLink}}, x) = normlogcdf(x) # Specialisation for log + normal cdf
 
 """
     SoftMaxLink()

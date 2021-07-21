@@ -6,11 +6,10 @@ using Functors
 using Random
 using StatsFuns
 
-
 export BernoulliLikelihood,
     CategoricalLikelihood,
-    GaussianLikelihood, 
-    HeteroscedasticGaussianLikelihood, 
+    GaussianLikelihood,
+    HeteroscedasticGaussianLikelihood,
     PoissonLikelihood,
     ExponentialLikelihood,
     GammaLikelihood

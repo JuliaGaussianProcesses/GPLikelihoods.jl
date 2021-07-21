@@ -13,7 +13,7 @@ struct GammaLikelihood{T<:Real,Tl<:AbstractLink}
     invlink::Tl
 end
 
-GammaLikelihood() = GammaLikelihood(1.)
+GammaLikelihood() = GammaLikelihood(1.0)
 
 GammaLikelihood(α::Real) = GammaLikelihood(α, ExpLink())
 
