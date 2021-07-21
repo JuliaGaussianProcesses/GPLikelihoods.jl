@@ -1,10 +1,11 @@
 module GPLikelihoods
 
-using Distributions
 using AbstractGPs
-using Random
+using Distributions
 using Functors
 using LogExpFunctions: logistic, softmax
+using Random
+using StatsFuns
 
 
 export BernoulliLikelihood,
@@ -29,6 +30,7 @@ export Link,
 
 # Links
 include("links.jl")
+
 # Likelihoods
 include(joinpath("likelihoods", "bernoulli.jl"))
 include(joinpath("likelihoods", "categorical.jl"))
