@@ -7,3 +7,4 @@ test/Manifest.toml
 /dev/
 /docs/build/
 /docs/site/
+.vscode/
