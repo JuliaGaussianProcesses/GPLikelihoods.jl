@@ -4,7 +4,7 @@
 Gamma likelihood with fixed shape `α`.
 
 ```math
-    p(y|f) = Gamma(y | α, θ=l(f))
+    p(y|f) = Gamma(y | α, l(f))
 ```
 On calling, this would return a gamma distribution with shape `α` and scale `l(f)`.
 """

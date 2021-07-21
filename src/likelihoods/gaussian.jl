@@ -33,7 +33,7 @@ latent process.
 ```math
     p(y|[f, g]) = Normal(y | f, l(g))
 ```
-On calling, this would return a normal distribution with mean `f` and variance `l(g)`.
+On calling, this would return a normal distribution with mean `f` and std. dev. `l(g)`.
 Where `l` is link going from R to R^+
 """
 struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink}
