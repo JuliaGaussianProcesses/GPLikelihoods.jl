@@ -24,19 +24,24 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(first(l.σ²)))
 
 """
-    HeteroscedasticGaussianLikelihood(σ²)
+    HeteroscedasticGaussianLikelihood(l::AbstractLink=ExpLink())
 
 Heteroscedastic Gaussian likelihood. 
 This is a Gaussian likelihood whose mean and the log of whose variance are functions of the
 latent process.
 
 ```math
-    p(y|[f, g]) = Normal(y | f, exp(g))
+    p(y|[f, g]) = Normal(y | f, l(g))
 ```
-On calling, this would return a normal distribution with mean `f` and variance `exp(g)`.
+On calling, this would return a normal distribution with mean `f` and variance `l(g)`.
+Where `l` is link going from R to R^+
 """
-struct HeteroscedasticGaussianLikelihood end
+struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLikelihood}
+    invlink::Tl
+end
 
-(::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], exp(f[2]))
+HeteroscedasticGaussianLikelihood() = HeteroscedasticGaussianLikelihood(ExpLink())
 
-(::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), exp.(last.(fs)))
+(l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], l.invlink(f[2]))
+
+(l::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), l.invlink.(last.(fs)))

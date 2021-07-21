@@ -8,7 +8,7 @@ struct PoissonLikelihood{L<:AbstractLink}
     invlink::L
 end
 
-PoissonLikelihood(invlink::T=ExpLink()) where {T<:AbstractLink} = PoissonLikelihood{T}(invlink)
+PoissonLikelihood() = PoissonLikelihood(ExpLink())
 
 @functor PoissonLikelihood
 
