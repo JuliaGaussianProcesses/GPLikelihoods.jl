@@ -1,7 +1,7 @@
 """
     GaussianLikelihood(σ²)
 
-Gaussian likelihood with `σ²` variance. This is to be used if we assume that the 
+Gaussian likelihood with `σ²` variance. This is to be used if we assume that the
 uncertainity associated with the data follows a Gaussian distribution.
 
 ```math
@@ -10,31 +10,42 @@ uncertainity associated with the data follows a Gaussian distribution.
 On calling, this would return a normal distribution with mean `f` and variance σ².
 """
 struct GaussianLikelihood{T<:Real}
-    σ²::T
+    σ²::Vector{T}
 end
 
 GaussianLikelihood() = GaussianLikelihood(1e-6)
 
+GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
+
 @functor GaussianLikelihood
 
-(l::GaussianLikelihood)(f::Real) = Normal(f, sqrt(l.σ²))
+(l::GaussianLikelihood)(f::Real) = Normal(f, sqrt(first(l.σ²)))
 
-(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(l.σ²))
+(l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, sqrt(first(l.σ²)))
 
 """
-    HeteroscedasticGaussianLikelihood(σ²)
+    HeteroscedasticGaussianLikelihood(l::AbstractLink=ExpLink())
 
 Heteroscedastic Gaussian likelihood. 
 This is a Gaussian likelihood whose mean and the log of whose variance are functions of the
 latent process.
 
 ```math
-    p(y|[f, g]) = Normal(y | f, exp(g))
+    p(y|[f, g]) = Normal(y | f, l(g))
 ```
-On calling, this would return a normal distribution with mean `f` and variance `exp(g)`.
+On calling, this would return a normal distribution with mean `f` and std. dev. `l(g)`.
+Where `l` is link going from R to R^+
 """
-struct HeteroscedasticGaussianLikelihood end
+struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink}
+    invlink::Tl
+end
 
-(::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real}) = Normal(f[1], exp(f[2]))
+HeteroscedasticGaussianLikelihood() = HeteroscedasticGaussianLikelihood(ExpLink())
 
-(::HeteroscedasticGaussianLikelihood)(fs::AbstractVector) = MvNormal(first.(fs), exp.(last.(fs)))
+function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
+    return Normal(f[1], l.invlink(f[2]))
+end
+
+function (l::HeteroscedasticGaussianLikelihood)(fs::AbstractVector)
+    return MvNormal(first.(fs), l.invlink.(last.(fs)))
+end

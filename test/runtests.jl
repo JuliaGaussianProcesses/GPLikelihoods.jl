@@ -4,11 +4,12 @@ using Test
 using Random
 using Functors
 using Distributions
+using StatsFuns
 
 @testset "GPLikelihoods.jl" begin
 
     include("test_utils.jl")
-    
+    include("links.jl")    
     @testset "likelihoods" begin
         include(joinpath("likelihoods", "bernoulli.jl"))
         include(joinpath("likelihoods", "categorical.jl"))
