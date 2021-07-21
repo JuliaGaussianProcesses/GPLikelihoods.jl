@@ -9,7 +9,7 @@ uncertainity associated with the data follows a Categorical distribution.
 On calling, this would return a Categorical distribution where probabilities are 
 given by `l(f_1, f_2, ..., f_{n-1}, 0)`, a vector of probabilities, which sums to 1
 """
-struct CategoricalLikelihood{Tl<:AbtractLink}
+struct CategoricalLikelihood{Tl<:AbstractLink}
     invlink::Tl
 end
 

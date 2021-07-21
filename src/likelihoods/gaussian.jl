@@ -36,7 +36,7 @@ latent process.
 On calling, this would return a normal distribution with mean `f` and variance `l(g)`.
 Where `l` is link going from R to R^+
 """
-struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLikelihood}
+struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink}
     invlink::Tl
 end
 

@@ -3,7 +3,6 @@ module GPLikelihoods
 using AbstractGPs
 using Distributions
 using Functors
-using LogExpFunctions: logistic, softmax
 using Random
 using StatsFuns
 
