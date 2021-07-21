@@ -71,7 +71,7 @@ struct SqrtLink <: AbstractLink end
 
 apply(::SqrtLink, x) = sqrt(x)
 
-Base.inv(::SqrtLink) = SqrtLink()
+Base.inv(::SqrtLink) = SquareLink()
 
 """
     SquareLink()
@@ -113,7 +113,7 @@ struct ProbitLink <: AbstractLink end
 
 apply(::ProbitLink, x) = norminvcdf(x)
 
-Base.inv(::ProbitLink, x) = NormalCDFLink()
+Base.inv(::ProbitLink) = NormalCDFLink()
 
 """
     NormalCDFLink()
