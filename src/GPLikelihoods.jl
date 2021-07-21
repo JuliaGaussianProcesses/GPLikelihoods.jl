@@ -4,9 +4,8 @@ using Distributions
 using AbstractGPs
 using Random
 using Functors
-using StatsFuns: logistic
+using LogExpFunctions: logistic, softmax
 
-import Distributions
 
 export BernoulliLikelihood,
     CategoricalLikelihood,
