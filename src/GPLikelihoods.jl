@@ -1,6 +1,5 @@
 module GPLikelihoods
 
-using AbstractGPs
 using Distributions
 using Functors
 using Random
