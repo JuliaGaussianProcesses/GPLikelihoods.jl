@@ -2,6 +2,7 @@ module GPLikelihoods
 
 using Distributions
 using Functors
+using LinearAlgebra
 using Random
 using StatsFuns
 
