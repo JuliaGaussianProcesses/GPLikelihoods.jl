@@ -8,7 +8,7 @@ makedocs(;
     ],
     repo="https://github.com/JuliaGaussianProcesses/GPLikelihoods.jl/blob/{commit}{path}#L{line}",
     sitename="GPLikelihoods.jl",
-    authors="willtebbutt <wt0881@my.bristol.ac.uk>",
+    authors="JuliaGaussianProcesses organization",
     assets=String[],
 )
 
