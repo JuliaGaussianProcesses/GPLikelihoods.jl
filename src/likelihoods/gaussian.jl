@@ -47,5 +47,5 @@ function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
 end
 
 function (l::HeteroscedasticGaussianLikelihood)(fs::AbstractVector)
-    return MvNormal(first.(fs), l.invlink.(last.(fs)) * I)
+    return MvNormal(first.(fs), Diagonal(l.invlink.(last.(fs))))
 end
