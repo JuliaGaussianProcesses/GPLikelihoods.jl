@@ -14,4 +14,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/JuliaGaussianProcesses/GPLikelihoods.jl",
+    push_preview=true,
 )
