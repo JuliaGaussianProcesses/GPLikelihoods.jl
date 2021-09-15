@@ -1,14 +1,14 @@
 """
-    GammaLikelihood(α::Real=1.0, l::AbstractLink=ExpLink())
+    GammaLikelihood(α::Real=1.0, invlink::AbstractLink=ExpLink())
 
 Gamma likelihood with fixed shape `α`.
 
 ```math
     p(y|f) = Gamma(y | α, l(f))
 ```
-On calling, this would return a gamma distribution with shape `α` and scale `l(f)`.
+On calling, this would return a Gamma distribution with shape `α` and scale `invlink(f)`.
 """
-struct GammaLikelihood{T<:Real,Tl<:AbstractLink}
+struct GammaLikelihood{Tl<:AbstractLink,T<:Real}
     α::T    # shape parameter
     invlink::Tl
 end
