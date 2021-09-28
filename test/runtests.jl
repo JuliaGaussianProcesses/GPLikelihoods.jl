@@ -11,12 +11,12 @@ using StatsFuns
     include("test_utils.jl")
     include("links.jl")    
     @testset "likelihoods" begin
-        include(joinpath("likelihoods", "bernoulli.jl"))
-        include(joinpath("likelihoods", "categorical.jl"))
-        include(joinpath("likelihoods", "gaussian.jl"))
-        include(joinpath("likelihoods", "poisson.jl"))
-        include(joinpath("likelihoods", "gamma.jl"))
-        include(joinpath("likelihoods", "exponential.jl"))
+        include("likelihoods/bernoulli.jl")
+        include("likelihoods/categorical.jl")
+        include("likelihoods/gaussian.jl")
+        include("likelihoods/poisson.jl")
+        include("likelihoods/gamma.jl")
+        include("likelihoods/exponential.jl")
     end
 
 end
