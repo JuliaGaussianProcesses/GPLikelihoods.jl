@@ -94,7 +94,7 @@ Base.inv(::LogitLink) = LogisticLink()
 """
     LogisticLink()
 
-`exp(x)/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`Logit`](@ref).
+`exp(x)/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
 """
 struct LogisticLink <: AbstractLink end
 
