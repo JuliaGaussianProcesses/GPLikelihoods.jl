@@ -4,13 +4,13 @@
 Poisson likelihood with rate defined as `l(f)`.
 
 ```math
-    p(y|f) = Poisson(y | θ=l(f))
+    p(y|f) = \\mathrm{Poisson}(y | θ=l(f))
 ```
 
 This is to be used if  we assume that the uncertainity associated
 with the data follows a Poisson distribution.
 """
-struct PoissonLikelihood{L<:AbstractLink}
+struct PoissonLikelihood{L<:AbstractLink} <: AbstractLikelihood
     invlink::L
 end
 

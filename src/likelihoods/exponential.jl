@@ -4,10 +4,10 @@
 Exponential likelihood with scale given by `l(f)`.
 
 ```math
-    p(y|f) = Exponential(y | l(f))
+    p(y|f) = \\mathrm{Exponential}(y | l(f))
 ```
 """
-struct ExponentialLikelihood{Tl<:AbstractLink}
+struct ExponentialLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
