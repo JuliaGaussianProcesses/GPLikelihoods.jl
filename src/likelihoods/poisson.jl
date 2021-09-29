@@ -4,7 +4,7 @@
 Poisson likelihood with rate defined as `l(f)`.
 
 ```math
-    p(y|f) = \\mathrm{Poisson}(y | θ=l(f))
+    p(y|f) = \\operatorname{Poisson}(y | θ=l(f))
 ```
 
 This is to be used if  we assume that the uncertainity associated

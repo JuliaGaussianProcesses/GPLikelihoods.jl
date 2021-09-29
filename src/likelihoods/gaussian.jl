@@ -5,7 +5,7 @@ Gaussian likelihood with `σ²` variance. This is to be used if we assume that t
 uncertainity associated with the data follows a Gaussian distribution.
 
 ```math
-    p(y|f) = \\mathrm{Normal}(y | f, σ²)
+    p(y|f) = \\operatorname{Normal}(y | f, σ²)
 ```
 On calling, this would return a normal distribution with mean `f` and variance σ².
 """
