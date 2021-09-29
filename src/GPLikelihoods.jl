@@ -30,6 +30,7 @@ export Link,
 include("links.jl")
 
 # Likelihoods
+abstract type AbstractLikelihood end
 include("likelihoods/bernoulli.jl")
 include("likelihoods/categorical.jl")
 include("likelihoods/gaussian.jl")
