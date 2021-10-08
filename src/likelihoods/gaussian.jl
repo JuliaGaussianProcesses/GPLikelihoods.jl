@@ -24,7 +24,7 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, first(l.σ²) * I)
 
 """
-    HeteroscedasticGaussianLikelihood(l::AbstractLink=ExpLink())
+    HeteroscedasticGaussianLikelihood(l=exp)
 
 Heteroscedastic Gaussian likelihood. 
 This is a Gaussian likelihood whose mean and variance are functions of
@@ -40,7 +40,10 @@ struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-HeteroscedasticGaussianLikelihood() = HeteroscedasticGaussianLikelihood(ExpLink())
+HeteroscedasticGaussianLikelihood(l=exp) = HeteroscedasticGaussianLikelihood(Link(l))
+function HeteroscedasticGaussianLikelihood(l::AbstractLink)
+    return HeteroscedasticGaussianLikelihood{typeof(l)}(l)
+end
 
 function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
     return Normal(f[1], sqrt(l.invlink(f[2])))
