@@ -7,9 +7,8 @@ using Distributions
 using StatsFuns
 
 @testset "GPLikelihoods.jl" begin
-
     include("test_utils.jl")
-    include("links.jl")    
+    include("links.jl")
     @testset "likelihoods" begin
         include("likelihoods/bernoulli.jl")
         include("likelihoods/categorical.jl")
@@ -18,5 +17,4 @@ using StatsFuns
         include("likelihoods/gamma.jl")
         include("likelihoods/exponential.jl")
     end
-
 end

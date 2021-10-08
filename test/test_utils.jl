@@ -1,5 +1,5 @@
 function test_interface(
-    rng::AbstractRNG, lik, k::Kernel, x::AbstractVector; functor_args=(),
+    rng::AbstractRNG, lik, k::Kernel, x::AbstractVector; functor_args=()
 )
     gp = GP(k)
     lgp = LatentGP(gp, lik, 1e-5)
@@ -14,12 +14,12 @@ function test_interface(
     if x isa MOInput
         # TODO: replace with mo_inverse_transform
         N = length(x.x)
-        y = [y[[i + j*N for j in 0:(x.out_dim - 1)]] for i in 1:N]
+        y = [y[[i + j * N for j in 0:(x.out_dim - 1)]] for i in 1:N]
     end
 
     # Check if the likelihood samples are of correct length
     @test length(rand(rng, lik(y))) == N
-    
+
     # Check if functor works properly
     xs, re = Functors.functor(lik)
     @test lik == re(xs)
@@ -28,8 +28,8 @@ function test_interface(
     else
         @test keys(xs) == functor_args
     end
-    
-    return
+
+    return nothing
 end
 
 """
@@ -46,11 +46,6 @@ samples is correct and if the functor works as intended.
 - `functor_args=()`: a collection of symbols of arguments to match functor parameters with.
 ...
 """
-function test_interface(
-    lik,
-    k::KernelFunctions.Kernel,
-    x::AbstractVector;
-    kwargs...
-)
-    test_interface(Random.GLOBAL_RNG, lik, k, x; kwargs...)
+function test_interface(lik, k::KernelFunctions.Kernel, x::AbstractVector; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, lik, k, x; kwargs...)
 end
