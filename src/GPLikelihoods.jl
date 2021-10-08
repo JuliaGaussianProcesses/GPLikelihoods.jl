@@ -26,6 +26,9 @@ export Link,
     NormalCDFLink,
     SoftMaxLink
 
+# Inverses
+include("inverse.jl")
+
 # Links
 include("links.jl")
 

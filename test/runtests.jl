@@ -8,6 +8,7 @@ using StatsFuns
 
 @testset "GPLikelihoods.jl" begin
     include("test_utils.jl")
+    include("inverse.jl")
     include("links.jl")
     @testset "likelihoods" begin
         include("likelihoods/bernoulli.jl")
