@@ -1,6 +1,6 @@
 @testset "PoissonLikelihood" begin
     for args in ((), (exp,), (ExpLink(),))
-        @test PoissonLikelihood(args...) isa PoissonLikelhood{ExpLink}
+        @test PoissonLikelihood(args...) isa PoissonLikelihood{ExpLink}
     end
 
     for lik in (PoissonLikelihood(), PoissonLikelihood(log1pexp))
