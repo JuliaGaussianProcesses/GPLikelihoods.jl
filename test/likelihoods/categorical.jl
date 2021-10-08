@@ -1,4 +1,8 @@
 @testset "CategoricalLikelihood" begin
+    for args in ((), (softmax,), (SoftMaxLink(),))
+        @test CategoricalLikelihood(args...) isa CategoricalLikelihood{SoftMaxLink}
+    end
+
     lik = CategoricalLikelihood()
     IN_DIM = 3
     OUT_DIM = 4
