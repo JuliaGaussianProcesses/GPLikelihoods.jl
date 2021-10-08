@@ -1,5 +1,5 @@
 """
-    GammaLikelihood(α::Real=1.0, l::AbstractLink=ExpLink())
+    GammaLikelihood(α::Real=1.0, l=exp)
 
 Gamma likelihood with fixed shape `α`.
 
@@ -13,9 +13,9 @@ struct GammaLikelihood{T<:Real,Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-GammaLikelihood() = GammaLikelihood(1.0)
-
-GammaLikelihood(α::Real) = GammaLikelihood(α, ExpLink())
+GammaLikelihood(l) = GammaLikelihood(1.0, l)
+GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, Link(l))
+GammaLikelihood(α::Real, l::AbstractLink) = GammaLikelihood{typeof(α),typeof(l)}(α, l)
 
 @functor GammaLikelihood
 
