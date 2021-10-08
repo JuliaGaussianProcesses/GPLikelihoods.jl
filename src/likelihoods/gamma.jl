@@ -15,7 +15,6 @@ end
 
 GammaLikelihood(l) = GammaLikelihood(1.0, l)
 GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, Link(l))
-GammaLikelihood(α::Real, l::AbstractLink) = GammaLikelihood{typeof(α),typeof(l)}(α, l)
 
 @functor GammaLikelihood
 

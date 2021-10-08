@@ -15,9 +15,6 @@ struct PoissonLikelihood{L<:AbstractLink} <: AbstractLikelihood
 end
 
 PoissonLikelihood(l=exp) = PoissonLikelihood(Link(l))
-function PoissonLikelihood(l::AbstractLink)
-    return PoissonLikelihood{typeof(l)}(l)
-end
 
 (l::PoissonLikelihood)(f::Real) = Poisson(l.invlink(f))
 
