@@ -18,7 +18,7 @@
     @test l(x) == exp(x)
     @test inv(l) == LogLink()
     @test inv(inv(l)) == l
-    
+
     # Sqrt
     l = SqrtLink()
     @test l(x) == sqrt(x)
@@ -58,5 +58,4 @@
     # SoftMax
     l = SoftMaxLink()
     @test l(xs) == softmax(xs)
-
 end
