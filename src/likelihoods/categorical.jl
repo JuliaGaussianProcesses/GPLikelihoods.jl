@@ -1,5 +1,5 @@
 """
-    CategoricalLikelihood(l::AbstractLink=SoftMaxLink())
+    CategoricalLikelihood(l=softmax)
 
 Categorical likelihood is to be used if we assume that the 
 uncertainity associated with the data follows a Categorical distribution.
@@ -13,7 +13,8 @@ struct CategoricalLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-CategoricalLikelihood() = CategoricalLikelihood(SoftMaxLink())
+CategoricalLikelihood(l=softmax) = CategoricalLikelihood(Link(l))
+CategoricalLikelihood(l::AbstractLink) = CategoricalLikelihood{typeof(l)}(l)
 
 (l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
 
