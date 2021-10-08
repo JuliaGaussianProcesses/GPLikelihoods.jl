@@ -1,5 +1,5 @@
 """
-    BernoulliLikelihood(l::AbstractLink=LogisticLink())
+    BernoulliLikelihood(l=logistic())
 
 Bernoulli likelihood is to be used if we assume that the 
 uncertainity associated with the data follows a Bernoulli distribution.
@@ -14,7 +14,8 @@ struct BernoulliLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-BernoulliLikelihood() = BernoulliLikelihood(LogisticLink())
+BernoulliLikelihood(l=logistic) = BernoulliLikelihood(Link(l))
+BernoulliLikelihood(l::AbstractLink) = BernoulliLikelihood{typeof(l)}(l)
 
 (l::BernoulliLikelihood)(f::Real) = Bernoulli(l.invlink(f))
 
