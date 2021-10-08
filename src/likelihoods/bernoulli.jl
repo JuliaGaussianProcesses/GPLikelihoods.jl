@@ -1,5 +1,5 @@
 """
-    BernoulliLikelihood(l=logistic())
+    BernoulliLikelihood(l=logistic)
 
 Bernoulli likelihood is to be used if we assume that the 
 uncertainity associated with the data follows a Bernoulli distribution.
