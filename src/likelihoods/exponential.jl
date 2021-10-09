@@ -1,5 +1,5 @@
 """
-    ExponentialLikelihood(l::AbstractLink=ExpLink())
+    ExponentialLikelihood(l=exp)
 
 Exponential likelihood with scale given by `l(f)`.
 
@@ -11,7 +11,7 @@ struct ExponentialLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-ExponentialLikelihood() = ExponentialLikelihood(ExpLink())
+ExponentialLikelihood(l=exp) = ExponentialLikelihood(Link(l))
 
 (l::ExponentialLikelihood)(f::Real) = Exponential(l.invlink(f))
 

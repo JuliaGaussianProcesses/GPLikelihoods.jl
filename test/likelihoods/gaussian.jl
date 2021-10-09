@@ -4,6 +4,11 @@
 end
 
 @testset "HeteroscedasticGaussianLikelihood" begin
+    for args in ((), (exp,), (ExpLink(),))
+        lik = HeteroscedasticGaussianLikelihood(args...)
+        @test lik isa HeteroscedasticGaussianLikelihood{ExpLink}
+    end
+
     lik = HeteroscedasticGaussianLikelihood()
     IN_DIM = 3
     OUT_DIM = 2 # one for the mean the other for the log-standard deviation

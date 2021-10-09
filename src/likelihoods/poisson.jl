@@ -1,5 +1,5 @@
 """
-    PoissonLikelihood(l::AbstractLink=ExpLink())
+    PoissonLikelihood(l=exp)
 
 Poisson likelihood with rate defined as `l(f)`.
 
@@ -14,7 +14,7 @@ struct PoissonLikelihood{L<:AbstractLink} <: AbstractLikelihood
     invlink::L
 end
 
-PoissonLikelihood() = PoissonLikelihood(ExpLink())
+PoissonLikelihood(l=exp) = PoissonLikelihood(Link(l))
 
 (l::PoissonLikelihood)(f::Real) = Poisson(l.invlink(f))
 

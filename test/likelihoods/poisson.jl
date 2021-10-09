@@ -1,4 +1,9 @@
 @testset "PoissonLikelihood" begin
-    lik = PoissonLikelihood()
-    test_interface(lik, SqExponentialKernel(), rand(10))
+    for args in ((), (exp,), (ExpLink(),))
+        @test PoissonLikelihood(args...) isa PoissonLikelihood{ExpLink}
+    end
+
+    for lik in (PoissonLikelihood(), PoissonLikelihood(log1pexp))
+        test_interface(lik, SqExponentialKernel(), rand(10))
+    end
 end
