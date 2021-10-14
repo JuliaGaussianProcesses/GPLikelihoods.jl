@@ -5,11 +5,11 @@ Gaussian likelihood with `σ²` variance. This is to be used if we assume that t
 uncertainity associated with the data follows a Gaussian distribution.
 
 ```math
-    p(y|f) = Normal(y | f, σ²)
+    p(y|f) = \\operatorname{Normal}(y | f, σ²)
 ```
 On calling, this would return a normal distribution with mean `f` and variance σ².
 """
-struct GaussianLikelihood{T<:Real}
+struct GaussianLikelihood{T<:Real} <: AbstractLikelihood
     σ²::Vector{T}
 end
 
@@ -24,23 +24,23 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, first(l.σ²) * I)
 
 """
-    HeteroscedasticGaussianLikelihood(l::AbstractLink=ExpLink())
+    HeteroscedasticGaussianLikelihood(l=exp)
 
 Heteroscedastic Gaussian likelihood. 
 This is a Gaussian likelihood whose mean and variance are functions of
 latent processes.
 
 ```math
-    p(y|[f, g]) = Normal(y | f, sqrt(l(g)))
+    p(y|[f, g]) = \\operatorname{Normal}(y | f, sqrt(l(g)))
 ```
 On calling, this would return a normal distribution with mean `f` and variance `l(g)`.
 Where `l` is link going from R to R^+
 """
-struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink}
+struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-HeteroscedasticGaussianLikelihood() = HeteroscedasticGaussianLikelihood(ExpLink())
+HeteroscedasticGaussianLikelihood(l=exp) = HeteroscedasticGaussianLikelihood(Link(l))
 
 function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
     return Normal(f[1], sqrt(l.invlink(f[2])))
