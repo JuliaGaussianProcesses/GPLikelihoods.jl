@@ -5,26 +5,18 @@ with Gaussian Processes.
 The API is very basic, every `AbstractLikelihood` object is functor taking a 
 scalar/vector `f` and returns a `Distribution` from `Distributions.jl`. 
 
-```@jldoctest
+```@example
     f = 2.0
     GaussianLikelihood()(f) == Normal(2.0)
-
-    # output
-
-    true
 ```
 
 Since the parameter domain of a lot of distributions is more restricted to the real
 domain, for example the parameter of a `Bernoulli` distribution, most `AbstractLikelihood`
 contain a `invlink` field which will map the latent variable to the right domain.
 
-```@jldoctest
+```@example
     f = 2.0
     BernoulliLikelihood(Link(logistic))(2.0) == Bernoulli(logistic(2.0))
-
-    # output
-
-    true
 ```
 
 [`Link`](@ref)s can be created using the constructor `Link(::Function)`.
