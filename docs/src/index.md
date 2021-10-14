@@ -16,7 +16,7 @@ contain a `invlink` field which will map the latent variable to the right domain
 
 ```@example
     f = 2.0
-    BernoulliLikelihood(Link(logistic))(2.0) == Bernoulli(logistic(2.0))
+    BernoulliLikelihood(logistic)(f) == Bernoulli(logistic(2.0))
 ```
 
-[`Link`](@ref)s can be created using the constructor `Link(::Function)`.
+[`Link`](@ref)s can be created using the constructor `Link(l)` where `l` is a function or a functor.
