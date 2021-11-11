@@ -2,6 +2,7 @@ module GPLikelihoods
 
 using Distributions
 using Functors
+using InverseFunctions: InverseFunctions
 using LinearAlgebra
 using Random
 using StatsFuns
@@ -25,9 +26,6 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
-
-# Inverses
-include("inverse.jl")
 
 # Links
 include("links.jl")
