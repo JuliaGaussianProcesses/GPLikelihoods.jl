@@ -14,6 +14,6 @@ StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 [compat]
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
 Functors = "0.1, 0.2"
-InverseFunctions = "0.1"
+InverseFunctions = "0.1.2"
 StatsFuns = "0.9.13"
 julia = "1.3"
