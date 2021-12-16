@@ -1,5 +1,5 @@
 using GPLikelihoods
-using GPLikelihoods.TestInterface
+using GPLikelihoods.TestInterface: test_interface
 using AbstractGPs
 using Test
 using Random

@@ -1,8 +1,7 @@
 module TestInterface
 
 using Random
-
-export test_inferface
+using Test
 
 function test_interface(
 rng::AbstractRNG, lik, kernel, x::AbstractVector; functor_args=()
@@ -59,7 +58,7 @@ samples is correct and if the functor works as intended.
 ...
 """
 function test_interface(lik, kernel, x::AbstractVector; kwargs...)
-    return test_interface(Random.GLOBAL_RNG, lik, k, x; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, lik, kernel, x; kwargs...)
 end
 
 
