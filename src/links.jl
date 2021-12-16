@@ -25,7 +25,7 @@ end
 
 (l::Link)(x) = l.f(x)
 
-Base.inv(l::Link) = Link(inverse(l.f))
+Base.inv(l::Link) = Link(InverseFunctions.inverse(l.f))
 
 # alias
 const LogLink = Link{typeof(log)}
@@ -34,7 +34,7 @@ const ExpLink = Link{typeof(exp)}
 const InvLink = Link{typeof(inv)}
 
 const SqrtLink = Link{typeof(sqrt)}
-const SquareLink = Link{typeof(square)}
+const SquareLink = Link{typeof(InverseFunctions.square)}
 
 const LogitLink = Link{typeof(logit)}
 const LogisticLink = Link{typeof(logistic)}
@@ -77,7 +77,7 @@ SqrtLink() = Link(sqrt)
 
 `^2` link, f:ℝ->ℝ⁺∪{0}. Its inverse is the [`SqrtLink`](@ref).
 """
-SquareLink() = Link(square)
+SquareLink() = Link(InverseFunctions.square)
 
 """
     LogitLink()
