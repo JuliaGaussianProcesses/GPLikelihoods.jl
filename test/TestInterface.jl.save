@@ -4,11 +4,14 @@ using Random
 using Test
 
 function test_interface(
-rng::AbstractRNG, lik, D_in=1; functor_args=()
+rng::AbstractRNG, lik, x::AbstractVector; functor_args=()
 )
+gp = GP(kernel)
+lgp = LatentGP(gp, lik, 1e-5)
+lfgp = lgp(x)
 
 # Check if likelihood produces a distribution
-@test lik(rand(rng, )) isa Distribution
+@test lik(rand(rng, lfgp.fx)) isa Distribution
 
 N = length(x)
 y = rand(rng, lfgp.fx)
