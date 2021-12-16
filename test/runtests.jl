@@ -1,4 +1,5 @@
 using GPLikelihoods
+using GPLikelihoods.TestInterface
 using AbstractGPs
 using Test
 using Random
@@ -7,7 +8,6 @@ using Distributions
 using StatsFuns
 
 @testset "GPLikelihoods.jl" begin
-    include("test_utils.jl")
     include("links.jl")
     @testset "likelihoods" begin
         include("likelihoods/bernoulli.jl")
