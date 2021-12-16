@@ -4,5 +4,5 @@
     end
 
     lik = ExponentialLikelihood()
-    test_interface(lik, SqExponentialKernel(), rand(10))
+    test_interface(lik, Exponential)
 end

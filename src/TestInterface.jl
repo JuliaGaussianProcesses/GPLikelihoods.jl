@@ -1,62 +1,60 @@
 module TestInterface
 
+using Functors
 using Random
 using Test
 
-function test_interface(
-rng::AbstractRNG, lik, D_in=1; functor_args=()
-)
+function test_interface(rng::AbstractRNG, lik, out_dist, D_in=1; functor_args=())
+    N = 10
+    T = Float64 # TODO test Float32 as well
+    f, fs = if D_in == 1
+        f = randn(rng, T)
+        fs = randn(rng, T, 10)
+        f, fs
+    else
+        f = randn(rng, T, D_in)
+        fs = [randn(rng, T, D_in) for _ in 1:N]
+        f, fs
+    end
+    # Check if likelihood produces the correct distribution
+    # and is sampleable
+    @test lik(f) isa out_dist
+    @test_nowarn rand(rng, lik(f))
 
-# Check if likelihood produces a distribution
-@test lik(rand(rng, )) isa Distribution
+    # Check if the likelihood samples are of correct length
+    @test length(rand(rng, lik(fs))) == N
 
-N = length(x)
-y = rand(rng, lfgp.fx)
+    # Check if functor works properly
+    xs, re = Functors.functor(lik)
+    @test lik == re(xs)
+    if isempty(functor_args)
+        @test xs === ()
+    else
+        @test keys(xs) == functor_args
+    end
 
-if x isa MOInput
-    # TODO: replace with mo_inverse_transform
-    N = length(x.x)
-    y = [y[[i + j * N for j in 0:(x.out_dim - 1)]] for i in 1:N]
-end
-
-# Check if the likelihood samples are of correct length
-@test length(rand(rng, lik(y))) == N
-
-# Check if functor works properly
-xs, re = Functors.functor(lik)
-@test lik == re(xs)
-if isempty(functor_args)
-    @test xs === ()
-else
-    @test keys(xs) == functor_args
-end
-
-return nothing
+    return nothing
 end
 
 @doc raw"""
-    test_interface([rng::AbstractRNG,] lik, k::Kernel, x::AbstractVector; functor_args=())
-
-!!! warning
-
-    KernelFunctions.jl and AbstractGPs.jl need to be loaded in the current workspace
-    to run this function.
+    test_interface([rng::AbstractRNG,] lik, out_dist; functor_args=())
 
 This function provides unified method to check the interface of the various likelihoods 
-defined. It checks if the likelihood produces a distribution, length of likelihood 
+defined. It checks if the likelihood produces the correct distribution, length of likelihood 
 samples is correct and if the functor works as intended.
 
 ...
-# Arguments
+## Arguments
 - `lik`: the likelihood to test the interface of
-- `k::Kernel`: the kernel to use for the GP
-- `x::AbstractVector`: inputs to compute the likelihood on
+- `out_dist::Type{<:Distribution}`: the type of distribution the likelihood should return
+- `D_in::Int=1` : The input dimension of the likelihood
+
+## Keyword arguments
 - `functor_args=()`: a collection of symbols of arguments to match functor parameters with.
 ...
 """
-function test_interface(lik, kernel, x::AbstractVector; kwargs...)
-    return test_interface(Random.GLOBAL_RNG, lik, kernel, x; kwargs...)
+function test_interface(lik, out_dist, D_in=1; kwargs...)
+    return test_interface(Random.GLOBAL_RNG, lik, out_dist, D_in; kwargs...)
 end
-
 
 end

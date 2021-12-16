@@ -4,5 +4,5 @@
     end
 
     lik = BernoulliLikelihood()
-    test_interface(lik)
+    test_interface(lik, Bernoulli)
 end
