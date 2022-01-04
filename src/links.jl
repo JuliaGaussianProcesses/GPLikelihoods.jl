@@ -8,6 +8,11 @@ A series of definitions are given in http://web.pdx.edu/~newsomj/mvclass/ho_link
 """
 abstract type AbstractLink end
 
+"""
+	ChainLink(links)
+	
+Create a composed chain of different links.
+"""
 struct ChainLink{Tls} <: AbstractLink
     links::Tls
 end
