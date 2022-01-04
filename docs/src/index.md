@@ -3,15 +3,34 @@ CurrentModule = GPLikelihoods
 ```
 # GPLikelihoods
 
-[`GPLikelihoods.jl`](https://github.com/JuliaGaussianProcesses/GPLikelihoods.jl) provides a practical interface to connect non-conjugate likelihoods
-with Gaussian Processes.
+[`GPLikelihoods.jl`](https://github.com/JuliaGaussianProcesses/GPLikelihoods.jl) provides a practical interface to connect Gaussian and non-conjugate likelihoods
+to Gaussian Processes.
 The API is very basic: Every `AbstractLikelihood` object is a [functor](https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1)
-that takes the output of a Gaussian process as input and returns a 
-`Distribution` from [`Distributions.jl`](https://github.com/JuliaStats/Distributions.jl). 
+taking a `Real` or an `AbstractVector` as an input and returns a 
+`Distribution` from [`Distributions.jl`](https://github.com/JuliaStats/Distributions.jl).
 
+### Single-latent vs multi-latent likelihoods
+
+Most likelihoods, like the [`GaussianLikelihood`](@ref), only require one latent Gaussian process.
+Passing a `Real` will therefore return a [`UnivariateDistribution`](https://juliastats.org/Distributions.jl/latest/univariate/),
+and passing an `AbstractVector{<:Real}` will return a [multivariate product of distributions](https://juliastats.org/Distributions.jl/latest/multivariate/#Product-distributions).
 ```@repl
 f = 2.0;
 GaussianLikelihood()(f) == Normal(2.0)
+fs = [2.0, 3.0, 1.5]
+GaussianLikelihood()(fs) == Product([Normal(2.0), Normal(3.0), Normal(1.5)])
+```
+
+Some likelihoods, like the [`CategoricalLikelihood`](@ref), requires multiple latent Gaussian processes,
+and an `AbstractVector{<:Real}` needs to be passed.
+To obtain a product of distributions an `AbstractVector{<:AbstractVector{<:Real}}` has to be passed (we recommend
+using [`ColVecs` and `RowVecs` from KernelFunctions.jl](https://juliagaussianprocesses.github.io/KernelFunctions.jl/stable/api/#Vector-Valued-Inputs)
+if you need to transform an `AbstractMatrix`).
+```@repl
+fs = [2.0, 3.0, 4.5];
+CategoricalLikelihood()(fs) isa Categorical
+Fs = [rand(3) for _ in 1:4] 
+CategoricalLikelihood()(Fs) isa Product{<:Any,<:Categorical}
 ```
 
 ### Constrained parameters
