@@ -4,6 +4,6 @@
     end
 
     for lik in (PoissonLikelihood(), PoissonLikelihood(log1pexp))
-        test_interface(lik, SqExponentialKernel(), rand(10))
+        test_interface(lik, Poisson)
     end
 end
