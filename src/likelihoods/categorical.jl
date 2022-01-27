@@ -1,5 +1,5 @@
 """
-    CategoricalLikelihood(l=softmax, bijective=true)::CategoricalLikelihood{bijective,typeof(Link(k))}
+    CategoricalLikelihood(l=softmax; bijective::Union{Bool,Val{false},Val{true}}=Val(true))
 
 Categorical likelihood is to be used if we assume that the 
 uncertainty associated with the data follows a [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution) with `n` categories.
@@ -7,8 +7,9 @@ uncertainty associated with the data follows a [Categorical distribution](https:
     p(y|f_1, f_2, \\dots, f_{n-1}) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_{n-1}, 0))
     p(y|f_1, f_2, \\dots, f_n) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_n))
 ```
-Two variants are possible:
-## `bijective=true`
+Two variants are possible (you can use a `Bool` or `Val{true}`/`Val{false}` but
+we recommend the latter for type stability).
+## `bijective=true/Val{true}`
 Given an `AbstractVector` ``[f_1, f_2, ..., f_{n-1}]``, returns a `Categorical` distribution,
 with probabilities given by ``l(f_1, f_2, ..., f_{n-1}, 0)``.
 It is used by default.
@@ -23,14 +24,16 @@ where it corresponds to Variant 1 and 2.
 """
 struct CategoricalLikelihood{Tb,Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
-    CategoricalLikelihood{Tb}(invlink::Tl) where {Tb,Tl} = new{Tb,Tl}(invlink)
+    CategoricalLikelihood{Tb}(invlink) where {Tb} = CategoricalLikelihood{Tb}(Link(invlink))
+    CategoricalLikelihood{Tb}(invlink::Tl) where {Tb,Tl<:AbstractLink} = new{Tb,Tl}(invlink)
 end
 
-function CategoricalLikelihood(l=softmax, bijective=true)
-    return CategoricalLikelihood{bijective}(Link(l))
+function CategoricalLikelihood(l=softmax; bijective::Union{Bool,Val{true},Val{false}}=Val(true))
+    CategoricalLikelihood{bijective_typeparameter(bijective)}(l)
 end
 
-CategoricalLikelihood(l::AbstractLink, bijective=true) = CategoricalLikelihood{bijective}(l)
+bijective_typeparameter(bijective::Bool) = bijective
+bijective_typeparameter(::Val{T}) = T
 
 function (l::CategoricalLikelihood{true})(f::AbstractVector{<:Real})
     return Categorical(l.invlink(vcat(f, 0)))
