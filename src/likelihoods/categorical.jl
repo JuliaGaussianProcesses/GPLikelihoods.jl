@@ -26,12 +26,12 @@ A lot of standard results for exponential families do not apply.
 For more explanations, see this [Wikipedia link](https://en.wikipedia.org/wiki/Exponential_family#Table_of_distributions) at the end of the section.
 Use with caution!
 """
-struct CategoricalLikelihood{Tl<:AbstractLink,Tv} <: AbstractLikelihood
+struct CategoricalLikelihood{Tv,Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
-    variant::Tv
+    CategoricalLikelihood{Tv}(invlink::Tl) where {Tv,Tl} = new{Tv,Tl}(invlink)
 end
 
-CategoricalLikelihood(l=softmax, variant=SimplexVariant()) = CategoricalLikelihood(Link(l), variant)
+CategoricalLikelihood(l=softmax, variant=SimplexVariant()) = CategoricalLikelihood{typeof(variant)}(Link(l))
 
 (l::CategoricalLikelihood{<:AbstractLink,SimplexVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
 (l::CategoricalLikelihood{<:AbstractLink,CurvedVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(f))
