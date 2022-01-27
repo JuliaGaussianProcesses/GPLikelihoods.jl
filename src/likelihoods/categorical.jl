@@ -28,8 +28,10 @@ struct CategoricalLikelihood{Tb,Tl<:AbstractLink} <: AbstractLikelihood
     CategoricalLikelihood{Tb}(invlink::Tl) where {Tb,Tl<:AbstractLink} = new{Tb,Tl}(invlink)
 end
 
-function CategoricalLikelihood(l=softmax; bijective::Union{Bool,Val{true},Val{false}}=Val(true))
-    CategoricalLikelihood{bijective_typeparameter(bijective)}(l)
+function CategoricalLikelihood(
+    l=softmax; bijective::Union{Bool,Val{true},Val{false}}=Val(true)
+)
+    return CategoricalLikelihood{bijective_typeparameter(bijective)}(l)
 end
 
 bijective_typeparameter(bijective::Bool) = bijective

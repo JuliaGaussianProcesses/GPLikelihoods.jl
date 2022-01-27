@@ -6,9 +6,9 @@
     @test CategoricalLikelihood(SoftMaxLink()) isa Catbij
     @test CategoricalLikelihood(softmax; bijective=true) isa Catbij
     @test CategoricalLikelihood(SoftMaxLink(); bijective=true) isa Catbij
-    
+
     Catnonbij = CategoricalLikelihood{false,SoftMaxLink}
-    @test CategoricalLikelihood(;bijective=false) isa Catnonbij
+    @test CategoricalLikelihood(; bijective=false) isa Catnonbij
     @test CategoricalLikelihood(softmax; bijective=false) isa Catnonbij
     @test CategoricalLikelihood(SoftMaxLink(); bijective=false) isa Catnonbij
     @test CategoricalLikelihood(softmax; bijective=Val(false)) isa Catnonbij
