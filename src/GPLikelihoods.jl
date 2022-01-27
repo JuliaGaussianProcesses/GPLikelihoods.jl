@@ -14,6 +14,8 @@ export BernoulliLikelihood,
     PoissonLikelihood,
     ExponentialLikelihood,
     GammaLikelihood
+export SimplexVariant,
+    CurvedVariant
 export Link,
     ChainLink,
     ExpLink,
