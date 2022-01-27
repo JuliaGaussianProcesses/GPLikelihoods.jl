@@ -17,6 +17,6 @@
     lik_bijective = CategoricalLikelihood()
     OUT_DIM = 4
     test_interface(lik_bijective, Categorical, OUT_DIM)
-    lik_nonbijective = CategoricalLikelihood(softmax, false)
+    lik_nonbijective = CategoricalLikelihood(softmax; bijective=Val(false))
     test_interface(lik_nonbijective, Categorical, OUT_DIM)
 end
