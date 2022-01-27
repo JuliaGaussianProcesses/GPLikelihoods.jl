@@ -30,6 +30,8 @@ function CategoricalLikelihood(l=softmax, bijective=true)
     return CategoricalLikelihood{bijective}(Link(l))
 end
 
+CategoricalLikelihood(l::AbstractLink, bijective=true) = CategoricalLikelihood{bijective}(l)
+
 function (l::CategoricalLikelihood{true})(f::AbstractVector{<:Real})
     return Categorical(l.invlink(vcat(f, 0)))
 end
