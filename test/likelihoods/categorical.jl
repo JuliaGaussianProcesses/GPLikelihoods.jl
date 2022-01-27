@@ -1,14 +1,14 @@
 @testset "CategoricalLikelihood" begin
-    for args in ((), (softmax,), (SoftMaxLink(),))
+    for args in ((), (softmax,), (softmax, true), (SoftMaxLink(),))
         @test CategoricalLikelihood(args...) isa
-            CategoricalLikelihood{SimplexVariant,SoftMaxLink}
+            CategoricalLikelihood{true,SoftMaxLink}
     end
-    @test CategoricalLikelihood(softmax, CurvedVariant()) isa
-        CategoricalLikelihood{CurvedVariant,SoftMaxLink}
+    @test CategoricalLikelihood(softmax, false) isa
+        CategoricalLikelihood{false,SoftMaxLink}
 
-    lik_simplex = CategoricalLikelihood()
+    lik_bijective = CategoricalLikelihood()
     OUT_DIM = 4
-    test_interface(lik, Categorical, OUT_DIM)
-    lik_curved = CategoricalLikelihood(softmax, CurvedVariant())
-    test_interface(lik, Categorical, OUT_DIM)
+    test_interface(lik_bijective, Categorical, OUT_DIM)
+    lik_nonbijective = CategoricalLikelihood(softmax, false)
+    test_interface(lik_nonbijective, Categorical, OUT_DIM)
 end
