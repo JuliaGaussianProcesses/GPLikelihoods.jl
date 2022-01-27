@@ -35,7 +35,7 @@ function CategoricalLikelihood(
 end
 
 bijective_typeparameter(bijective::Bool) = bijective
-bijective_typeparameter(::Val{T}) = T
+bijective_typeparameter(::Val{T}) where {T} = T
 
 function (l::CategoricalLikelihood{true})(f::AbstractVector{<:Real})
     return Categorical(l.invlink(vcat(f, 0)))
