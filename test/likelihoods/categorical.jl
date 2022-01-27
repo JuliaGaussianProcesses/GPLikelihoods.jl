@@ -1,10 +1,8 @@
 @testset "CategoricalLikelihood" begin
     for args in ((), (softmax,), (softmax, true), (SoftMaxLink(),))
-        @test CategoricalLikelihood(args...) isa
-            CategoricalLikelihood{true,SoftMaxLink}
+        @test CategoricalLikelihood(args...) isa CategoricalLikelihood{true,SoftMaxLink}
     end
-    @test CategoricalLikelihood(softmax, false) isa
-        CategoricalLikelihood{false,SoftMaxLink}
+    @test CategoricalLikelihood(softmax, false) isa CategoricalLikelihood{false,SoftMaxLink}
 
     lik_bijective = CategoricalLikelihood()
     OUT_DIM = 4
