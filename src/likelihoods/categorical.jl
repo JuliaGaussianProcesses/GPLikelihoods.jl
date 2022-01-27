@@ -31,10 +31,16 @@ struct CategoricalLikelihood{Tv,Tl<:AbstractLink} <: AbstractLikelihood
     CategoricalLikelihood{Tv}(invlink::Tl) where {Tv,Tl} = new{Tv,Tl}(invlink)
 end
 
-CategoricalLikelihood(l=softmax, variant=SimplexVariant()) = CategoricalLikelihood{typeof(variant)}(Link(l))
+function CategoricalLikelihood(l=softmax, variant=SimplexVariant())
+    return CategoricalLikelihood{typeof(variant)}(Link(l))
+end
 
-(l::CategoricalLikelihood{SimplexVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
-(l::CategoricalLikelihood{CurvedVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(f))
+function (l::CategoricalLikelihood{SimplexVariant})(f::AbstractVector{<:Real})
+    return Categorical(l.invlink(vcat(f, 0)))
+end
+function (l::CategoricalLikelihood{CurvedVariant})(f::AbstractVector{<:Real})
+    return Categorical(l.invlink(f))
+end
 
 function (l::CategoricalLikelihood{SimplexVariant})(fs::AbstractVector)
     return Product(Categorical.(l.invlink.(vcat.(fs, 0))))
