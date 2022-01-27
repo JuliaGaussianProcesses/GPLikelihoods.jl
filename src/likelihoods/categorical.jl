@@ -33,12 +33,12 @@ end
 
 CategoricalLikelihood(l=softmax, variant=SimplexVariant()) = CategoricalLikelihood{typeof(variant)}(Link(l))
 
-(l::CategoricalLikelihood{<:AbstractLink,SimplexVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
-(l::CategoricalLikelihood{<:AbstractLink,CurvedVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(f))
+(l::CategoricalLikelihood{SimplexVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
+(l::CategoricalLikelihood{CurvedVariant})(f::AbstractVector{<:Real}) = Categorical(l.invlink(f))
 
-function (l::CategoricalLikelihood{<:AbstractLink,SimplexVariant})(fs::AbstractVector)
+function (l::CategoricalLikelihood{SimplexVariant})(fs::AbstractVector)
     return Product(Categorical.(l.invlink.(vcat.(fs, 0))))
 end
-function (l::CategoricalLikelihood{<:AbstractLink,CurvedVariant})(fs::AbstractVector)
+function (l::CategoricalLikelihood{CurvedVariant})(fs::AbstractVector)
     return Product(Categorical.(l.invlink.(fs)))
 end
