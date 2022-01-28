@@ -13,7 +13,7 @@ struct CategoricalLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-CategoricalLikelihood(l=softmax) = CategoricalLikelihood(Link(l))
+CategoricalLikelihood(l=softmax) = CategoricalLikelihood(link(l))
 
 (l::CategoricalLikelihood)(f::AbstractVector{<:Real}) = Categorical(l.invlink(vcat(f, 0)))
 

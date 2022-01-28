@@ -4,8 +4,11 @@
 
     # Generic link
     f = sin
-    l = Link(f)
+    l = GPLikelihoods.link(f)
+    @test l == Link(f)
     @test l(x) == f(x)
+    l = GPLikelihoods.link(ExpLink())
+    @test l == ExpLink()
 
     # Log
     l = LogLink()
