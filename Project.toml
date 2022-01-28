@@ -1,7 +1,7 @@
 name = "GPLikelihoods"
 uuid = "6031954c-0455-49d7-b3b9-3e1c99afaf40"
 authors = ["JuliaGaussianProcesses Team"]
-version = "0.2.6"
+version = "0.2.7"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
