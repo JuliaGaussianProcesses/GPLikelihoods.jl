@@ -6,7 +6,7 @@ Negative binomial likelihood with number of successes `r`.
 ```math
     p(k|f) = \\operatorname{NB}(k | r, l(f))
 ```
-On calling, this would return a binomial distribution with `r` successes and probability of success equal to `l(f)`.
+On calling, this would return a negative binomial distribution with `r` successes and probability of success equal to `l(f)`.
 Note the distinction of the role of parameter `r` to the Wikipedia definition.
 """
 struct NegBinomialLikelihood{T<:Real,Tl<:AbstractLink} <: AbstractLikelihood
