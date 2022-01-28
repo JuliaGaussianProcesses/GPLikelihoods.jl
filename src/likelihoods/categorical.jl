@@ -24,8 +24,10 @@ where it corresponds to Variant 1 and 2.
 """
 struct CategoricalLikelihood{Tb,Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
-    CategoricalLikelihood{Tb}(invlink) where {Tb} = CategoricalLikelihood{Tb}(Link(invlink))
-    CategoricalLikelihood{Tb}(invlink::Tl) where {Tb,Tl<:AbstractLink} = new{Tb,Tl}(invlink)
+    function CategoricalLikelihood{Tb}(l) where {Tb}
+        invlink = link(l)
+        new{Tb,typeof(invlink}}(invlink)
+    end
 end
 
 function CategoricalLikelihood(
