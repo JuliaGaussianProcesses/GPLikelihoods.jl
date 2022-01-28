@@ -31,25 +31,21 @@ link(l::AbstractLink) = l
 Base.inv(l::Link) = Link(InverseFunctions.inverse(l.f))
 
 """
-    SimplexBijectiveLink(link)
+    BijectiveSimplexLink(link)
 
 Wrapper to preprocess the inputs by adding a `0` at the end before passing it to 
 the link `link`.
 This is a necessary step to work with simplices.
 For example with the [`SoftMaxLink`](@ref), to obtain a `n`-simplex leading to
-`n+1` categories for the [`CategoricalLikelihood`],
+`n+1` categories for the [`CategoricalLikelihood`](@ref),
 one needs to pass `n+1` latent GP.
-However, by wrapping the link into a `SimplexBijectiveLink`, only `n` latent are needed. 
+However, by wrapping the link into a `BijectiveSimplexLink`, only `n` latent are needed. 
 """
-struct SimplexBijectiveLink{L} <: AbstractLink
+struct BijectiveSimplexLink{L} <: AbstractLink
     link::L
 end
 
-(l::SimplexBijectiveLink)(f::AbstractVector{<:Real}) = l.link(vcat(f, 0))
-
-make_bijective(l::AbstractLink, ::Val{true}) = SimplexBijectiveLink(l)
-make_bijective(l::AbstractLink, ::Val{false}) = l
-make_bijective(l::AbstractLink, bijective::Bool) = make_bijective(l, Val(bijective))
+(l::BijectiveSimplexLink)(f::AbstractVector{<:Real}) = l.link(vcat(f, 0))
 
 # alias
 const LogLink = Link{typeof(log)}
