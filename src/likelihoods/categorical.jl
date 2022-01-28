@@ -3,18 +3,23 @@
 
 Categorical likelihood is to be used if we assume that the 
 uncertainty associated with the data follows a [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution) with `n` categories.
-```math
-    p(y|f_1, f_2, \\dots, f_{n-1}) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_{n-1}, 0))
-    p(y|f_1, f_2, \\dots, f_n) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_n))
-```
+
 Two variants are possible (you can use a `Bool` or `Val{true}`/`Val{false}` but
 we recommend the latter for type stability).
 ## `bijective=true/Val{true}`
+```math
+    p(y|f_1, f_2, \\dots, f_{n-1}) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_{n-1}, 0))
+```
 Given an `AbstractVector` ``[f_1, f_2, ..., f_{n-1}]``, returns a `Categorical` distribution,
 with probabilities given by ``l(f_1, f_2, ..., f_{n-1}, 0)``.
+Under the hood, the link `l` is wrapped into a [`SimplexBijectiveLink`](@ref) which takes
+care of concatenating `0`.
 It is used by default.
 
 ## `bijective=false`
+```math
+    p(y|f_1, f_2, \\dots, f_n) = \\operatorname{Categorical}(y | l(f_1, f_2, \\dots, f_n))
+```
 Given an `AbstractVector` ``[f_1, f_2, ..., f_{n}]``, returns a `Categorical` distribution,
 with probabilities given by ``l(f_1, f_2, ..., f_{n})``.
 This variant is over-parametrized, as there are `n-1` independent parameters 
