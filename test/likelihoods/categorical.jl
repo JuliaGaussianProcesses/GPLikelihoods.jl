@@ -1,5 +1,6 @@
 @testset "CategoricalLikelihood" begin
-    @test CategoricalLikelihood() isa CategoricalLikelihood{<:GPLikelihoods.BijectiveSimplexLink}
+    @test CategoricalLikelihood() isa
+        CategoricalLikelihood{<:GPLikelihoods.BijectiveSimplexLink}
 
     @test CategoricalLikelihood(softmax) isa CategoricalLikelihood{SoftMaxLink}
     @test CategoricalLikelihood(SoftMaxLink()) isa CategoricalLikelihood{SoftMaxLink}
