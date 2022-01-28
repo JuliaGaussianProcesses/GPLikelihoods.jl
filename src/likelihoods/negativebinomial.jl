@@ -21,4 +21,6 @@ NegBinomialLikelihood(r::Real=1.0, l=logistic) = NegBinomialLikelihood(r, Link(l
 
 (l::NegBinomialLikelihood)(f::Real) = NegativeBinomial(l.r, l.invlink(f))
 
-(l::NegBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(NegativeBinomial.(l.r, l.invlink.(fs)))
+function (l::NegBinomialLikelihood)(fs::AbstractVector{<:Real}) 
+    return Product(NegativeBinomial.(l.r, l.invlink.(fs)))
+end

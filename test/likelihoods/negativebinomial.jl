@@ -1,5 +1,5 @@
 @testset "NegBinomialLikelihood" begin
-    for args in 
+    for args in
         ((), (1.0,), (logistic,), (LogisticLink(),), (1.0, logistic), (1.0, LogisticLink()))
         lik = NegBinomialLikelihood(args...)
         @test lik isa NegBinomialLikelihood{Float64,LogisticLink}
