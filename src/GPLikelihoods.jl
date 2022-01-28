@@ -14,7 +14,7 @@ export BernoulliLikelihood,
     PoissonLikelihood,
     ExponentialLikelihood,
     GammaLikelihood,
-    NegBinomialLikelihood
+    NegativeBinomialLikelihood
 export Link,
     ChainLink,
     ExpLink,
