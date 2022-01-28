@@ -89,7 +89,7 @@ LogitLink() = Link(logit)
 """
     LogisticLink()
 
-`exp(x)/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
+`1/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
 """
 LogisticLink() = Link(logistic)
 
