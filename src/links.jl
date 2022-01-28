@@ -23,6 +23,9 @@ struct Link{F} <: AbstractLink
     f::F
 end
 
+link(f) = Link(f)
+link(l::AbstractLink) = l
+
 (l::Link)(x) = l.f(x)
 
 Base.inv(l::Link) = Link(InverseFunctions.inverse(l.f))

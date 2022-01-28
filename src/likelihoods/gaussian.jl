@@ -40,7 +40,7 @@ struct HeteroscedasticGaussianLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-HeteroscedasticGaussianLikelihood(l=exp) = HeteroscedasticGaussianLikelihood(Link(l))
+HeteroscedasticGaussianLikelihood(l=exp) = HeteroscedasticGaussianLikelihood(link(l))
 
 function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
     return Normal(f[1], sqrt(l.invlink(f[2])))
