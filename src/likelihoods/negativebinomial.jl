@@ -9,7 +9,7 @@ Negative binomial likelihood with number of successes `r`.
 On calling, this would return a negative binomial distribution with `r` successes and probability of success equal to `l(f)`.
 Note the distinction of the role of parameter `r` to the Wikipedia definition.
 """
-struct NegativeBinomialLikelihood{T<:Real,Tl<:AbstractLink} <: AbstractLikelihood
+struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
     r::T    # number of failures parameter
     invlink::Tl
 end
