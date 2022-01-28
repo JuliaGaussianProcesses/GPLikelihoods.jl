@@ -15,6 +15,7 @@
     @test GPLikelihoods.make_bijective(l, Val(false)) isa SoftMaxLink
     @test GPLikelihoods.make_bijective(l, true) isa SimplexBijectiveLink{SoftMaxLink}
     @test GPLikelihoods.make_bijective(l, Val(true)) isa SimplexBijectiveLink{SoftMaxLink}
+
     # Log
     l = LogLink()
     @test l(x) == log(x)

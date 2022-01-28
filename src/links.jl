@@ -48,7 +48,6 @@ make_bijective(l::AbstractLink, ::Val{true}) = SimplexBijectiveLink(l)
 make_bijective(l::AbstractLink, ::Val{false}) = l
 make_bijective(l::AbstractLink, bijective::Bool) = make_bijective(l, Val(bijective))
 
-
 # alias
 const LogLink = Link{typeof(log)}
 const ExpLink = Link{typeof(exp)}
