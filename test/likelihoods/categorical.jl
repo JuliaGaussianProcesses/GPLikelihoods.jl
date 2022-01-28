@@ -1,5 +1,5 @@
 @testset "CategoricalLikelihood" begin
-    Catbij = CategoricalLikelihood{true,SoftMaxLink}
+    Catbij = CategoricalLikelihood{SimplexBijectiveLink{SoftMaxLink}}
     for args in ((), (softmax,), (SoftMaxLink(),)),
         kwargs in ((), (; bijective=true), (; bijective=Val(true)))
 
@@ -9,7 +9,7 @@
         end
     end
 
-    Catnonbij = CategoricalLikelihood{false,SoftMaxLink}
+    Catnonbij = CategoricalLikelihood{SoftMaxLink}
     for args in ((), (softmax,), (SoftMaxLink(),)),
         kwargs in ((; bijective=false), (; bijective=Val(false)))
 

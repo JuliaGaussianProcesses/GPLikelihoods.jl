@@ -22,31 +22,20 @@ embedded in a `n` dimensional parameter space.
 For more details, see the end of the section of this [Wikipedia link](https://en.wikipedia.org/wiki/Exponential_family#Table_of_distributions)
 where it corresponds to Variant 1 and 2.
 """
-struct CategoricalLikelihood{Tb,Tl<:AbstractLink} <: AbstractLikelihood
+struct CategoricalLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
-    CategoricalLikelihood{Tb}(invlink) where {Tb} = CategoricalLikelihood{Tb}(Link(invlink))
-    CategoricalLikelihood{Tb}(invlink::Tl) where {Tb,Tl<:AbstractLink} = new{Tb,Tl}(invlink)
 end
 
 function CategoricalLikelihood(
     l=softmax; bijective::Union{Bool,Val{true},Val{false}}=Val(true)
 )
-    return CategoricalLikelihood{bijective_typeparameter(bijective)}(l)
+    return CategoricalLikelihood(make_bijective(link(l), bijective))
 end
 
-bijective_typeparameter(bijective::Bool) = bijective
-bijective_typeparameter(::Val{T}) where {T} = T
-
-function (l::CategoricalLikelihood{true})(f::AbstractVector{<:Real})
-    return Categorical(l.invlink(vcat(f, 0)))
-end
-function (l::CategoricalLikelihood{false})(f::AbstractVector{<:Real})
+function (l::CategoricalLikelihood)(f::AbstractVector{<:Real})
     return Categorical(l.invlink(f))
 end
 
-function (l::CategoricalLikelihood{true})(fs::AbstractVector)
-    return Product(Categorical.(l.invlink.(vcat.(fs, 0))))
-end
-function (l::CategoricalLikelihood{false})(fs::AbstractVector)
+function (l::CategoricalLikelihood)(fs::AbstractVector)
     return Product(Categorical.(l.invlink.(fs)))
 end
