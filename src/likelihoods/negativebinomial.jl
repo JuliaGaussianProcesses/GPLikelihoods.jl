@@ -10,7 +10,7 @@ On calling, this would return a negative binomial distribution with `r` successe
 Note the distinction of the role of parameter `r` to the Wikipedia definition.
 """
 struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
-    r::T    # number of failures parameter
+    r::T    # number of successes parameter
     invlink::Tl
 end
 
