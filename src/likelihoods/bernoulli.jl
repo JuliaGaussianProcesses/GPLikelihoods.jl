@@ -14,7 +14,7 @@ struct BernoulliLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-BernoulliLikelihood(l=logistic) = BernoulliLikelihood(Link(l))
+BernoulliLikelihood(l=logistic) = BernoulliLikelihood(link(l))
 
 (l::BernoulliLikelihood)(f::Real) = Bernoulli(l.invlink(f))
 

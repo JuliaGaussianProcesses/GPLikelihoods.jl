@@ -23,6 +23,9 @@ struct Link{F} <: AbstractLink
     f::F
 end
 
+link(f) = Link(f)
+link(l::AbstractLink) = l
+
 (l::Link)(x) = l.f(x)
 
 Base.inv(l::Link) = Link(InverseFunctions.inverse(l.f))
@@ -110,7 +113,7 @@ LogitLink() = Link(logit)
 """
     LogisticLink()
 
-`exp(x)/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
+`1/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
 """
 LogisticLink() = Link(logistic)
 
