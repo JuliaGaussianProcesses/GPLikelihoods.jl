@@ -12,12 +12,8 @@
 
     ## SimplexBijective link
     l = SoftMaxLink()
-    sbl = SimplexBijectiveLink(l)
+    sbl = BijectiveSimplexLink(l)
     @test sbl(xs) == l(vcat(xs, 0))
-    @test GPLikelihoods.make_bijective(l, false) isa SoftMaxLink
-    @test GPLikelihoods.make_bijective(l, Val(false)) isa SoftMaxLink
-    @test GPLikelihoods.make_bijective(l, true) isa SimplexBijectiveLink{SoftMaxLink}
-    @test GPLikelihoods.make_bijective(l, Val(true)) isa SimplexBijectiveLink{SoftMaxLink}
 
     # Log
     l = LogLink()
