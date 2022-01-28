@@ -23,7 +23,7 @@ struct Link{F} <: AbstractLink
     f::F
 end
 
-link(f) = Link{typeof(f)}(f)
+link(f) = Link(f)
 link(l::AbstractLink) = l
 
 (l::Link)(x) = l.f(x)
