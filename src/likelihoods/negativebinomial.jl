@@ -14,8 +14,7 @@ struct NegativeBinomialLikelihood{T<:Real,Tl<:AbstractLink} <: AbstractLikelihoo
     invlink::Tl
 end
 
-NegativeBinomialLikelihood(l) = NegativeBinomialLikelihood(1.0, l)
-NegativeBinomialLikelihood(r::Real=1.0, l=logistic) = NegativeBinomialLikelihood(r, Link(l))
+NegativeBinomialLikelihood(l=logistic; r::Real=1) = NegativeBinomialLikelihood(r, link(l))
 
 @functor NegativeBinomialLikelihood
 
