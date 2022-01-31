@@ -10,6 +10,11 @@
     l = GPLikelihoods.link(ExpLink())
     @test l == ExpLink()
 
+    ## SimplexBijective link
+    l = SoftMaxLink()
+    sbl = BijectiveSimplexLink(l)
+    @test sbl(xs) == l(vcat(xs, 0))
+
     # Log
     l = LogLink()
     @test l(x) == log(x)

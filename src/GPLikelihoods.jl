@@ -16,6 +16,7 @@ export BernoulliLikelihood,
     GammaLikelihood
 export Link,
     ChainLink,
+    BijectiveSimplexLink,
     ExpLink,
     LogLink,
     InvLink,
