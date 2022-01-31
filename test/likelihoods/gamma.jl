@@ -1,7 +1,7 @@
 @testset "GammaLikelihood" begin
     for args in ((), (1.0,), (exp,), (ExpLink(),), (1.0, exp), (1.0, ExpLink()))
         lik = GammaLikelihood(args...)
-        @test lik isa GammaLikelihood{Float64,ExpLink}
+        @test lik isa GammaLikelihood{ExpLink,Float64}
         @test lik.α == 1
     end
 
