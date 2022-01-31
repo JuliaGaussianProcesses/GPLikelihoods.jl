@@ -20,6 +20,7 @@ PoissonLikelihood
 ```@docs
 Link
 ChainLink
+BijectiveSimplexLink
 ```
 
 The rest of the links [`ExpLink`](@ref), [`LogisticLink`](@ref), etc.,
