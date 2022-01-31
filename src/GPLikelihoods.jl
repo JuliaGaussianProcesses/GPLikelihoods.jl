@@ -2,6 +2,7 @@ module GPLikelihoods
 
 using Distributions
 using Functors
+using InverseFunctions: InverseFunctions
 using LinearAlgebra
 using Random
 using StatsFuns
@@ -15,6 +16,7 @@ export BernoulliLikelihood,
     GammaLikelihood
 export Link,
     ChainLink,
+    BijectiveSimplexLink,
     ExpLink,
     LogLink,
     InvLink,
@@ -25,9 +27,6 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
-
-# Inverses
-include("inverse.jl")
 
 # Links
 include("links.jl")
@@ -40,5 +39,8 @@ include("likelihoods/gaussian.jl")
 include("likelihoods/poisson.jl")
 include("likelihoods/gamma.jl")
 include("likelihoods/exponential.jl")
+
+# TestInterface module
+include("TestInterface.jl")
 
 end # module

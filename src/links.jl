@@ -23,9 +23,29 @@ struct Link{F} <: AbstractLink
     f::F
 end
 
+link(f) = Link(f)
+link(l::AbstractLink) = l
+
 (l::Link)(x) = l.f(x)
 
-Base.inv(l::Link) = Link(inverse(l.f))
+Base.inv(l::Link) = Link(InverseFunctions.inverse(l.f))
+
+"""
+    BijectiveSimplexLink(link)
+
+Wrapper to preprocess the inputs by adding a `0` at the end before passing it to 
+the link `link`.
+This is a necessary step to work with simplices.
+For example with the [`SoftMaxLink`](@ref), to obtain a `n`-simplex leading to
+`n+1` categories for the [`CategoricalLikelihood`](@ref),
+one needs to pass `n+1` latent GP.
+However, by wrapping the link into a `BijectiveSimplexLink`, only `n` latent are needed. 
+"""
+struct BijectiveSimplexLink{L} <: AbstractLink
+    link::L
+end
+
+(l::BijectiveSimplexLink)(f::AbstractVector{<:Real}) = l.link(vcat(f, 0))
 
 # alias
 const LogLink = Link{typeof(log)}
@@ -34,7 +54,7 @@ const ExpLink = Link{typeof(exp)}
 const InvLink = Link{typeof(inv)}
 
 const SqrtLink = Link{typeof(sqrt)}
-const SquareLink = Link{typeof(square)}
+const SquareLink = Link{typeof(InverseFunctions.square)}
 
 const LogitLink = Link{typeof(logit)}
 const LogisticLink = Link{typeof(logistic)}
@@ -77,7 +97,7 @@ SqrtLink() = Link(sqrt)
 
 `^2` link, f:ℝ->ℝ⁺∪{0}. Its inverse is the [`SqrtLink`](@ref).
 """
-SquareLink() = Link(square)
+SquareLink() = Link(InverseFunctions.square)
 
 """
     LogitLink()
@@ -89,7 +109,7 @@ LogitLink() = Link(logit)
 """
     LogisticLink()
 
-`exp(x)/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
+`1/(1+exp(-x))` link. f:ℝ->[0,1]. Its inverse is the [`LogitLink`](@ref).
 """
 LogisticLink() = Link(logistic)
 

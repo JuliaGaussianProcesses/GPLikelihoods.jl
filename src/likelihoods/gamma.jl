@@ -14,7 +14,7 @@ struct GammaLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
 end
 
 GammaLikelihood(l) = GammaLikelihood(1.0, l)
-GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, Link(l))
+GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, link(l))
 
 @functor GammaLikelihood
 
