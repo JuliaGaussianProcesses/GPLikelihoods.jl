@@ -17,6 +17,7 @@ export BernoulliLikelihood,
     NegativeBinomialLikelihood
 export Link,
     ChainLink,
+    BijectiveSimplexLink,
     ExpLink,
     LogLink,
     InvLink,
