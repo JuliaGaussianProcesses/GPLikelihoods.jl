@@ -27,7 +27,7 @@ struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihoo
     invlink::Tl
 end
 
-function NegativeBinomialLikelihood(l=logistic; successes::Real=1) 
+function NegativeBinomialLikelihood(l=logistic; successes::Real=1)
     return NegativeBinomialLikelihood(successes, link(l))
 end
 
