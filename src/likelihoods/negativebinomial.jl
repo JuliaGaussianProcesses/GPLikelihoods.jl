@@ -19,7 +19,7 @@ probability of success equal to `l(f)`.
     This change of parameterization is equivalent to changing the number of successes 
     from `p` to `1-p`, which remains unidentifiable when using a link function for which
     `l(-f) = 1 - l(f)` holds, such as `logistic`. Thus, when using such link functions,
-    the fact that this likelihood uses a non-standard parameterization does not have any 
+    the fact that this implementation uses a non-standard parameterization does not have any 
     downsides.
 """
 struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
