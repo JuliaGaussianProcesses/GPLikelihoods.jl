@@ -13,7 +13,7 @@ probability of success equal to `l(f)`.
     The parameter `successes` is different from the parameter `r` in the 
     [Wikipedia definition](http://en.wikipedia.org/wiki/Negative_binomial_distribution), 
     which denotes the number of failures.
-    This parametrization is used in order to keep up with the parametrization in 
+    This parametrization is used in order to stay consistent with the parametrization in 
     [Distributions.jl](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.NegativeBinomial).
 
     This change of parameterization is equivalent to changing the number of successes 
