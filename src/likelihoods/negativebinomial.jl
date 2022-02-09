@@ -4,7 +4,7 @@
 Negative binomial likelihood with number of successes `successes`.
 
 ```math
-    p(k|f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
+    p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
 ```
 On calling, this returns a negative binomial distribution with `successes` successes and 
 probability of success equal to `l(f)`.
