@@ -15,11 +15,10 @@ probability of success equal to `l(f)`.
     which denotes the number of failures.
     This parametrization is used in order to stay consistent with the parametrization in 
     [Distributions.jl](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.NegativeBinomial).
-    This change of parameterization is equivalent to changing the number of successes 
-    from `p` to `1-p`, which remains unidentifiable when using a link function for which
-    `l(-f) = 1 - l(f)` holds, such as `logistic`. Thus, when using such link functions,
-    the fact that this implementation uses a non-standard parameterization does not have any 
-    downsides.
+    To use the Wikipedia definition, set `successes` as the number of "failures" and
+    change the probability of success from `l(f)` to `1 - l(f)`.
+    Note that with symmetric functions like the [`LogisticLink`](@ref), this corresponds to
+    using `l(-f)`.
 """
 struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
     successes::T    # number of successes parameter
