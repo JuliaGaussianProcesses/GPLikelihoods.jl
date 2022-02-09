@@ -15,7 +15,6 @@ probability of success equal to `l(f)`.
     which denotes the number of failures.
     This parametrization is used in order to stay consistent with the parametrization in 
     [Distributions.jl](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.NegativeBinomial).
-
     This change of parameterization is equivalent to changing the number of successes 
     from `p` to `1-p`, which remains unidentifiable when using a link function for which
     `l(-f) = 1 - l(f)` holds, such as `logistic`. Thus, when using such link functions,
