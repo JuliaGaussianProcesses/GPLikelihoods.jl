@@ -6,7 +6,7 @@ Gamma likelihood with fixed shape `α`.
 ```math
     p(y|f) = \\operatorname{Gamma}(y | α, l(f))
 ```
-On calling, this would return a Gamma distribution with shape `α` and scale `invlink(f)`.
+On calling, this returns a Gamma distribution with shape `α` and scale `invlink(f)`.
 """
 struct GammaLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
     α::T    # shape parameter
