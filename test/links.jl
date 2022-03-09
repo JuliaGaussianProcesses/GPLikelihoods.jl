@@ -4,8 +4,16 @@
 
     # Generic link
     f = sin
-    l = Link(f)
+    l = GPLikelihoods.link(f)
+    @test l == Link(f)
     @test l(x) == f(x)
+    l = GPLikelihoods.link(ExpLink())
+    @test l == ExpLink()
+
+    ## SimplexBijective link
+    l = SoftMaxLink()
+    sbl = BijectiveSimplexLink(l)
+    @test sbl(xs) == l(vcat(xs, 0))
 
     # Log
     l = LogLink()

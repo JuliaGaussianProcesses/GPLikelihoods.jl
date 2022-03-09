@@ -13,9 +13,11 @@ export BernoulliLikelihood,
     HeteroscedasticGaussianLikelihood,
     PoissonLikelihood,
     ExponentialLikelihood,
-    GammaLikelihood
+    GammaLikelihood,
+    NegativeBinomialLikelihood
 export Link,
     ChainLink,
+    BijectiveSimplexLink,
     ExpLink,
     LogLink,
     InvLink,
@@ -38,6 +40,7 @@ include("likelihoods/gaussian.jl")
 include("likelihoods/poisson.jl")
 include("likelihoods/gamma.jl")
 include("likelihoods/exponential.jl")
+include("likelihoods/negativebinomial.jl")
 
 # TestInterface module
 include("TestInterface.jl")

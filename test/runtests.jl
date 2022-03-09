@@ -15,5 +15,6 @@ using StatsFuns
         include("likelihoods/poisson.jl")
         include("likelihoods/gamma.jl")
         include("likelihoods/exponential.jl")
+        include("likelihoods/negativebinomial.jl")
     end
 end
