@@ -10,6 +10,6 @@
     test_interface(lik_bijective, Categorical)
     @test nlatent(lik_bijective) == nclass - 1
     lik_nonbijective = CategoricalLikelihood(nclass, softmax)
-    test_interface(lik_nonbijective, Categorical, OUT_DIM)
+    test_interface(lik_nonbijective, Categorical)
     @test nlatent(lik_nonbijective) == nclass
 end

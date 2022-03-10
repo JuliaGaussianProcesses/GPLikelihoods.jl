@@ -31,7 +31,7 @@ struct CategoricalLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
     invlink::Tl
 end
 
-CategoricalLikelihood(n=BijectiveSimplexLink(softmax)) = CategoricalLikelihood(n, link(l))
+CategoricalLikelihood(n, l=BijectiveSimplexLink(softmax)) = CategoricalLikelihood(n, link(l))
 
 nlatent(l::CategoricalLikelihood) = l.n
 nlatent(l::CategoricalLikelihood{<:BijectiveSimplexLink}) = l.n - 1

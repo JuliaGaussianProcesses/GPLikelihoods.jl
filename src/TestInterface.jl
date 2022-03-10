@@ -1,6 +1,7 @@
 module TestInterface
 
 using Functors
+using ..GPLikelihoods
 using Random
 using Test
 
