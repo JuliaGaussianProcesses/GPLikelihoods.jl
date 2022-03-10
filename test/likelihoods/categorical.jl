@@ -2,9 +2,9 @@
     nclass = 4
     @test CategoricalLikelihood(nclass) isa
         CategoricalLikelihood{<:GPLikelihoods.BijectiveSimplexLink}
-        
     @test CategoricalLikelihood(nclass, softmax) isa CategoricalLikelihood{SoftMaxLink}
-    @test CategoricalLikelihood(nclass, SoftMaxLink()) isa CategoricalLikelihood{SoftMaxLink}
+    @test CategoricalLikelihood(nclass, SoftMaxLink()) isa
+        CategoricalLikelihood{SoftMaxLink}
 
     lik_bijective = CategoricalLikelihood(nclass)
     test_interface(lik_bijective, Categorical)
