@@ -1,7 +1,7 @@
 """
-    CategoricalLikelihood(l=BijectiveSimplexLink(softmax))
+    CategoricalLikelihood(n::Int, l=BijectiveSimplexLink(softmax))
 
-Categorical likelihood is to be used if we assume that the 
+Categorical likelihood with `n` categories is to be used if we assume that the 
 uncertainty associated with the data follows a [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution).
 
 Assuming a distribution with `n` categories:
@@ -27,10 +27,14 @@ For more details, see the end of the section of this [Wikipedia link](https://en
 where it corresponds to Variant 1 and 2.
 """
 struct CategoricalLikelihood{Tl<:AbstractLink} <: AbstractLikelihood
+    n::Int # Number of categories
     invlink::Tl
 end
 
-CategoricalLikelihood(l=BijectiveSimplexLink(softmax)) = CategoricalLikelihood(link(l))
+CategoricalLikelihood(n=BijectiveSimplexLink(softmax)) = CategoricalLikelihood(n, link(l))
+
+nlatent(l::CategoricalLikelihood) = l.n
+nlatent(l::CategoricalLikelihood{<:BijectiveSimplexLink}) = l.n - 1
 
 function (l::CategoricalLikelihood)(f::AbstractVector{<:Real})
     return Categorical(l.invlink(f))

@@ -1,13 +1,15 @@
 @testset "CategoricalLikelihood" begin
-    @test CategoricalLikelihood() isa
+    nclass = 4
+    @test CategoricalLikelihood(nclass) isa
         CategoricalLikelihood{<:GPLikelihoods.BijectiveSimplexLink}
+        
+    @test CategoricalLikelihood(nclass, softmax) isa CategoricalLikelihood{SoftMaxLink}
+    @test CategoricalLikelihood(nclass, SoftMaxLink()) isa CategoricalLikelihood{SoftMaxLink}
 
-    @test CategoricalLikelihood(softmax) isa CategoricalLikelihood{SoftMaxLink}
-    @test CategoricalLikelihood(SoftMaxLink()) isa CategoricalLikelihood{SoftMaxLink}
-
-    OUT_DIM = 4
-    lik_bijective = CategoricalLikelihood()
-    test_interface(lik_bijective, Categorical, OUT_DIM)
-    lik_nonbijective = CategoricalLikelihood(softmax)
+    lik_bijective = CategoricalLikelihood(nclass)
+    test_interface(lik_bijective, Categorical)
+    @test nlatent(lik_bijective) == nclass - 1
+    lik_nonbijective = CategoricalLikelihood(nclass, softmax)
     test_interface(lik_nonbijective, Categorical, OUT_DIM)
+    @test nlatent(lik_nonbijective) == nclass
 end

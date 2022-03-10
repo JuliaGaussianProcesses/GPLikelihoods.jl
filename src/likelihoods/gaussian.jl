@@ -42,6 +42,8 @@ end
 
 HeteroscedasticGaussianLikelihood(l=exp) = HeteroscedasticGaussianLikelihood(link(l))
 
+nlatent(::HeteroscedasticGaussianLikelihood) = 2
+
 function (l::HeteroscedasticGaussianLikelihood)(f::AbstractVector{<:Real})
     return Normal(f[1], sqrt(l.invlink(f[2])))
 end
