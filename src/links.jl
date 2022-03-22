@@ -39,7 +39,7 @@ This is a necessary step to work with simplices.
 For example with the [`SoftMaxLink`](@ref), to obtain a `n-1`-simplex leading to
 `n` categories for the [`CategoricalLikelihood`](@ref),
 one needs to pass `n` latent GP.
-However, by wrapping the link into a `BijectiveSimplexLink`, only `n-1` latent GP are needed. 
+However, by wrapping the link into a `BijectiveSimplexLink`, only `n-1` latent GPs are needed. 
 """
 struct BijectiveSimplexLink{L} <: AbstractLink
     link::L
