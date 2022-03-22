@@ -34,10 +34,7 @@
         end
         y = rand.(rng, lik.(zeros(10)))
 
-        results = map(
-            m -> GPLikelihoods.expected_loglik(m, y, q_f, lik),
-            methods,
-        )
+        results = map(m -> GPLikelihoods.expected_loglik(m, y, q_f, lik), methods)
         @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
     end
 
@@ -47,8 +44,7 @@
     @test GPLikelihoods.expected_loglik(
         GaussHermite(), zeros(10), q_f, GaussianLikelihood()
     ) isa Real
-    @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa
-        GaussHermite
+    @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermite
 
     @testset "testing Zygote compatibility with GaussHermite" begin # see issue #82
         N = 10
@@ -59,9 +55,7 @@
         for lik in likelihoods_to_test
             y = rand.(rng, lik.(rand.(Normal.(μs, σs))))
             gμ, glogσ = Zygote.gradient(μs, log.(σs)) do μ, logσ
-                GPLikelihoods.expected_loglik(
-                    gh, y, Normal.(μ, exp.(logσ)), lik
-                )
+                GPLikelihoods.expected_loglik(gh, y, Normal.(μ, exp.(logσ)), lik)
             end
             @test all(isfinite, gμ)
             @test all(isfinite, glogσ)
