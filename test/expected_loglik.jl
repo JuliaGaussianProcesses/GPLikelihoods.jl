@@ -46,7 +46,7 @@
     ) isa Real
     @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermite
 
-    @testset "testing Zygote compatibility with GaussHermite" begin # see issue #82
+    @testset "testing Zygote compatibility with GaussHermite" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
         N = 10
         gh = GaussHermite(12)
         μs = randn(rng, N)

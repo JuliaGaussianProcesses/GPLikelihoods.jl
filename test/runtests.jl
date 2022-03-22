@@ -5,6 +5,7 @@ using Random
 using Functors
 using Distributions
 using StatsFuns
+using Zygote
 
 @testset "GPLikelihoods.jl" begin
     include("links.jl")
