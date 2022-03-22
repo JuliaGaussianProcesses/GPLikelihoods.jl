@@ -17,4 +17,7 @@ using StatsFuns
         include("likelihoods/exponential.jl")
         include("likelihoods/negativebinomial.jl")
     end
+    @testset "expected_loglik" begin
+        include("expected_loglik.jl")
+    end
 end

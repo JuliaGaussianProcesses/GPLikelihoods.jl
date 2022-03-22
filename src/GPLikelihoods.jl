@@ -28,6 +28,7 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
+export DefaultQuadrature, Analytic, GaussHermite, MonteCarlo
 
 # Links
 include("links.jl")
@@ -41,6 +42,7 @@ include("likelihoods/poisson.jl")
 include("likelihoods/gamma.jl")
 include("likelihoods/exponential.jl")
 include("likelihoods/negativebinomial.jl")
+include("expected_loglik.jl")
 
 # TestInterface module
 include("TestInterface.jl")
