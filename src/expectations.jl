@@ -20,7 +20,7 @@ MonteCarlo() = MonteCarlo(20)
 _default_quadrature(_) = GaussHermite()
 
 """
-    expected_loglik(quadrature::QuadratureMethod, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik)
+    expected_loglikelihood(quadrature::QuadratureMethod, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik)
 
 This function computes the expected log likelihood:
 
@@ -44,23 +44,23 @@ likelihood - see [`elbo`](@ref) for more details.
 `q(f)` is assumed to be an `MvNormal` distribution and `p(y | f)` is assumed to
 have independent marginals such that only the marginals of `q(f)` are required.
 """
-expected_loglik(quadrature, y, q_f, lik)
+expected_loglikelihood(quadrature, y, q_f, lik)
 
 """
-    expected_loglik(::DefaultQuadrature, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik)
+    expected_loglikelihood(::DefaultQuadrature, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik)
 
 The expected log likelihood.
 Defaults to a closed form solution if it exists, otherwise defaults to
 Gauss-Hermite quadrature.
 """
-function expected_loglik(
+function expected_loglikelihood(
     ::DefaultQuadrature, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik
 )
     quadrature = _default_quadrature(lik)
-    return expected_loglik(quadrature, y, q_f, lik)
+    return expected_loglikelihood(quadrature, y, q_f, lik)
 end
 
-function expected_loglik(
+function expected_loglikelihood(
     mc::MonteCarlo, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik
 )
     # take `n_samples` reparameterised samples
@@ -70,24 +70,26 @@ function expected_loglik(
     return sum(lls) / mc.n_samples
 end
 
-# Compute the expected_loglik over a collection of observations and marginal distributions
-function expected_loglik(
+# Compute the expected_loglikelihood over a collection of observations and marginal distributions
+function expected_loglikelihood(
     gh::GaussHermite, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik
 )
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
     # (see e.g. en.wikipedia.org/wiki/Gauss%E2%80%93Hermite_quadrature)
     xs, ws = gausshermite(gh.n_points)
-    return sum(Broadcast.instantiate(
-        Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
-            # of marginal distribution q(fᵢ) and observation yᵢ
-            expected_loglik(gh, yᵢ, q_fᵢ, lik, (xs, ws))
-        end,
-    ))
+    return sum(
+        Broadcast.instantiate(
+            Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
+                # of marginal distribution q(fᵢ) and observation yᵢ
+                expected_loglikelihood(gh, yᵢ, q_fᵢ, lik, (xs, ws))
+            end,
+        )
+    )
 end
 
-# Compute the expected_loglik for one observation and a marginal distributions
-function expected_loglik(
+# Compute the expected_loglikelihood for one observation and a marginal distributions
+function expected_loglikelihood(
     gh::GaussHermite, y, q_f::Normal, lik, (xs, ws)=gausshermite(gh.n_points)
 )
     μ = mean(q_f)
@@ -103,7 +105,9 @@ end
 
 ChainRulesCore.@non_differentiable gausshermite(n)
 
-function expected_loglik(::Analytic, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik)
+function expected_loglikelihood(
+    ::Analytic, y::AbstractVector, q_f::AbstractVector{<:Normal}, lik
+)
     return error(
         "No analytic solution exists for ",
         typeof(lik),
@@ -112,7 +116,7 @@ function expected_loglik(::Analytic, y::AbstractVector, q_f::AbstractVector{<:No
 end
 
 # The closed form solution for independent Gaussian noise
-function expected_loglik(
+function expected_loglikelihood(
     ::Analytic,
     y::AbstractVector{<:Real},
     q_f::AbstractVector{<:Normal},
@@ -126,7 +130,7 @@ end
 _default_quadrature(::GaussianLikelihood) = Analytic()
 
 # The closed form solution for a Poisson likelihood with an exponential inverse link function
-function expected_loglik(
+function expected_loglikelihood(
     ::Analytic,
     y::AbstractVector{<:Real},
     q_f::AbstractVector{<:Normal},
@@ -139,7 +143,7 @@ end
 _default_quadrature(::PoissonLikelihood{ExpLink}) = Analytic()
 
 # The closed form solution for an Exponential likelihood with an exponential inverse link function
-function expected_loglik(
+function expected_loglikelihood(
     ::Analytic,
     y::AbstractVector{<:Real},
     q_f::AbstractVector{<:Normal},
@@ -152,7 +156,7 @@ end
 _default_quadrature(::ExponentialLikelihood{ExpLink}) = Analytic()
 
 # The closed form solution for a Gamma likelihood with an exponential inverse link function
-function expected_loglik(
+function expected_loglikelihood(
     ::Analytic,
     y::AbstractVector{<:Real},
     q_f::AbstractVector{<:Normal},

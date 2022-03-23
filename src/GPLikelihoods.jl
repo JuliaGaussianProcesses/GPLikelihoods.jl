@@ -42,7 +42,7 @@ include("likelihoods/poisson.jl")
 include("likelihoods/gamma.jl")
 include("likelihoods/exponential.jl")
 include("likelihoods/negativebinomial.jl")
-include("expected_loglik.jl")
+include("expectations.jl")
 
 # TestInterface module
 include("TestInterface.jl")

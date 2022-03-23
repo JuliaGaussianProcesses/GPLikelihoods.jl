@@ -1,4 +1,4 @@
-@testset "expected_loglik" begin
+@testset "expected_loglikelihood" begin
     # Test that the various methods of computing expectations return the same
     # result.
     rng = MersenneTwister(123456)
@@ -15,7 +15,7 @@
         # Test that we're not missing any analytic implementation in `likelihoods_to_test`!
         implementation_types = [
             (; quadrature=m.sig.types[2], lik=m.sig.types[5]) for
-            m in methods(GPLikelihoods.expected_loglik)
+            m in methods(GPLikelihoods.expected_loglikelihood)
         ]
         analytic_likelihoods = [
             m.lik for m in implementation_types if
@@ -34,14 +34,14 @@
         end
         y = rand.(rng, lik.(zeros(10)))
 
-        results = map(m -> GPLikelihoods.expected_loglik(m, y, q_f, lik), methods)
+        results = map(m -> GPLikelihoods.expected_loglikelihood(m, y, q_f, lik), methods)
         @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
     end
 
-    @test GPLikelihoods.expected_loglik(
+    @test GPLikelihoods.expected_loglikelihood(
         MonteCarlo(), zeros(10), q_f, GaussianLikelihood()
     ) isa Real
-    @test GPLikelihoods.expected_loglik(
+    @test GPLikelihoods.expected_loglikelihood(
         GaussHermite(), zeros(10), q_f, GaussianLikelihood()
     ) isa Real
     @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermite
@@ -55,7 +55,7 @@
         for lik in likelihoods_to_test
             y = rand.(rng, lik.(rand.(Normal.(μs, σs))))
             gμ, glogσ = Zygote.gradient(μs, log.(σs)) do μ, logσ
-                GPLikelihoods.expected_loglik(gh, y, Normal.(μ, exp.(logσ)), lik)
+                GPLikelihoods.expected_loglikelihood(gh, y, Normal.(μ, exp.(logσ)), lik)
             end
             @test all(isfinite, gμ)
             @test all(isfinite, glogσ)
@@ -66,7 +66,7 @@
         y = randn(rng, N)
         glogσ = only(
             Zygote.gradient(log(σ)) do x
-                GPLikelihoods.expected_loglik(
+                GPLikelihoods.expected_loglikelihood(
                     gh, y, Normal.(μs, σs), GaussianLikelihood(exp(x))
                 )
             end,
@@ -77,7 +77,7 @@
         y = rand.(rng, Gamma.(α, rand(N)))
         glogα = only(
             Zygote.gradient(log(α)) do x
-                GPLikelihoods.expected_loglik(
+                GPLikelihoods.expected_loglikelihood(
                     gh, y, Normal.(μs, σs), GammaLikelihood(exp(x))
                 )
             end,
