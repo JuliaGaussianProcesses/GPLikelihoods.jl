@@ -8,8 +8,12 @@ struct DefaultExpectationMethod end
 struct AnalyticExpectation end
 
 struct GaussHermiteExpectation
-    n_points::Int
+    xs::Vector{Float64}
+    ws::Vector{Float64}
 end
+GaussHermiteExpectation(n::Integer) = GaussHermiteExpectation(gausshermite(n)...)
+
+ChainRulesCore.@non_differentiable gausshermite(n)
 
 struct MonteCarloExpectation
     n_samples::Int
@@ -78,12 +82,11 @@ function expected_loglikelihood(
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
     # (see e.g. en.wikipedia.org/wiki/Gauss%E2%80%93Hermite_quadrature)
-    xs, ws = gausshermite(gh.n_points)
     return sum(
         Broadcast.instantiate(
             Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
                 # of marginal distribution q(fᵢ) and observation yᵢ
-                expected_loglikelihood(gh, lik, q_fᵢ, yᵢ, (xs, ws))
+                expected_loglikelihood(gh, lik, q_fᵢ, yᵢ)
             end,
         )
     )
@@ -91,20 +94,18 @@ end
 
 # Compute the expected_loglikelihood for one observation and a marginal distributions
 function expected_loglikelihood(
-    gh::GaussHermiteExpectation, lik, q_f::Normal, y, (xs, ws)=gausshermite(gh.n_points)
+    gh::GaussHermiteExpectation, lik, q_f::Normal, y
 )
     μ = mean(q_f)
     σ̃ = sqrt2 * std(q_f)
     return invsqrtπ * sum(Broadcast.instantiate(
-        Broadcast.broadcasted(xs, ws) do x, w # Loop over every
+        Broadcast.broadcasted(gh.xs, gh.ws) do x, w # Loop over every
             # pair of Gauss-Hermite point x with weight w
             f = σ̃ * x + μ
             loglikelihood(lik(f), y) * w
         end,
     ))
 end
-
-ChainRulesCore.@non_differentiable gausshermite(n)
 
 function expected_loglikelihood(
     ::AnalyticExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
