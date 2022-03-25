@@ -51,12 +51,12 @@ have independent marginals such that only the marginals of `q(f)` are required.
 expected_loglikelihood(quadrature, lik, q_f, y)
 
 """
-    expected_loglikelihood(::DefaultQuadrature, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector)
+    expected_loglikelihood(::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector)
 
 The expected log likelihood, using the default quadrature method for the given likelihood. (The default quadrature method is defined by `_default_quadrature(lik)`, and should be the closed form solution if it exists, but otherwise defaults to Gauss-Hermite quadrature.)
 """
 function expected_loglikelihood(
-    ::DefaultQuadrature, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
+    ::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     quadrature = _default_quadrature(lik)
     return expected_loglikelihood(quadrature, lik, q_f, y)
