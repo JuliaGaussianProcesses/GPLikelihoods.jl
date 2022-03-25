@@ -19,7 +19,7 @@
         ]
         analytic_likelihoods = [
             m.lik for m in implementation_types if
-            m.quadrature == GPLikelihoods.Analytic && m.lik != Any
+            m.quadrature == GPLikelihoods.AnalyticExpectation && m.lik != Any
         ]
         for lik_type in analytic_likelihoods
             @test any(lik isa lik_type for lik in likelihoods_to_test)
@@ -29,7 +29,7 @@
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
         methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7)]
         def = GPLikelihoods._default_quadrature(lik)
-        if def isa GPLikelihoods.Analytic
+        if def isa GPLikelihoods.AnalyticExpectation
             push!(methods, def)
         end
         y = rand.(rng, lik.(zeros(10)))
@@ -39,7 +39,7 @@
     end
 
     @test GPLikelihoods.expected_loglikelihood(
-        MonteCarloExpectation(), GaussianLikelihood(), q_f, zeros(10)
+        MonteCarloExpectation(20), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
     @test GPLikelihoods.expected_loglikelihood(
         GaussHermiteExpectation(), GaussianLikelihood(), q_f, zeros(10)

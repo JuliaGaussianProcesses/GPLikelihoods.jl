@@ -4,6 +4,7 @@ using ChainRulesCore: ChainRulesCore
 using IrrationalConstants: sqrt2, invsqrtπ
 
 struct DefaultExpectationMethod end
+
 struct AnalyticExpectation end
 
 struct GaussHermiteExpectation
@@ -14,7 +15,6 @@ GaussHermiteExpectation() = GaussHermiteExpectation(20)
 struct MonteCarloExpectation
     n_samples::Int
 end
-MonteCarloExpectation() = MonteCarloExpectation(20)
 
 _default_quadrature(_) = GaussHermiteExpectation()
 
@@ -108,18 +108,16 @@ end
 ChainRulesCore.@non_differentiable gausshermite(n)
 
 function expected_loglikelihood(
-    ::Analytic, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
+    ::AnalyticExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     return error(
-        "No analytic solution exists for ",
-        typeof(lik),
-        ". Use `DefaultQuadrature()`, `GaussHermiteExpectation()` or `MonteCarloExpectation()` instead.",
+        "No analytic solution exists for $(typeof(lik)). Use `DefaultExpectationMethod`, `GaussHermiteExpectation` or `MonteCarloExpectation` instead."
     )
 end
 
 # The closed form solution for independent Gaussian noise
 function expected_loglikelihood(
-    ::Analytic,
+    ::AnalyticExpectation,
     lik::GaussianLikelihood,
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
@@ -129,11 +127,11 @@ function expected_loglikelihood(
     )
 end
 
-_default_quadrature(::GaussianLikelihood) = Analytic()
+_default_quadrature(::GaussianLikelihood) = AnalyticExpectation()
 
 # The closed form solution for a Poisson likelihood with an exponential inverse link function
 function expected_loglikelihood(
-    ::Analytic,
+    ::AnalyticExpectation,
     ::PoissonLikelihood{ExpLink},
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
@@ -142,11 +140,11 @@ function expected_loglikelihood(
     return sum((y .* f_μ) - exp.(f_μ .+ (var.(q_f) / 2)) - loggamma.(y .+ 1))
 end
 
-_default_quadrature(::PoissonLikelihood{ExpLink}) = Analytic()
+_default_quadrature(::PoissonLikelihood{ExpLink}) = AnalyticExpectation()
 
 # The closed form solution for an Exponential likelihood with an exponential inverse link function
 function expected_loglikelihood(
-    ::Analytic,
+    ::AnalyticExpectation,
     ::ExponentialLikelihood{ExpLink},
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
@@ -155,11 +153,11 @@ function expected_loglikelihood(
     return sum(-f_μ - y .* exp.((var.(q_f) / 2) .- f_μ))
 end
 
-_default_quadrature(::ExponentialLikelihood{ExpLink}) = Analytic()
+_default_quadrature(::ExponentialLikelihood{ExpLink}) = AnalyticExpectation()
 
 # The closed form solution for a Gamma likelihood with an exponential inverse link function
 function expected_loglikelihood(
-    ::Analytic,
+    ::AnalyticExpectation,
     lik::GammaLikelihood{ExpLink},
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
@@ -171,4 +169,4 @@ function expected_loglikelihood(
     )
 end
 
-_default_quadrature(::GammaLikelihood{ExpLink}) = Analytic()
+_default_quadrature(::GammaLikelihood{ExpLink}) = AnalyticExpectation()
