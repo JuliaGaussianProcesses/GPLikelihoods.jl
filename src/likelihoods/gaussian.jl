@@ -23,6 +23,20 @@ GaussianLikelihood(σ²::Real) = GaussianLikelihood([σ²])
 
 (l::GaussianLikelihood)(fs::AbstractVector{<:Real}) = MvNormal(fs, first(l.σ²) * I)
 
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    lik::GaussianLikelihood,
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    return sum(
+        -0.5 * (log(2π) .+ log.(lik.σ²) .+ ((y .- mean.(q_f)) .^ 2 .+ var.(q_f)) / lik.σ²)
+    )
+end
+
+default_expectation_method(::GaussianLikelihood) = AnalyticExpectation()
+
+
 """
     HeteroscedasticGaussianLikelihood(l=exp)
 

@@ -21,3 +21,18 @@ GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, link(l))
 (l::GammaLikelihood)(f::Real) = Gamma(l.α, l.invlink(f))
 
 (l::GammaLikelihood)(fs::AbstractVector{<:Real}) = Product(Gamma.(l.α, l.invlink.(fs)))
+
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    lik::GammaLikelihood{ExpLink},
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    f_μ = mean.(q_f)
+    return sum(
+        (lik.α - 1) * log.(y) .- y .* exp.((var.(q_f) / 2) .- f_μ) .- lik.α * f_μ .-
+        loggamma(lik.α),
+    )
+end
+
+default_expectation_method(::GammaLikelihood{ExpLink}) = AnalyticExpectation()

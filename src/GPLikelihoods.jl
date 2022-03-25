@@ -34,6 +34,8 @@ include("links.jl")
 
 # Likelihoods
 abstract type AbstractLikelihood end
+
+include("expectations.jl")
 include("likelihoods/bernoulli.jl")
 include("likelihoods/categorical.jl")
 include("likelihoods/gaussian.jl")
@@ -41,7 +43,6 @@ include("likelihoods/poisson.jl")
 include("likelihoods/gamma.jl")
 include("likelihoods/exponential.jl")
 include("likelihoods/negativebinomial.jl")
-include("expectations.jl")
 
 # TestInterface module
 include("TestInterface.jl")
