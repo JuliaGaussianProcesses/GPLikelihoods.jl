@@ -3,25 +3,24 @@ using SpecialFunctions: loggamma
 using ChainRulesCore: ChainRulesCore
 using IrrationalConstants: sqrt2, invsqrtπ
 
-abstract type QuadratureMethod end
-struct DefaultQuadrature <: QuadratureMethod end
-struct Analytic <: QuadratureMethod end
+struct DefaultExpectationMethod end
+struct AnalyticExpectation end
 
-struct GaussHermite <: QuadratureMethod
+struct GaussHermiteExpectation
     n_points::Int
 end
-GaussHermite() = GaussHermite(20)
+GaussHermiteExpectation() = GaussHermiteExpectation(20)
 
-struct MonteCarlo <: QuadratureMethod
+struct MonteCarloExpectation
     n_samples::Int
 end
-MonteCarlo() = MonteCarlo(20)
+MonteCarloExpectation() = MonteCarloExpectation(20)
 
-_default_quadrature(_) = GaussHermite()
+_default_quadrature(_) = GaussHermiteExpectation()
 
 """
     expected_loglikelihood(
-        quadrature::QuadratureMethod,
+        quadrature,
         lik,
         q_f::AbstractVector{<:Normal},
         y::AbstractVector,
@@ -64,7 +63,7 @@ function expected_loglikelihood(
 end
 
 function expected_loglikelihood(
-    mc::MonteCarlo, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
+    mc::MonteCarloExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     # take `n_samples` reparameterised samples
     f_μ = mean.(q_f)
@@ -75,7 +74,7 @@ end
 
 # Compute the expected_loglikelihood over a collection of observations and marginal distributions
 function expected_loglikelihood(
-    gh::GaussHermite, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
+    gh::GaussHermiteExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
@@ -93,7 +92,7 @@ end
 
 # Compute the expected_loglikelihood for one observation and a marginal distributions
 function expected_loglikelihood(
-    gh::GaussHermite, lik, q_f::Normal, y, (xs, ws)=gausshermite(gh.n_points)
+    gh::GaussHermiteExpectation, lik, q_f::Normal, y, (xs, ws)=gausshermite(gh.n_points)
 )
     μ = mean(q_f)
     σ̃ = sqrt2 * std(q_f)
@@ -114,7 +113,7 @@ function expected_loglikelihood(
     return error(
         "No analytic solution exists for ",
         typeof(lik),
-        ". Use `DefaultQuadrature()`, `GaussHermite()` or `MonteCarlo()` instead.",
+        ". Use `DefaultQuadrature()`, `GaussHermiteExpectation()` or `MonteCarloExpectation()` instead.",
     )
 end
 

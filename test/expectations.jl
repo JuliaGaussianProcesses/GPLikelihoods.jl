@@ -27,7 +27,7 @@
     end
 
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
-        methods = [GaussHermite(100), MonteCarlo(1e7)]
+        methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7)]
         def = GPLikelihoods._default_quadrature(lik)
         if def isa GPLikelihoods.Analytic
             push!(methods, def)
@@ -39,16 +39,16 @@
     end
 
     @test GPLikelihoods.expected_loglikelihood(
-        MonteCarlo(), GaussianLikelihood(), q_f, zeros(10)
+        MonteCarloExpectation(), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
     @test GPLikelihoods.expected_loglikelihood(
-        GaussHermite(), GaussianLikelihood(), q_f, zeros(10)
+        GaussHermiteExpectation(), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
-    @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermite
+    @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermiteExpectation
 
-    @testset "testing Zygote compatibility with GaussHermite" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
+    @testset "testing Zygote compatibility with GaussHermiteExpectation" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
         N = 10
-        gh = GaussHermite(12)
+        gh = GaussHermiteExpectation(12)
         μs = randn(rng, N)
         σs = rand(rng, N)
         # Test differentiation with variational parameters
