@@ -36,7 +36,6 @@ end
 
 default_expectation_method(::GaussianLikelihood) = AnalyticExpectation()
 
-
 """
     HeteroscedasticGaussianLikelihood(l=exp)
 
