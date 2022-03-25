@@ -28,7 +28,7 @@
 
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
         methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7)]
-        def = GPLikelihoods._default_quadrature(lik)
+        def = GPLikelihoods.default_expectation_method(lik)
         if def isa GPLikelihoods.AnalyticExpectation
             push!(methods, def)
         end
@@ -44,7 +44,7 @@
     @test GPLikelihoods.expected_loglikelihood(
         GaussHermiteExpectation(), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
-    @test GPLikelihoods._default_quadrature(θ -> Normal(0, θ)) isa GaussHermiteExpectation
+    @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa GaussHermiteExpectation
 
     @testset "testing Zygote compatibility with GaussHermiteExpectation" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
         N = 10

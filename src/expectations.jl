@@ -10,13 +10,12 @@ struct AnalyticExpectation end
 struct GaussHermiteExpectation
     n_points::Int
 end
-GaussHermiteExpectation() = GaussHermiteExpectation(20)
 
 struct MonteCarloExpectation
     n_samples::Int
 end
 
-_default_quadrature(_) = GaussHermiteExpectation()
+default_expectation_method(_) = GaussHermiteExpectation(20)
 
 """
     expected_loglikelihood(
@@ -53,12 +52,12 @@ expected_loglikelihood(quadrature, lik, q_f, y)
 """
     expected_loglikelihood(::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector)
 
-The expected log likelihood, using the default quadrature method for the given likelihood. (The default quadrature method is defined by `_default_quadrature(lik)`, and should be the closed form solution if it exists, but otherwise defaults to Gauss-Hermite quadrature.)
+The expected log likelihood, using the default quadrature method for the given likelihood. (The default quadrature method is defined by `default_expectation_method(lik)`, and should be the closed form solution if it exists, but otherwise defaults to Gauss-Hermite quadrature.)
 """
 function expected_loglikelihood(
     ::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
-    quadrature = _default_quadrature(lik)
+    quadrature = default_expectation_method(lik)
     return expected_loglikelihood(quadrature, lik, q_f, y)
 end
 
@@ -127,7 +126,7 @@ function expected_loglikelihood(
     )
 end
 
-_default_quadrature(::GaussianLikelihood) = AnalyticExpectation()
+default_expectation_method(::GaussianLikelihood) = AnalyticExpectation()
 
 # The closed form solution for a Poisson likelihood with an exponential inverse link function
 function expected_loglikelihood(
@@ -140,7 +139,7 @@ function expected_loglikelihood(
     return sum((y .* f_μ) - exp.(f_μ .+ (var.(q_f) / 2)) - loggamma.(y .+ 1))
 end
 
-_default_quadrature(::PoissonLikelihood{ExpLink}) = AnalyticExpectation()
+default_expectation_method(::PoissonLikelihood{ExpLink}) = AnalyticExpectation()
 
 # The closed form solution for an Exponential likelihood with an exponential inverse link function
 function expected_loglikelihood(
@@ -153,7 +152,7 @@ function expected_loglikelihood(
     return sum(-f_μ - y .* exp.((var.(q_f) / 2) .- f_μ))
 end
 
-_default_quadrature(::ExponentialLikelihood{ExpLink}) = AnalyticExpectation()
+default_expectation_method(::ExponentialLikelihood{ExpLink}) = AnalyticExpectation()
 
 # The closed form solution for a Gamma likelihood with an exponential inverse link function
 function expected_loglikelihood(
@@ -169,4 +168,4 @@ function expected_loglikelihood(
     )
 end
 
-_default_quadrature(::GammaLikelihood{ExpLink}) = AnalyticExpectation()
+default_expectation_method(::GammaLikelihood{ExpLink}) = AnalyticExpectation()
