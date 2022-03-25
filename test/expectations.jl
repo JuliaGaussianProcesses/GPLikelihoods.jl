@@ -29,7 +29,7 @@
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
         methods = [GaussHermite(100), MonteCarlo(1e7)]
         def = GPLikelihoods._default_quadrature(lik)
-        if def isa Analytic
+        if def isa GPLikelihoods.Analytic
             push!(methods, def)
         end
         y = rand.(rng, lik.(zeros(10)))

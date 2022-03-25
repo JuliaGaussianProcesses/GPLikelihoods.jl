@@ -28,7 +28,6 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
-export DefaultQuadrature, Analytic, GaussHermite, MonteCarlo
 
 # Links
 include("links.jl")
