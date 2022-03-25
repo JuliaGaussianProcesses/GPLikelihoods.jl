@@ -44,7 +44,8 @@
     @test GPLikelihoods.expected_loglikelihood(
         GaussHermiteExpectation(), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
-    @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa GaussHermiteExpectation
+    @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa
+        GaussHermiteExpectation
 
     @testset "testing Zygote compatibility with GaussHermiteExpectation" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
         N = 10

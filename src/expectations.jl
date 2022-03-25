@@ -82,20 +82,16 @@ function expected_loglikelihood(
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
     # (see e.g. en.wikipedia.org/wiki/Gauss%E2%80%93Hermite_quadrature)
-    return sum(
-        Broadcast.instantiate(
-            Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
-                # of marginal distribution q(fᵢ) and observation yᵢ
-                expected_loglikelihood(gh, lik, q_fᵢ, yᵢ)
-            end,
-        )
-    )
+    return sum(Broadcast.instantiate(
+        Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
+            # of marginal distribution q(fᵢ) and observation yᵢ
+            expected_loglikelihood(gh, lik, q_fᵢ, yᵢ)
+        end,
+    ))
 end
 
 # Compute the expected_loglikelihood for one observation and a marginal distributions
-function expected_loglikelihood(
-    gh::GaussHermiteExpectation, lik, q_f::Normal, y
-)
+function expected_loglikelihood(gh::GaussHermiteExpectation, lik, q_f::Normal, y)
     μ = mean(q_f)
     σ̃ = sqrt2 * std(q_f)
     return invsqrtπ * sum(Broadcast.instantiate(
@@ -111,6 +107,6 @@ function expected_loglikelihood(
     ::AnalyticExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     return error(
-        "No analytic solution exists for $(typeof(lik)). Use `DefaultExpectationMethod`, `GaussHermiteExpectation` or `MonteCarloExpectation` instead."
+        "No analytic solution exists for $(typeof(lik)). Use `DefaultExpectationMethod`, `GaussHermiteExpectation` or `MonteCarloExpectation` instead.",
     )
 end
