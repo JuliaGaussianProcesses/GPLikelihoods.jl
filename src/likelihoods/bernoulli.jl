@@ -18,4 +18,4 @@ BernoulliLikelihood(l=logistic) = BernoulliLikelihood(link(l))
 
 (l::BernoulliLikelihood)(f::Real) = Bernoulli(l.invlink(f))
 
-(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(l.(fs))
+(l::BernoulliLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))

@@ -20,4 +20,4 @@ GammaLikelihood(α::Real=1.0, l=exp) = GammaLikelihood(α, link(l))
 
 (l::GammaLikelihood)(f::Real) = Gamma(l.α, l.invlink(f))
 
-(l::GammaLikelihood)(fs::AbstractVector{<:Real}) = Product(l.(fs))
+(l::GammaLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))

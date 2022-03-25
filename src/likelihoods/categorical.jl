@@ -36,4 +36,4 @@ function (l::CategoricalLikelihood)(f::AbstractVector{<:Real})
     return Categorical(l.invlink(f))
 end
 
-(l::CategoricalLikelihood)(fs::AbstractVector) = Product(l.(fs))
+(l::CategoricalLikelihood)(fs::AbstractVector) = Product(map(l, fs))
