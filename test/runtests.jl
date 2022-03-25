@@ -1,5 +1,5 @@
 using GPLikelihoods
-using GPLikelihoods: GaussHermite, MonteCarlo
+using GPLikelihoods: GaussHermiteExpectation, MonteCarloExpectation
 using GPLikelihoods.TestInterface: test_interface
 using Test
 using Random
