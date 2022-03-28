@@ -48,7 +48,7 @@
         GaussHermiteExpectation
 
     # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
-    @testset "testing Zygote compatibility with GaussHermiteExpectation" begin 
+    @testset "testing Zygote compatibility with GaussHermiteExpectation" begin
         N = 10
         gh = GaussHermiteExpectation(12)
         μs = randn(rng, N)
