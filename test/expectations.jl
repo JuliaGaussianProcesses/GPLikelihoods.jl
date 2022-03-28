@@ -22,12 +22,15 @@
             m.quadrature == GPLikelihoods.AnalyticExpectation && m.lik != Any
         ]
         for lik_type in analytic_likelihoods
-            @test any(lik isa lik_type for lik in likelihoods_to_test)
+            lik_type_instances = filter(lik -> isa(lik, lik_type), likelihoods_to_test)
+            @test !isempty(lik_type_instances)
+            lik = first(lik_type_instances)
+            @test default_expectation_method(lik) isa GPLikelihoods.AnalyticExpectation
         end
     end
 
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
-        methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7)]
+        methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7), GPLikelihoods.DefaultExpectationMethod()]
         def = GPLikelihoods.default_expectation_method(lik)
         if def isa GPLikelihoods.AnalyticExpectation
             push!(methods, def)
