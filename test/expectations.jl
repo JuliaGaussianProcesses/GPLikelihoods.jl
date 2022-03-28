@@ -25,7 +25,8 @@
             lik_type_instances = filter(lik -> isa(lik, lik_type), likelihoods_to_test)
             @test !isempty(lik_type_instances)
             lik = first(lik_type_instances)
-            @test default_expectation_method(lik) isa GPLikelihoods.AnalyticExpectation
+            @test GPLikelihoods.default_expectation_method(lik) isa
+                GPLikelihoods.AnalyticExpectation
         end
     end
 
