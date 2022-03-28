@@ -34,7 +34,9 @@ This function computes the expected log likelihood:
 ```math
     ∫ q(f) log p(y | f) df
 ```
-where `p(y | f)` is the process likelihood. This is described by `lik`, which should be a callable that takes `f` as input and returns a Distribution over `y` that supports `loglikelihood(lik(f), y)`.
+where `p(y | f)` is the process likelihood. This is described by `lik`, which should be a
+callable that takes `f` as input and returns a Distribution over `y` that supports
+`loglikelihood(lik(f), y)`.
 
 `q(f)` is an approximation to the latent function values `f` given by:
 ```math
@@ -56,7 +58,10 @@ expected_loglikelihood(quadrature, lik, q_f, y)
 """
     expected_loglikelihood(::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector)
 
-The expected log likelihood, using the default quadrature method for the given likelihood. (The default quadrature method is defined by `default_expectation_method(lik)`, and should be the closed form solution if it exists, but otherwise defaults to Gauss-Hermite quadrature.)
+The expected log likelihood, using the default quadrature method for the given likelihood.
+(The default quadrature method is defined by `default_expectation_method(lik)`, and should
+be the closed form solution if it exists, but otherwise defaults to Gauss-Hermite
+quadrature.)
 """
 function expected_loglikelihood(
     ::DefaultExpectationMethod, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector

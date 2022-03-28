@@ -19,7 +19,5 @@ using Zygote
         include("likelihoods/exponential.jl")
         include("likelihoods/negativebinomial.jl")
     end
-    @testset "expectations" begin
-        include("expectations.jl")
-    end
+    include("expectations.jl")
 end

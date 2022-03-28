@@ -1,4 +1,4 @@
-@testset "expected_loglikelihood" begin
+@testset "expectations" begin
     # Test that the various methods of computing expectations return the same
     # result.
     rng = MersenneTwister(123456)
@@ -47,11 +47,13 @@
     @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa
         GaussHermiteExpectation
 
-    @testset "testing Zygote compatibility with GaussHermiteExpectation" begin # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
+    # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
+    @testset "testing Zygote compatibility with GaussHermiteExpectation" begin 
         N = 10
         gh = GaussHermiteExpectation(12)
         μs = randn(rng, N)
         σs = rand(rng, N)
+
         # Test differentiation with variational parameters
         for lik in likelihoods_to_test
             y = rand.(rng, lik.(rand.(Normal.(μs, σs))))
@@ -61,6 +63,7 @@
             @test all(isfinite, gμ)
             @test all(isfinite, glogσ)
         end
+
         # Test differentiation with likelihood parameters
         # Test GaussianLikelihood parameter
         σ = 1.0
@@ -73,6 +76,7 @@
             end,
         )
         @test isfinite(glogσ)
+
         # Test GammaLikelihood parameter
         α = 2.0
         y = rand.(rng, Gamma.(α, rand(N)))
