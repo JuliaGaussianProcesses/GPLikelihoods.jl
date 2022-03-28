@@ -33,6 +33,4 @@ end
 
 (l::NegativeBinomialLikelihood)(f::Real) = NegativeBinomial(l.successes, l.invlink(f))
 
-function (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real})
-    return Product(NegativeBinomial.(l.successes, l.invlink.(fs)))
-end
+(l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))

@@ -18,4 +18,4 @@ PoissonLikelihood(l=exp) = PoissonLikelihood(link(l))
 
 (l::PoissonLikelihood)(f::Real) = Poisson(l.invlink(f))
 
-(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(Poisson.(l.invlink.(fs)))
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
