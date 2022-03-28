@@ -39,10 +39,10 @@
     end
 
     @test GPLikelihoods.expected_loglikelihood(
-        MonteCarloExpectation(20), GaussianLikelihood(), q_f, zeros(10)
+        MonteCarloExpectation(1), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
     @test GPLikelihoods.expected_loglikelihood(
-        GaussHermiteExpectation(), GaussianLikelihood(), q_f, zeros(10)
+        GaussHermiteExpectation(1), GaussianLikelihood(), q_f, zeros(10)
     ) isa Real
     @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa
         GaussHermiteExpectation
