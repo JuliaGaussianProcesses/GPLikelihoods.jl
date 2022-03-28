@@ -34,6 +34,8 @@ include("links.jl")
 
 # Likelihoods
 abstract type AbstractLikelihood end
+
+include("expectations.jl")
 include("likelihoods/bernoulli.jl")
 include("likelihoods/categorical.jl")
 include("likelihoods/gaussian.jl")
