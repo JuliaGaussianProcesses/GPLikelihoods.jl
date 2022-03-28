@@ -31,7 +31,11 @@
     end
 
     @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
-        methods = [GaussHermiteExpectation(100), MonteCarloExpectation(1e7), GPLikelihoods.DefaultExpectationMethod()]
+        methods = [
+            GaussHermiteExpectation(100),
+            MonteCarloExpectation(1e7),
+            GPLikelihoods.DefaultExpectationMethod(),
+        ]
         def = GPLikelihoods.default_expectation_method(lik)
         if def isa GPLikelihoods.AnalyticExpectation
             push!(methods, def)
