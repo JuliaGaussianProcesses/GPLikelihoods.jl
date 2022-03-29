@@ -28,6 +28,7 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
+export expected_loglikelihood
 
 # Links
 include("links.jl")
