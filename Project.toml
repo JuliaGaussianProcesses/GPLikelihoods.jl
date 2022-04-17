@@ -1,20 +1,28 @@
 name = "GPLikelihoods"
 uuid = "6031954c-0455-49d7-b3b9-3e1c99afaf40"
 authors = ["JuliaGaussianProcesses Team"]
-version = "0.3.1"
+version = "0.4.1"
 
 [deps]
+ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 Functors = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
 InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
+IrrationalConstants = "92d709cd-6900-40b7-9082-c6be49f344b6"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+ChainRulesCore = "1.7"
 Distributions = "0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
+FastGaussQuadrature = "0.4"
 Functors = "0.1, 0.2"
 InverseFunctions = "0.1.2"
+IrrationalConstants = "0.1"
+SpecialFunctions = "1, 2"
 StatsFuns = "0.9.13"
-julia = "1.3"
+julia = "1.6"
