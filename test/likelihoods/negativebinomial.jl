@@ -1,5 +1,6 @@
 @testset "NegativeBinomialLikelihood" begin
-    for (nbparam, kwarg) in ((NBParamI, :successes), (NBParamII, :failures), (NBParamIII, :successes))
+    for (nbparam, kwarg) in
+        ((NBParamI, :successes), (NBParamII, :failures), (NBParamIII, :successes))
         @testset "$(nameof(nbparam))" begin
             @eval begin
                 sym_kwarg = $(Meta.quot(kwarg))
