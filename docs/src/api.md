@@ -15,6 +15,15 @@ HeteroscedasticGaussianLikelihood
 PoissonLikelihood
 ```
 
+### Negative Binomial
+
+```@docs
+NegativeBinomialLikelihood
+NBParamI
+NBParamII
+NBParamIII
+```
+
 ## Links
 
 ```@docs

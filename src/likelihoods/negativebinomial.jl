@@ -1,36 +1,111 @@
+abstract type NBParam end
+
 """
-    NegativeBinomialLikelihood(l=logistic; successes::Real=1)
+    NegativeBinomialLikelihood{NBParam}(l=logistic/exp; kwargs...)
 
-Negative binomial likelihood with number of successes `successes`.
+There are many possible parametrizations for the Negative Binomial likelihood.
+The `NegativeBinomialLikelihood` has a special structure, the first type `NBParam`
+defines what parametrization is used.
+Each `NBParam` has its own documentation:
+- [`NBParamI`](@ref): This is the definition used by Distributions.jl.
+- [`NBParamII`](@ref): This is the definition used by Wikipedia.
+- [`NBParamIII`](@ref): This is the definition based on the mean.
 
-```math
-    p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
-```
-On calling, this returns a negative binomial distribution with `successes` successes and 
-probability of success equal to `l(f)`.
-
-!!! warning "Parameterization" 
-    The parameter `successes` is different from the parameter `r` in the 
-    [Wikipedia definition](http://en.wikipedia.org/wiki/Negative_binomial_distribution), 
-    which denotes the number of failures.
-    This parametrization is used in order to stay consistent with the parametrization in 
-    [Distributions.jl](https://juliastats.org/Distributions.jl/stable/univariate/#Distributions.NegativeBinomial).
-    To use the Wikipedia definition, set `successes` as the number of "failures" and
-    change the probability of success from `l(f)` to `1 - l(f)`.
-    Note that with symmetric functions like the [`LogisticLink`](@ref), this corresponds to
-    using `l(-f)`.
+To create a new parametrization, you need to;
+- Create a new typee from `struct MyNBParam <: NBParam end`
+- Dispatch [`to_dist_params`](@ref): `to_dist_params(l::NegativeBinomialLikelihood{MyNBParam}, f::Real)`
+to return the parameters for the [`NegativeBinomial`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial) constructor
+- Write a constructor for `NegativeBinomialLikelihood{MyNBParam}`
 """
-struct NegativeBinomialLikelihood{Tl<:AbstractLink,T<:Real} <: AbstractLikelihood
-    successes::T    # number of successes parameter
+struct NegativeBinomialLikelihood{NBParam,Tl<:AbstractLink,T} <: AbstractLikelihood
+    params::T # Likelihood parameters (depends of NBParam)
     invlink::Tl
+    function NegativeBinomialLikelihood{Tparam}(params, invlink) where {Tparam}
+        invlink = link(invlink)
+        return new{Tparam,typeof(invlink),typeof(params)}(params, invlink)
+    end
 end
 
-function NegativeBinomialLikelihood(l=logistic; successes::Real=1)
-    return NegativeBinomialLikelihood(successes, link(l))
-end
+@deprecate NegativeBinomialLikelihood(l=logistic; successes=1) NegativeBinomialLikelihood{
+    NBParamI
+}(
+    l; successes
+)
 
 @functor NegativeBinomialLikelihood
 
-(l::NegativeBinomialLikelihood)(f::Real) = NegativeBinomial(l.successes, l.invlink(f))
+function (l::NegativeBinomialLikelihood)(f::Real)
+    return NegativeBinomial(to_dist_params(l, f)...)
+end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
+
+"""
+    to_dist_params(l::NegativeBinomialLikelihood{NBParam}, f::Real)->Tuple{Real,Real}
+
+Take parameters from a given parametrization `NBParam` to the parametrization
+used by `Distributions.jl`
+"""
+to_dist_params
+
+"""
+    NBParamI
+
+Negative Binomial parametrization with `successes` the number of successes and
+`l(f)` the probability of `success`.
+This corresponds to the definition used by [Distributions.jl](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
+
+```math
+  p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
+```
+"""
+struct NBParamI <: NBParam end
+
+function to_dist_params(l::NegativeBinomialLikelihood{NBParamI}, f::Real)
+    return l.params.successes, l.invlink(f)
+end
+
+function NegativeBinomialLikelihood{NBParamI}(l=logistic; successes::Real=1)
+    return NegativeBinomialLikelihood{NBParamI}((; successes), l)
+end
+
+"""
+    NBParamII
+
+Negative Binomial parametrization with `failures` the number of failures and
+`l(f)` the probability of `success`.
+This corresponds to the definition used by [Wikipedia](https://en.wikipedia.org/wiki/Negative_binomial_distribution).
+
+```math
+  p(k|failures, f) = \\frac{\\Gamma(k+failures)}{k! \\Gamma(failure)} l(f)^k (1 - l(f))^{failures}
+```
+"""
+struct NBParamII <: NBParam end
+
+function to_dist_params(l::NegativeBinomialLikelihood{NBParamII}, f::Real)
+    return l.params.failures, 1 - l.invlink(f)
+end
+
+function NegativeBinomialLikelihood{NBParamII}(l=logistic; failures::Real=1)
+    return NegativeBinomialLikelihood{NBParamII}((; failures), l)
+end
+
+"""
+    NBParamIII
+
+Negative Binomial parametrization with mean `μ=l(f)` and number of successes `successes`.
+See the definition given in the [Wikipedia article](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Alternative_formulations)
+"""
+struct NBParamIII <: NBParam end
+
+function to_dist_params(l::NegativeBinomialLikelihood{NBParamIII}, f::Real)
+    μ = l.invlink(f)
+    r = l.params.successes
+    return r, μ / (μ + r)
+end
+
+function NegativeBinomialLikelihood{NBParamIII}(
+    l=logistic; successes::Real=1
+)
+    return NegativeBinomialLikelihood{NBParamIII}((; successes), l)
+end
