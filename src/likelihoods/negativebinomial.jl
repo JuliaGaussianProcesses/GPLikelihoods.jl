@@ -104,8 +104,6 @@ function to_dist_params(l::NegativeBinomialLikelihood{NBParamIII}, f::Real)
     return r, μ / (μ + r)
 end
 
-function NegativeBinomialLikelihood{NBParamIII}(
-    l=exp; successes::Real=1
-)
+function NegativeBinomialLikelihood{NBParamIII}(l=exp; successes::Real=1)
     return NegativeBinomialLikelihood{NBParamIII}((; successes), l)
 end
