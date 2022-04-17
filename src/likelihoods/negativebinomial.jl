@@ -105,7 +105,7 @@ function to_dist_params(l::NegativeBinomialLikelihood{NBParamIII}, f::Real)
 end
 
 function NegativeBinomialLikelihood{NBParamIII}(
-    l=logistic; successes::Real=1
+    l=exp; successes::Real=1
 )
     return NegativeBinomialLikelihood{NBParamIII}((; successes), l)
 end
