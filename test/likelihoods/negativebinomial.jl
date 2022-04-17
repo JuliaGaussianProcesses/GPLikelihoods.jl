@@ -6,7 +6,9 @@
                 sym_kwarg = $(Meta.quot(kwarg))
                 for args in ((logistic,), (LogisticLink(),)), kwargs in ((), (; $(kwarg)=1))
                     lik = NegativeBinomialLikelihood{$(nbparam)}(args...; kwargs...)
-                    @test lik isa NegativeBinomialLikelihood{$(nbparam),LogisticLink,<:NamedTuple{<:Any,<:Tuple{Int}}}
+                    @test lik isa NegativeBinomialLikelihood{
+                        $(nbparam),LogisticLink,<:NamedTuple{<:Any,<:Tuple{Int}}
+                    }
                 end
 
                 for args in ((normcdf,), (NormalCDFLink(),)), kwargs in ((; $(kwarg)=2.0),)
