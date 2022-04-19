@@ -33,12 +33,23 @@ end
     l; successes
 )
 
-@functor NegativeBinomialLikelihood
-
 function (l::NegativeBinomialLikelihood)(::Real)
     return error(
         "not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs"
     )
+end
+
+# Workaround for https://github.com/FluxML/Functors.jl/issues/40
+function Functors.makefunctor(m::Module, T::Type{<:Tlik}, fs=fieldnames(T)) where {Tparam,Tlik<:NegativeBinomialLikelihood{Tparam}} 
+    yᵢ = 0
+    escargs = map(fieldnames(T)) do f
+        :(y[$(yᵢ += 1)])
+    end
+    escfs = [:($f = x.$f) for f in fs]
+
+    @eval m begin
+        $Functors.functor(::Type{<:$T}, x) = ($(escfs...),), y -> $T($(escargs...))
+    end
 end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
@@ -102,3 +113,4 @@ end
 function NegativeBinomialLikelihood{NBParamIII}(l=exp; successes::Real=1)
     return NegativeBinomialLikelihood{NBParamIII}((; successes), l)
 end
+
