@@ -43,7 +43,6 @@ end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
 
-
 """
     NBParamI
 
