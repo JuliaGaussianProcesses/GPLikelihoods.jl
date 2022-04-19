@@ -44,7 +44,7 @@ function Functors.functor(
     ::Type{<:Tlik}, x
 ) where {Tparam,Tlik<:NegativeBinomialLikelihood{Tparam}}
     function reconstruct_lik(xs)
-        NegativeBinomialLikelihood{Tparam}(xs.params, xs.invlink)
+        return NegativeBinomialLikelihood{Tparam}(xs.params, xs.invlink)
     end
     return (params = x.params, invlink = x.invlink), reconstruct_lik
 end
