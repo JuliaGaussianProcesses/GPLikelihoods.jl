@@ -13,9 +13,10 @@ Each `NBParam` has its own documentation:
 
 To create a new parametrization, you need to;
 - Create a new typee from `struct MyNBParam <: NBParam end`
-- Dispatch [`to_dist_params`](@ref): `to_dist_params(l::NegativeBinomialLikelihood{MyNBParam}, f::Real)`
-to return the parameters for the [`NegativeBinomial`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial) constructor
-- Write a constructor for `NegativeBinomialLikelihood{MyNBParam}`
+- Dispatch `(l::NegativeBinomialLikelihood{MyNBParam})(f::Real)`, which return the [`NegativeBinomial`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial) from `Distributions.jl`.
+`NegativeBinomial` follows the parametrization [`NBParamI`](@ref), i.e. the first argument is the number of successes
+and the second argument is the probability of success.
+- Write a constructor for `NegativeBinomialLikelihood{MyNBParam}(link; kwargs...)`
 """
 struct NegativeBinomialLikelihood{NBParam,Tl<:AbstractLink,T} <: AbstractLikelihood
     params::T # Likelihood parameters (depends of NBParam)
@@ -34,19 +35,12 @@ end
 
 @functor NegativeBinomialLikelihood
 
-function (l::NegativeBinomialLikelihood)(f::Real)
-    return NegativeBinomial(to_dist_params(l, f)...)
+function (l::NegativeBinomialLikelihood)(::Real)
+    error("not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs")
 end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
 
-"""
-    to_dist_params(l::NegativeBinomialLikelihood{NBParam}, f::Real)->Tuple{Real,Real}
-
-Take parameters from a given parametrization `NBParam` to the parametrization
-used by `Distributions.jl`
-"""
-to_dist_params
 
 """
     NBParamI
@@ -61,8 +55,8 @@ This corresponds to the definition used by [Distributions.jl](https://juliastats
 """
 struct NBParamI <: NBParam end
 
-function to_dist_params(l::NegativeBinomialLikelihood{NBParamI}, f::Real)
-    return l.params.successes, l.invlink(f)
+function (l::NegativeBinomialLikelihood{NBParamI})(f::Real)
+    return NegativeBinomial(l.params.successes, l.invlink(f))
 end
 
 function NegativeBinomialLikelihood{NBParamI}(l=logistic; successes::Real=1)
@@ -82,8 +76,8 @@ This corresponds to the definition used by [Wikipedia](https://en.wikipedia.org/
 """
 struct NBParamII <: NBParam end
 
-function to_dist_params(l::NegativeBinomialLikelihood{NBParamII}, f::Real)
-    return l.params.failures, 1 - l.invlink(f)
+function (l::NegativeBinomialLikelihood{NBParamII})(f::Real)
+    return NegativeBinomial(l.params.failures, 1 - l.invlink(f))
 end
 
 function NegativeBinomialLikelihood{NBParamII}(l=logistic; failures::Real=1)
@@ -98,10 +92,10 @@ See the definition given in the [Wikipedia article](https://en.wikipedia.org/wik
 """
 struct NBParamIII <: NBParam end
 
-function to_dist_params(l::NegativeBinomialLikelihood{NBParamIII}, f::Real)
+function (l::NegativeBinomialLikelihood{NBParamIII})(f::Real)
     μ = l.invlink(f)
     r = l.params.successes
-    return r, μ / (μ + r)
+    return NegativeBinomial(r, μ / (μ + r))
 end
 
 function NegativeBinomialLikelihood{NBParamIII}(l=exp; successes::Real=1)
