@@ -40,18 +40,13 @@ function (l::NegativeBinomialLikelihood)(::Real)
 end
 
 # Workaround for https://github.com/FluxML/Functors.jl/issues/40
-function Functors.makefunctor(
-    m::Module, T::Type{<:Tlik}, fs=fieldnames(T)
+function Functors.functor(
+    ::Type{<:Tlik}, x
 ) where {Tparam,Tlik<:NegativeBinomialLikelihood{Tparam}}
-    yᵢ = 0
-    escargs = map(fieldnames(T)) do f
-        :(y[$(yᵢ += 1)])
+    function reconstruct_lik(xs)
+        NegativeBinomialLikelihood{Tparam}(xs.params, xs.invlink)
     end
-    escfs = [:($f = x.$f) for f in fs]
-
-    @eval m begin
-        $Functors.functor(::Type{<:$T}, x) = ($(escfs...),), y -> $T($(escargs...))
-    end
+    return (params = x.params, invlink = x.invlink), reconstruct_lik
 end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
