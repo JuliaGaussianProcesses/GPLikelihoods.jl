@@ -46,7 +46,7 @@ function Functors.functor(
     function reconstruct_lik(xs)
         return NegativeBinomialLikelihood{Tparam}(xs.params, xs.invlink)
     end
-    return (params = x.params, invlink = x.invlink), reconstruct_lik
+    return (params=x.params, invlink=x.invlink), reconstruct_lik
 end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
