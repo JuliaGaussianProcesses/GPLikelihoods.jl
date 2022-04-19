@@ -115,4 +115,3 @@ end
 function NegativeBinomialLikelihood{NBParamIII}(l=exp; successes::Real=1)
     return NegativeBinomialLikelihood{NBParamIII}((; successes), l)
 end
-
