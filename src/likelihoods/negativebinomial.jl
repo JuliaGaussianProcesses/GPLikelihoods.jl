@@ -40,7 +40,9 @@ function (l::NegativeBinomialLikelihood)(::Real)
 end
 
 # Workaround for https://github.com/FluxML/Functors.jl/issues/40
-function Functors.makefunctor(m::Module, T::Type{<:Tlik}, fs=fieldnames(T)) where {Tparam,Tlik<:NegativeBinomialLikelihood{Tparam}} 
+function Functors.makefunctor(
+    m::Module, T::Type{<:Tlik}, fs=fieldnames(T)
+) where {Tparam,Tlik<:NegativeBinomialLikelihood{Tparam}}
     yᵢ = 0
     escargs = map(fieldnames(T)) do f
         :(y[$(yᵢ += 1)])
