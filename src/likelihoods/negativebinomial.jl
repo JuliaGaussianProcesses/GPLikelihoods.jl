@@ -36,7 +36,9 @@ end
 @functor NegativeBinomialLikelihood
 
 function (l::NegativeBinomialLikelihood)(::Real)
-    error("not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs")
+    return error(
+        "not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs"
+    )
 end
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
