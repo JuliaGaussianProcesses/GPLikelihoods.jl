@@ -11,7 +11,8 @@
         end
     end
     # Test based on mean = link(f)
-    for (nbparam, args) in ((NBParamI, (2.0,)), (NBParamII, (3.0,)), (NBParamPower, (2.0, 2.0)))
+    for (nbparam, args) in
+        ((NBParamI, (2.0,)), (NBParamII, (3.0,)), (NBParamPower, (2.0, 2.0)))
         @testset "$(nameof(nbparam))" begin
             lik = NegativeBinomialLikelihood(nbparam(args...), exp)
             @test lik isa NegativeBinomialLikelihood{<:nbparam}
