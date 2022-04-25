@@ -1,4 +1,10 @@
 abstract type NBParam end
+default_invlink(::NBParam) = error("Not implemented")
+
+abstract type NBParamProb <: NBParam end
+default_invlink(::NBParamProb) = logistic
+abstract type NBParamMean <: NBParam end
+default_invlink(::NBParamMean) = exp
 
 """
     NegativeBinomialLikelihood(param::NBParam, l::Function/Link)
@@ -7,15 +13,18 @@ There are many possible parametrizations for the Negative Binomial likelihood.
 We follow the convention laid out in p.137 of [^1] and some common parametrizations.
 The `NegativeBinomialLikelihood` has a special structure, the first type `NBParam`
 defines what parametrization is used, and contains the related parameters.
+`NBParam` itself has two subtypes:
+- `NBParamProb` for parametrizations where `f->p`, the probability of success
+- `NBParamMean` for parametrizations where `f->μ`, the mean
 
 ## `NBParam` predefined types
 
-### `NBParam` with `p = link(f)` the probability of success
+### `NBParamProb` types with `p = link(f)` the probability of success
 - [`NBParamSuccess`](@ref): This is the definition used in [`Distributions.jl`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
 - [`NBParamFailure`](@ref): This is the definition used in [Wikipedia](https://en.wikipedia.org/wiki/Negative_binomial_distribution).
 
 
-### `NBParam` with `mean = link(f)`
+### `NBParamMean` types with `mean = link(f)`
 - [`NBParamI`](@ref): Mean is linked to `f` and variance is given by `μ(1 + α)`
 - [`NBParamII`](@ref): Mean is linked to `f` and variance is given by `μ(1 + αμ)`
 - [`NBParamPower`](@ref): Mean is linked to `f` and variance is given by `μ + αμ^ρ`
@@ -48,7 +57,7 @@ true
 struct NegativeBinomialLikelihood{Tp<:NBParam,Tl<:AbstractLink} <: AbstractLikelihood
     params::Tp # Likelihood parametrization (and parameters)
     invlink::Tl
-    function NegativeBinomialLikelihood(params::Tparam, invlink) where {Tparam}
+    function NegativeBinomialLikelihood(params::Tparam, invlink=default_invlink(params)) where {Tparam<:NBParam}
         invlink = link(invlink)
         return new{Tparam,typeof(invlink)}(params, invlink)
     end
@@ -79,7 +88,7 @@ This corresponds to the definition used by [Distributions.jl](https://juliastats
   p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
 ```
 """
-struct NBParamSuccess{T} <: NBParam
+struct NBParamSuccess{T} <: NBParamProb
     successes::T
 end
 
@@ -98,7 +107,7 @@ This corresponds to the definition used by [Wikipedia](https://en.wikipedia.org/
   p(k|failures, f) = \\frac{\\Gamma(k+failures)}{k! \\Gamma(failure)} l(f)^k (1 - l(f))^{failures}
 ```
 """
-struct NBParamFailure{T} <: NBParam
+struct NBParamFailure{T} <: NBParamProb
     failures::T
 end
 
@@ -114,7 +123,7 @@ _nb_mean_var_to_r_p(μ::Real, v::Real) = abs2(μ) / (v - μ), μ / v
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + α)`.
 """
-struct NBParamI{T} <: NBParam
+struct NBParamI{T} <: NBParamMean
     α::T
 end
 
@@ -129,7 +138,7 @@ end
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + αμ)`.
 """
-struct NBParamII{T} <: NBParam
+struct NBParamII{T} <: NBParamMean
     α::T
 end
 
@@ -144,7 +153,7 @@ end
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + αμ^ρ)`.
 """
-struct NBParamPower{Tα,Tρ} <: NBParam
+struct NBParamPower{Tα,Tρ} <: NBParamMean
     α::Tα
     ρ::Tρ
 end
