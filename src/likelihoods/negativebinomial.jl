@@ -60,6 +60,7 @@ struct NegativeBinomialLikelihood{Tp<:NBParam,Tl<:AbstractLink} <: AbstractLikel
     function NegativeBinomialLikelihood(
         params::Tparam, invlink=default_invlink(params)
     ) where {Tparam<:NBParam}
+        # we convert `invlink` into `Link` if it's not the case already
         invlink = link(invlink)
         return new{Tparam,typeof(invlink)}(params, invlink)
     end
@@ -71,7 +72,9 @@ end
 
 function (l::NegativeBinomialLikelihood)(::Real)
     return error(
-        "not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs"
+        "not implemented for type $(typeof(l)). For your custom type to run you ",
+        "need to implement `(l::NegativeBinomialLikelihood{<:MyNBParam})(f::Real)`.",
+        "For a full explanation, see `NegativeBinomialLikelihood` docs",
     )
 end
 
