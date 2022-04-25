@@ -57,7 +57,9 @@ true
 struct NegativeBinomialLikelihood{Tp<:NBParam,Tl<:AbstractLink} <: AbstractLikelihood
     params::Tp # Likelihood parametrization (and parameters)
     invlink::Tl
-    function NegativeBinomialLikelihood(params::Tparam, invlink=default_invlink(params)) where {Tparam<:NBParam}
+    function NegativeBinomialLikelihood(
+        params::Tparam, invlink=default_invlink(params)
+    ) where {Tparam<:NBParam}
         invlink = link(invlink)
         return new{Tparam,typeof(invlink)}(params, invlink)
     end
