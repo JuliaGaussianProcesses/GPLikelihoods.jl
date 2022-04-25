@@ -1,13 +1,17 @@
-abstract type NBParam end
+"""
+    NegativeBinomialLikelihood
+
+Abstract base type for the Negative Binomial likelihood. There are multiple
+parametrizations; you must choose one of those concrete parameterizations.
+
+You can find all available parametrizations using
+```julia
+subtypes(NegativeBinomialLikelihood)
+```
+"""
+abstract type NegativeBinomialLikelihood end
 
 """
-    NegativeBinomialLikelihood(param::NBParam, l::Function/Link)
-
-There are many possible parametrizations for the Negative Binomial likelihood.
-We follow the convention laid out in p.137 of [^1] and some common parametrizations.
-The `NegativeBinomialLikelihood` has a special structure, the first type `NBParam`
-defines what parametrization is used, and contains the related parameters.
-
 ## `NBParam` predefined types
 
 ### `NBParam` with `p = link(f)` the probability of success
@@ -45,26 +49,6 @@ true
 
 [^1] Hilbe, Joseph M. Negative binomial regression. Cambridge University Press, 2011.
 """
-struct NegativeBinomialLikelihood{Tp<:NBParam,Tl<:AbstractLink} <: AbstractLikelihood
-    params::Tp # Likelihood parametrization (and parameters)
-    invlink::Tl
-    function NegativeBinomialLikelihood(params::Tparam, invlink) where {Tparam}
-        invlink = link(invlink)
-        return new{Tparam,typeof(invlink)}(params, invlink)
-    end
-end
-
-@deprecate NegativeBinomialLikelihood(l=logistic; successes=1) NegativeBinomialLikelihood(
-    NBParamI(successes), l
-)
-
-function (l::NegativeBinomialLikelihood)(::Real)
-    return error(
-        "not implemented for type $(typeof(l)). See `NegativeBinomialLikelihood` docs"
-    )
-end
-
-@functor NegativeBinomialLikelihood
 
 (l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
 
@@ -79,12 +63,13 @@ This corresponds to the definition used by [Distributions.jl](https://juliastats
   p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
 ```
 """
-struct NBParamSuccess{T} <: NBParam
+struct NBParamSuccess{T,Tl} <: NegativeBinomialLikelihood
     successes::T
+    invlink::Tl
 end
 
-function (l::NegativeBinomialLikelihood{<:NBParamSuccess})(f::Real)
-    return NegativeBinomial(l.params.successes, l.invlink(f))
+function (l::NBParamSuccess)(f::Real)
+    return NegativeBinomial(l.successes, l.invlink(f))
 end
 
 """
@@ -98,12 +83,13 @@ This corresponds to the definition used by [Wikipedia](https://en.wikipedia.org/
   p(k|failures, f) = \\frac{\\Gamma(k+failures)}{k! \\Gamma(failure)} l(f)^k (1 - l(f))^{failures}
 ```
 """
-struct NBParamFailure{T} <: NBParam
+struct NBParamFailure{T,Tl} <: NegativeBinomialLikelihood
     failures::T
+    invlink::Tl
 end
 
-function (l::NegativeBinomialLikelihood{<:NBParamFailure})(f::Real)
-    return NegativeBinomial(l.params.failures, 1 - l.invlink(f))
+function (l::NBParamFailure)(f::Real)
+    return NegativeBinomial(l.failures, 1 - l.invlink(f))
 end
 
 # Helper function to convert mean and variance to p and r
@@ -114,13 +100,14 @@ _nb_mean_var_to_r_p(μ::Real, v::Real) = abs2(μ) / (v - μ), μ / v
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + α)`.
 """
-struct NBParamI{T} <: NBParam
+struct NBParamI{T,Tl} <: NegativeBinomialLikelihood
     α::T
+    invlink::Tl
 end
 
-function (l::NegativeBinomialLikelihood{<:NBParamI})(f::Real)
+function (l::NBParamI)(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α)
+    v = μ * (1 + l.α)
     return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
 end
 
@@ -129,13 +116,14 @@ end
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + αμ)`.
 """
-struct NBParamII{T} <: NBParam
+struct NBParamII{T,Tl} <: NegativeBinomialLikelihood
     α::T
+    invlink::Tl
 end
 
-function (l::NegativeBinomialLikelihood{<:NBParamII})(f::Real)
+function (l::NBParamII)(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α * μ)
+    v = μ * (1 + l.α * μ)
     return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
 end
 
@@ -144,13 +132,14 @@ end
 
 Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + αμ^ρ)`.
 """
-struct NBParamPower{Tα,Tρ} <: NBParam
+struct NBParamPower{Tα,Tρ,Tl} <: NegativeBinomialLikelihood
     α::Tα
     ρ::Tρ
+    invlink::Tl
 end
 
-function (l::NegativeBinomialLikelihood{<:NBParamPower})(f::Real)
+function (l::NBParamPower)(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α * μ^l.params.ρ)
+    v = μ * (1 + l.α * μ^l.ρ)
     return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
 end
