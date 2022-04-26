@@ -19,9 +19,11 @@ PoissonLikelihood
 
 ```@docs
 NegativeBinomialLikelihood
+NBParamSuccess
+NBParamFailure
 NBParamI
 NBParamII
-NBParamIII
+NBParamPower
 ```
 
 ## Links
