@@ -89,7 +89,7 @@ Negative Binomial parametrization with `successes` the number of successes and
 This corresponds to the definition used by [Distributions.jl](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
 
 ```math
-  p(y|\text{successes}, p=invlink(f)) = \frac{\Gamma(y+\text{successes})}{y! \Gamma(\text{successes})} p^\text{successes} (1 - p)^y
+  p(y|\text{successes}, p=\text{invlink}(f)) = \frac{\Gamma(y+\text{successes})}{y! \Gamma(\text{successes})} p^\text{successes} (1 - p)^y
 ```
 """
 struct NBParamSuccess{T} <: NBParamProb
