@@ -140,7 +140,7 @@ end
 """
     NBParamII(α)
 
-Negative Binomial parametrization with mean `μ=invlink(f)` and variance `v=μ(1 + α * μ)`.
+Negative Binomial parametrization with mean `μ = invlink(f)` and variance `v = μ(1 + α * μ)`.
 """
 struct NBParamII{T} <: NBParamMean
     α::T
