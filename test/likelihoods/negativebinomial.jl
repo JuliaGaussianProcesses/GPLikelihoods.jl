@@ -19,7 +19,7 @@
             @test lik isa NegativeBinomialLikelihood{<:nbparam,ExpLink}
             lik = NegativeBinomialLikelihood(nbparam(args...), exp)
             @test lik isa NegativeBinomialLikelihood{<:nbparam,ExpLink}
-            x = rand()
+            x = randn()
             @test mean(lik(x)) ≈ exp(x)
             test_interface(lik, NegativeBinomial; functor_args=(:params, :invlink))
         end
