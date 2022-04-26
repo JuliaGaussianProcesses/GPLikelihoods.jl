@@ -85,11 +85,11 @@ end
     NBParamSuccess(successes)
 
 Negative Binomial parametrization with `successes` the number of successes and
-`link(f)` the probability of `success`.
+`link(f)` the probability of success.
 This corresponds to the definition used by [Distributions.jl](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
 
 ```math
-  p(k|successes, f) = \\frac{\\Gamma(k+successes)}{k! \\Gamma(successes)} l(f)^successes (1 - l(f))^k
+  p(k|\\text{successes}, f) = \\frac{\\Gamma(k+\\text{successes})}{k! \\Gamma(\\text{successes})} \\text{link}(f)^\\text{successes} (1 - \text{link}(f))^k
 ```
 """
 struct NBParamSuccess{T} <: NBParamProb
@@ -104,11 +104,11 @@ end
     NBParamFailure(failures)
 
 Negative Binomial parametrization with `failures` the number of failures and
-`l(f)` the probability of `success`.
+`link(f)` the probability of success.
 This corresponds to the definition used by [Wikipedia](https://en.wikipedia.org/wiki/Negative_binomial_distribution).
 
 ```math
-  p(k|failures, f) = \\frac{\\Gamma(k+failures)}{k! \\Gamma(failure)} l(f)^k (1 - l(f))^{failures}
+  p(k|failures, f) = \\frac{\\Gamma(k+failures)}{k! \\Gamma(failures)} l(f)^k (1 - l(f))^{failures}
 ```
 """
 struct NBParamFailure{T} <: NBParamProb
@@ -120,12 +120,12 @@ function (l::NegativeBinomialLikelihood{<:NBParamFailure})(f::Real)
 end
 
 # Helper function to convert mean and variance to p and r
-_nb_mean_var_to_r_p(μ::Real, v::Real) = abs2(μ) / (v - μ), μ / v
+_nb_mean_excessvar_to_r_p(μ::Real, ev::Real) = μ / ev, 1 / (1 + ev)
 
 """
     NBParamI(α)
 
-Negative Binomial parametrization with mean `μ=l(f)` and variance `v=μ(1 + α)`.
+Negative Binomial parametrization with mean `μ=invlink(f)` and variance `v=μ(1 + α)`.
 """
 struct NBParamI{T} <: NBParamMean
     α::T
@@ -133,8 +133,8 @@ end
 
 function (l::NegativeBinomialLikelihood{<:NBParamI})(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α)
-    return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
+    ev = l.params.α
+    return NegativeBinomial(_nb_mean_excessvar_to_r_p(μ, ev)...)
 end
 
 """
@@ -148,8 +148,8 @@ end
 
 function (l::NegativeBinomialLikelihood{<:NBParamII})(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α * μ)
-    return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
+    ev = l.params.α * μ
+    return NegativeBinomial(_nb_mean_excessvar_to_r_p(μ, ev)...)
 end
 
 """
@@ -164,6 +164,6 @@ end
 
 function (l::NegativeBinomialLikelihood{<:NBParamPower})(f::Real)
     μ = l.invlink(f)
-    v = μ * (1 + l.params.α * μ^l.params.ρ)
-    return NegativeBinomial(_nb_mean_var_to_r_p(μ, v)...)
+    ev = l.params.α * μ^l.params.ρ
+    return NegativeBinomial(_nb_mean_excessvar_to_r_p(μ, ev)...)
 end

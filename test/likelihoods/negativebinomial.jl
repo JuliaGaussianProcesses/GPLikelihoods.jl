@@ -1,5 +1,4 @@
 @testset "NegativeBinomialLikelihood" begin
-    rs = (10, 9.5)
     # Test based on p success
     for nbparam in (NBParamSuccess, NBParamFailure)
         for r in (10, 9.5) # Test both input types
@@ -14,7 +13,7 @@
     end
     # Test based on mean = link(f)
     for (nbparam, args) in
-        ((NBParamI, (2.0,)), (NBParamII, (3.0,)), (NBParamPower, (2.0, 2.0)))
+        ((NBParamI, (2.345,)), (NBParamII, (3.456,)), (NBParamPower, (2.34, 3.21)))
         @testset "$(nameof(nbparam))" begin
             lik = NegativeBinomialLikelihood(nbparam(args...))
             @test lik isa NegativeBinomialLikelihood{<:nbparam,ExpLink}
