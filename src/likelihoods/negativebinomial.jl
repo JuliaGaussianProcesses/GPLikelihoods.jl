@@ -1,5 +1,4 @@
 abstract type NBParam end
-default_invlink(::NBParam) = error("Not implemented")
 
 abstract type NBParamProb <: NBParam end
 default_invlink(::NBParamProb) = logistic
@@ -7,15 +6,15 @@ abstract type NBParamMean <: NBParam end
 default_invlink(::NBParamMean) = exp
 
 """
-    NegativeBinomialLikelihood(param::NBParam, l::Function/Link)
+    NegativeBinomialLikelihood(param::NBParam, link::Union{Function,Link})
 
 There are many possible parametrizations for the Negative Binomial likelihood.
-We follow the convention laid out in p.137 of [^1] and some common parametrizations.
-The `NegativeBinomialLikelihood` has a special structure, the first type `NBParam`
-defines what parametrization is used, and contains the related parameters.
+We follow the convention laid out in p.137 of [^1] and provide some common parametrizations.
+The `NegativeBinomialLikelihood` has a special structure; the first type parameter `NBParam`
+defines in what parametrization the latent function is used, and contains the other (scalar) parameters.
 `NBParam` itself has two subtypes:
-- `NBParamProb` for parametrizations where `f->p`, the probability of success
-- `NBParamMean` for parametrizations where `f->μ`, the mean
+- `NBParamProb` for parametrizations where `f -> p`, the probability of success of a Bernoulli event
+- `NBParamMean` for parametrizations where `f -> μ`, the mean of the number of events
 
 ## `NBParam` predefined types
 
@@ -24,16 +23,16 @@ defines what parametrization is used, and contains the related parameters.
 - [`NBParamFailure`](@ref): This is the definition used in [Wikipedia](https://en.wikipedia.org/wiki/Negative_binomial_distribution).
 
 
-### `NBParamMean` types with `mean = link(f)`
+### `NBParamMean` types with `μ = link(f)` the mean/expected number of events
 - [`NBParamI`](@ref): Mean is linked to `f` and variance is given by `μ(1 + α)`
 - [`NBParamII`](@ref): Mean is linked to `f` and variance is given by `μ(1 + αμ)`
-- [`NBParamPower`](@ref): Mean is linked to `f` and variance is given by `μ + αμ^ρ`
+- [`NBParamPower`](@ref): Mean is linked to `f` and variance is given by `μ + α*μ^ρ`
 
 
-To create a new parametrization, you need to;
-- Create a new type `struct MyNBParam{T} <: NBParam; myparams::T; end`
-- Dispatch `(l::NegativeBinomialLikelihood{<:MyNBParam})(f::Real)`, which return a [`NegativeBinomial`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial) from `Distributions.jl`.
-`NegativeBinomial` follows the parametrization of [`NBParamI`](@ref), i.e. the first argument is the number of successes
+To create a new parametrization, you need to:
+- create a new type `struct MyNBParam{T} <: NBParam; myparams::T; end`;
+- dispatch `(l::NegativeBinomialLikelihood{<:MyNBParam})(f::Real)`, which must return a [`NegativeBinomial`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial) from `Distributions.jl`.
+`NegativeBinomial` follows the parametrization of [`NBParamSuccess`](@ref), i.e. the first argument is the number of successes
 and the second argument is the probability of success.
 
 ## Examples
@@ -73,7 +72,7 @@ end
 function (l::NegativeBinomialLikelihood)(::Real)
     return error(
         "not implemented for type $(typeof(l)). For your custom type to run you ",
-        "need to implement `(l::NegativeBinomialLikelihood{<:MyNBParam})(f::Real)`.",
+        "need to implement `(l::NegativeBinomialLikelihood{<:MyNBParam})(f::Real)`. ",
         "For a full explanation, see `NegativeBinomialLikelihood` docs",
     )
 end
@@ -86,7 +85,7 @@ end
     NBParamSuccess(successes)
 
 Negative Binomial parametrization with `successes` the number of successes and
-`l(f)` the probability of `success`.
+`link(f)` the probability of `success`.
 This corresponds to the definition used by [Distributions.jl](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
 
 ```math
