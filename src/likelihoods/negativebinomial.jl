@@ -26,7 +26,7 @@ defines in what parametrization the latent function is used, and contains the ot
 ### `NBParamMean` types with `μ = invlink(f)` the mean/expected number of events
 - [`NBParamI`](@ref): Mean is linked to `f` and variance is given by `μ(1 + α)`
 - [`NBParamII`](@ref): Mean is linked to `f` and variance is given by `μ(1 + α * μ)`
-- [`NBParamPower`](@ref): Mean is linked to `f` and variance is given by `μ + α * μ^ρ`
+- [`NBParamPower`](@ref): Mean is linked to `f` and variance is given by `μ(1 + α * μ^ρ)`
 
 
 To create a new parametrization, you need to:
