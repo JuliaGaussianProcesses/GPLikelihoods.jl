@@ -125,7 +125,7 @@ _nb_mean_excessvar_to_r_p(μ::Real, ev::Real) = μ / ev, 1 / (1 + ev)
 """
     NBParamI(α)
 
-Negative Binomial parametrization with mean `μ=invlink(f)` and variance `v=μ(1 + α)`.
+Negative Binomial parametrization with mean `μ = invlink(f)` and variance `v = μ(1 + α)`.
 """
 struct NBParamI{T} <: NBParamMean
     α::T
