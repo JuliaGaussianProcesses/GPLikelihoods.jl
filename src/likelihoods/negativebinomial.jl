@@ -155,7 +155,7 @@ end
 """
     NBParamPower(α, ρ)
 
-Negative Binomial parametrization with mean `μ=invlink(f)` and variance `v=μ(1 + α * μ^ρ)`.
+Negative Binomial parametrization with mean `μ = invlink(f)` and variance `v = μ(1 + α * μ^ρ)`.
 """
 struct NBParamPower{Tα,Tρ} <: NBParamMean
     α::Tα
