@@ -22,9 +22,9 @@ Passing a `Real` will therefore return a [`UnivariateDistribution`](https://juli
 and passing an `AbstractVector{<:Real}` will return a [multivariate product of distributions](https://juliastats.org/Distributions.jl/latest/multivariate/#Product-distributions).
 ```@repl test-repl
 f = 2.0;
-GaussianLikelihood()(f)
+GaussianLikelihood()(f) == Normal(2.0, 1e-3)
 fs = [2.0, 3.0, 1.5];
-GaussianLikelihood()(fs)
+GaussianLikelihood()(fs) isa AbstractMvNormal
 ```
 
 Some likelihoods, like the [`CategoricalLikelihood`](@ref), requires multiple latent Gaussian processes,
@@ -34,9 +34,9 @@ using [`ColVecs` and `RowVecs` from KernelFunctions.jl](https://juliagaussianpro
 if you need to transform an `AbstractMatrix`).
 ```@repl test-repl
 fs = [2.0, 3.0, 4.5];
-CategoricalLikelihood()(fs)
+CategoricalLikelihood()(fs) isa Categorical
 Fs = [rand(3) for _ in 1:4];
-CategoricalLikelihood()(Fs)
+CategoricalLikelihood()(Fs) isa Product{<:Any,<:Categorical}
 ```
 
 ### Constrained parameters
