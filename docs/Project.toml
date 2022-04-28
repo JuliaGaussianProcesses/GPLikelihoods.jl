@@ -7,5 +7,5 @@ StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 [compat]
 Distributions = "0.25"
 Documenter = "0.25, 0.26, 0.27"
-GPLikelihoods = "0.2"
+GPLikelihoods = "0.4"
 StatsFuns = "0.9"
