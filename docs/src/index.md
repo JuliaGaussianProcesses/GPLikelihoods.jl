@@ -4,6 +4,7 @@ CurrentModule = GPLikelihoods
 
 ```@setup gpl
 using GPLikelihoods
+using Distributions
 ```
 # GPLikelihoods
 
