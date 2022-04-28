@@ -39,7 +39,7 @@ For example `ExpLink == Link{typeof(exp)}`.
 
 When passing a [`Link`](@ref) to a likelihood object, this link 
 corresponds to the transformation `p=link(f)` while, as mentioned in the
-[Constrained parameters](@ref) section, the statistics literature usually use
+[Constrained parameters](@ref) section, the statistics literature usually uses
  the denomination [**inverse link or mean function**](https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function) for it.
 
 ```@docs
