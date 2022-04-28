@@ -18,4 +18,16 @@ PoissonLikelihood(l=exp) = PoissonLikelihood(link(l))
 
 (l::PoissonLikelihood)(f::Real) = Poisson(l.invlink(f))
 
-(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(Poisson.(l.invlink.(fs)))
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
+
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    ::PoissonLikelihood{ExpLink},
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    f_μ = mean.(q_f)
+    return sum((y .* f_μ) - exp.(f_μ .+ (var.(q_f) / 2)) - loggamma.(y .+ 1))
+end
+
+default_expectation_method(::PoissonLikelihood{ExpLink}) = AnalyticExpectation()
