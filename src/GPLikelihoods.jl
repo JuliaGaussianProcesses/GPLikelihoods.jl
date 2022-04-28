@@ -15,6 +15,7 @@ export BernoulliLikelihood,
     ExponentialLikelihood,
     GammaLikelihood,
     NegativeBinomialLikelihood
+export NBParamI, NBParamII, NBParamPower, NBParamSuccess, NBParamFailure
 export Link,
     ChainLink,
     BijectiveSimplexLink,
