@@ -9,7 +9,7 @@ default_invlink(::NBParamMean) = exp
     NegativeBinomialLikelihood(param::NBParam, invlink::Union{Function,Link})
 
 There are many possible parametrizations for the Negative Binomial likelihood.
-We follow the convention laid out in p.137 of [^1] and provide some common parametrizations.
+We follow the convention laid out in p.137 of [^Hilbe'11] and provide some common parametrizations.
 The `NegativeBinomialLikelihood` has a special structure; the first type parameter `NBParam`
 defines in what parametrization the latent function is used, and contains the other (scalar) parameters.
 `NBParam` itself has two subtypes:
@@ -51,7 +51,7 @@ julia> var(d) ≈ exp(2.0) * (1 + 3.0)
 true
 ```
 
-[^1] Hilbe, Joseph M. Negative binomial regression. Cambridge University Press, 2011.
+[^Hilbe'11]: Hilbe, Joseph M. Negative binomial regression. Cambridge University Press, 2011.
 """
 struct NegativeBinomialLikelihood{Tp<:NBParam,Tl<:AbstractLink} <: AbstractLikelihood
     params::Tp # Likelihood parametrization (and parameters)
