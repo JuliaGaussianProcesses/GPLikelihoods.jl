@@ -42,11 +42,11 @@ callable that takes `f` as input and returns a Distribution over `y` that suppor
 ```math
     q(f) = ∫ p(f | u) q(u) du
 ```
-where `q(u)` is the variational distribution over inducing points (see
-[`elbo`](@ref)). The marginal distributions of `q(f)` are given by `q_f`.
+where `q(u)` is the variational distribution over inducing points.
+The marginal distributions of `q(f)` are given by `q_f`.
 
 `quadrature` determines which method is used to calculate the expected log
-likelihood - see [`elbo`](@ref) for more details.
+likelihood.
 
 # Extended help
 
