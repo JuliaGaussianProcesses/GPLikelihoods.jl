@@ -31,6 +31,7 @@ NBParamPower
 ```@docs
 Link
 ChainLink
+BijectiveSimplexLink
 ```
 
 The rest of the links [`ExpLink`](@ref), [`LogisticLink`](@ref), etc.,
@@ -53,4 +54,10 @@ LogisticLink
 ProbitLink
 NormalCDFLink
 SoftMaxLink
+```
+
+## Expectations
+
+```@docs
+expected_loglikelihood
 ```
