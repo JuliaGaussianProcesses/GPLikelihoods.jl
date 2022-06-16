@@ -1,6 +1,4 @@
 @testset "expectations" begin
-    # Test that the various methods of computing expectations return the same
-    # result.
     rng = MersenneTwister(123456)
     q_f = Normal.(zeros(10), ones(10))
 
@@ -30,30 +28,48 @@
         end
     end
 
-    @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
-        methods = [
-            GaussHermiteExpectation(100),
-            MonteCarloExpectation(1e7),
-            GPLikelihoods.DefaultExpectationMethod(),
-        ]
-        def = GPLikelihoods.default_expectation_method(lik)
-        if def isa GPLikelihoods.AnalyticExpectation
-            push!(methods, def)
-        end
-        y = rand.(rng, lik.(zeros(10)))
+    @testset "testing consistency of different expectation methods" begin
+        @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
+            # Test that the various methods of computing expectations return the same
+            # result.
+            methods = [
+                GaussHermiteExpectation(100),
+                MonteCarloExpectation(1e7),
+                GPLikelihoods.DefaultExpectationMethod(),
+            ]
+            def = GPLikelihoods.default_expectation_method(lik)
+            if def isa GPLikelihoods.AnalyticExpectation
+                push!(methods, def)
+            end
+            y = rand.(rng, lik.(zeros(10)))
 
-        results = map(m -> GPLikelihoods.expected_loglikelihood(m, lik, q_f, y), methods)
-        @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
+            results = map(m -> GPLikelihoods.expected_loglikelihood(m, lik, q_f, y), methods)
+            @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
+        end
     end
 
-    @test GPLikelihoods.expected_loglikelihood(
-        MonteCarloExpectation(1), GaussianLikelihood(), q_f, zeros(10)
-    ) isa Real
-    @test GPLikelihoods.expected_loglikelihood(
-        GaussHermiteExpectation(1), GaussianLikelihood(), q_f, zeros(10)
-    ) isa Real
-    @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa
-        GaussHermiteExpectation
+    @testset "testing return types and type stability" begin
+        @test GPLikelihoods.expected_loglikelihood(
+            MonteCarloExpectation(1), GaussianLikelihood(), q_f, zeros(10)
+        ) isa Real
+        @test GPLikelihoods.expected_loglikelihood(
+            GaussHermiteExpectation(1), GaussianLikelihood(), q_f, zeros(10)
+        ) isa Real
+        @test GPLikelihoods.default_expectation_method(θ -> Normal(0, θ)) isa
+            GaussHermiteExpectation
+
+        @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
+            # Test that `expectec_loglikelihood` is type-stable
+            y = rand.(rng, lik.(zeros(10)))
+            for method in [
+                MonteCarloExpectation(100),
+                GaussHermiteExpectation(100),
+                GPLikelihoods.DefaultExpectationMethod(),
+            ]
+                @test (@inferred expected_loglikelihood(method, lik, q_f, y)) isa Real
+            end
+        end
+    end
 
     # see https://github.com/JuliaGaussianProcesses/ApproximateGPs.jl/issues/82
     @testset "testing Zygote compatibility with GaussHermiteExpectation" begin
