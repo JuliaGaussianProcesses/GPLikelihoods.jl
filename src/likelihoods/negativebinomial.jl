@@ -148,8 +148,9 @@ end
 
 function (l::NegativeBinomialLikelihood{<:NBParamII})(f::Real)
     # Simplify parameter conversions and avoid splatting
-    r = inv(l.params.α)
-    p = inv(one(l.params.α) + l.params.α * l.invlink(f))
+    α = l.params.α
+    r = inv(α)
+    p = inv(one(α) + α * l.invlink(f))
     return NegativeBinomial(r, p)
 end
 
