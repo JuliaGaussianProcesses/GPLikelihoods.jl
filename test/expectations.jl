@@ -7,10 +7,10 @@
         ExponentialLikelihood(),
         GammaLikelihood(),
         GaussianLikelihood(),
-        NegativeBinomialLikelihood(NBParamSuccess(1.)),
-        NegativeBinomialLikelihood(NBParamFailure(1.)),
-        NegativeBinomialLikelihood(NBParamI(1.)),
-        NegativeBinomialLikelihood(NBParamII(1.)),
+        NegativeBinomialLikelihood(NBParamSuccess(1.0)),
+        NegativeBinomialLikelihood(NBParamFailure(1.0)),
+        NegativeBinomialLikelihood(NBParamI(1.0)),
+        NegativeBinomialLikelihood(NBParamII(1.0)),
         PoissonLikelihood(),
     ]
 
@@ -48,7 +48,9 @@
             end
             y = rand.(rng, lik.(zeros(10)))
 
-            results = map(m -> GPLikelihoods.expected_loglikelihood(m, lik, q_f, y), methods)
+            results = map(
+                m -> GPLikelihoods.expected_loglikelihood(m, lik, q_f, y), methods
+            )
             @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
         end
     end
