@@ -81,7 +81,7 @@ function expected_loglikelihood(
 end
 
 # Compute the expected_loglikelihood over a collection of observations and marginal distributions
-function GPLikelihoods.expected_loglikelihood(
+function expected_loglikelihood(
     gh::GaussHermiteExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     # Compute the expectation via Gauss-Hermite quadrature
