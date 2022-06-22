@@ -147,9 +147,10 @@ struct NBParamII{T} <: NBParamMean
 end
 
 function (l::NegativeBinomialLikelihood{<:NBParamII})(f::Real)
-    μ = l.invlink(f)
-    ev = l.params.α * μ
-    return NegativeBinomial(_nb_mean_excessvar_to_r_p(μ, ev)...)
+    # Simplify parameter conversions and avoid splatting
+    r = inv(l.params.α)
+    p = inv(one(l.params.α) + l.params.α * l.invlink(f))
+    return NegativeBinomial(r, p)
 end
 
 """
