@@ -3,10 +3,15 @@
     q_f = Normal.(zeros(10), ones(10))
 
     likelihoods_to_test = [
+        BernoulliLikelihood(),
         ExponentialLikelihood(),
         GammaLikelihood(),
-        PoissonLikelihood(),
         GaussianLikelihood(),
+        NegativeBinomialLikelihood(NBParamSuccess(1.)),
+        NegativeBinomialLikelihood(NBParamFailure(1.)),
+        NegativeBinomialLikelihood(NBParamI(1.)),
+        NegativeBinomialLikelihood(NBParamII(1.)),
+        PoissonLikelihood(),
     ]
 
     @testset "testing all analytic implementations" begin
