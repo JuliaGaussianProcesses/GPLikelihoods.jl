@@ -87,7 +87,7 @@ function expected_loglikelihood(
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
     # (see e.g. en.wikipedia.org/wiki/Gauss%E2%80%93Hermite_quadrature)
-    # PR #86 introduces eager instead of lazy broadcast over observations
+    # PR #90 introduces eager instead of lazy broadcast over observations
     # and Gauss-Hermit points and weights in order to make the function
     # type stable. Compared to other type stable implementations, e.g.
     # using a custom two-argument pairwise sum, this is faster to
