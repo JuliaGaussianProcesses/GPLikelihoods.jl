@@ -1,7 +1,7 @@
 name = "GPLikelihoods"
 uuid = "6031954c-0455-49d7-b3b9-3e1c99afaf40"
 authors = ["JuliaGaussianProcesses Team"]
-version = "0.4.1"
+version = "0.4.3"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
@@ -24,5 +24,5 @@ Functors = "0.1, 0.2"
 InverseFunctions = "0.1.2"
 IrrationalConstants = "0.1"
 SpecialFunctions = "1, 2"
-StatsFuns = "0.9.13"
+StatsFuns = "0.9.13, 1"
 julia = "1.6"
