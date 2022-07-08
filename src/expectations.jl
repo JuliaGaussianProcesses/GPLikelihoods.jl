@@ -87,25 +87,13 @@ function expected_loglikelihood(
     # Compute the expectation via Gauss-Hermite quadrature
     # using a reparameterisation by change of variable
     # (see e.g. en.wikipedia.org/wiki/Gauss%E2%80%93Hermite_quadrature)
-    return sum(Broadcast.instantiate(
-        Broadcast.broadcasted(y, q_f) do yᵢ, q_fᵢ  # Loop over every pair
-            # of marginal distribution q(fᵢ) and observation yᵢ
-            expected_loglikelihood(gh, lik, q_fᵢ, yᵢ)
-        end,
-    ))
-end
-
-# Compute the expected_loglikelihood for one observation and a marginal distributions
-function expected_loglikelihood(gh::GaussHermiteExpectation, lik, q_f::Normal, y)
-    μ = mean(q_f)
-    σ̃ = sqrt2 * std(q_f)
-    return invsqrtπ * sum(Broadcast.instantiate(
-        Broadcast.broadcasted(gh.xs, gh.ws) do x, w # Loop over every
-            # pair of Gauss-Hermite point x with weight w
-            f = σ̃ * x + μ
-            loglikelihood(lik(f), y) * w
-        end,
-    ))
+    # PR #90 introduces eager instead of lazy broadcast over observations
+    # and Gauss-Hermit points and weights in order to make the function
+    # type stable. Compared to other type stable implementations, e.g.
+    # using a custom two-argument pairwise sum, this is faster to
+    # differentiate using Zygote.
+    A = loglikelihood.(lik.(sqrt2 .* std.(q_f) .* gh.xs' .+ mean.(q_f)), y) .* gh.ws'
+    return invsqrtπ * sum(A)
 end
 
 function expected_loglikelihood(
