@@ -1,16 +1,29 @@
 @testset "NegativeBinomialLikelihood" begin
-    for args in ((), (logistic,), (LogisticLink(),)), kwargs in ((), (; successes=1))
-        lik = NegativeBinomialLikelihood(args...; kwargs...)
-        @test lik isa NegativeBinomialLikelihood{LogisticLink,Int}
-        @test lik.successes == 1
+    # Test based on p success
+    for nbparam in (NBParamSuccess, NBParamFailure)
+        for r in (10, 9.5) # Test both input types
+            @testset "$(nameof(nbparam)), r=$r" begin
+                lik = NegativeBinomialLikelihood(nbparam(r))
+                @test lik isa NegativeBinomialLikelihood{<:nbparam,LogisticLink}
+                lik = NegativeBinomialLikelihood(nbparam(r), logistic)
+                @test lik isa NegativeBinomialLikelihood{<:nbparam,LogisticLink}
+                test_interface(lik, NegativeBinomial; functor_args=(:params, :invlink))
+            end
+        end
     end
-
-    for args in ((normcdf,), (NormalCDFLink(),)), kwargs in ((; successes=2.0),)
-        lik = NegativeBinomialLikelihood(args...; kwargs...)
-        @test lik isa NegativeBinomialLikelihood{NormalCDFLink,Float64}
-        @test lik.successes == 2
+    # Test based on mean = link(f)
+    for (nbparam, args) in
+        ((NBParamI, (2.345,)), (NBParamII, (3.456,)), (NBParamPower, (2.34, 3.21)))
+        @testset "$(nameof(nbparam))" begin
+            lik = NegativeBinomialLikelihood(nbparam(args...))
+            @test lik isa NegativeBinomialLikelihood{<:nbparam,ExpLink}
+            lik = NegativeBinomialLikelihood(nbparam(args...), exp)
+            @test lik isa NegativeBinomialLikelihood{<:nbparam,ExpLink}
+            x = randn()
+            @test mean(lik(x)) ≈ exp(x)
+            test_interface(lik, NegativeBinomial; functor_args=(:params, :invlink))
+        end
     end
-
-    lik = NegativeBinomialLikelihood()
-    test_interface(lik, NegativeBinomial; functor_args=(:successes, :invlink))
+    struct NBParamFoo <: GPLikelihoods.NBParam end
+    @test_throws ErrorException NegativeBinomialLikelihood(NBParamFoo(), logistic)(2.0)
 end

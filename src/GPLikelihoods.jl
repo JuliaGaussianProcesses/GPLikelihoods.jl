@@ -15,6 +15,7 @@ export BernoulliLikelihood,
     ExponentialLikelihood,
     GammaLikelihood,
     NegativeBinomialLikelihood
+export NBParamI, NBParamII, NBParamPower, NBParamSuccess, NBParamFailure
 export Link,
     ChainLink,
     BijectiveSimplexLink,
@@ -29,6 +30,7 @@ export Link,
     NormalCDFLink,
     SoftMaxLink
 export nlatent
+export expected_loglikelihood
 
 # Links
 include("links.jl")
@@ -46,6 +48,7 @@ It is typically 1, but for some likelihoods like [`CategoricalLikelihood`](@ref)
 """
 nlatent(::AbstractLikelihood) = 1 # Default number of latent GPs required is 1
 
+include("expectations.jl")
 include("likelihoods/bernoulli.jl")
 include("likelihoods/categorical.jl")
 include("likelihoods/gaussian.jl")
