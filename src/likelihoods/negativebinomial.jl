@@ -18,7 +18,7 @@ defines in what parametrization the latent function is used, and contains the ot
 
 ## `NBParam` predefined types
 
-### `NBParamProb` types with `p = invlink(f)` the probability of success/failure
+### `NBParamProb` types with `p = invlink(f)` the probability of success or failure
 - [`NBParamSuccess`](@ref): Here `p = invlink(f)` is the probability of success. This is the definition used in [`Distributions.jl`](https://juliastats.org/Distributions.jl/latest/univariate/#Distributions.NegativeBinomial).
 - [`NBParamFailure`](@ref): Here `p = invlink(f)` is the probability of a failure
 
