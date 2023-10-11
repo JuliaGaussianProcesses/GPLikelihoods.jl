@@ -1,10 +1,11 @@
 module TestInterface
 
 using Functors
+using ..GPLikelihoods
 using Random
 using Test
 
-function test_interface(rng::AbstractRNG, lik, out_dist, D_in=1; functor_args=())
+function test_interface(rng::AbstractRNG, lik, out_dist, D_in=nlatent(lik); functor_args=())
     N = 10
     T = Float64 # TODO test Float32 as well
     f, fs = if D_in == 1
@@ -53,7 +54,7 @@ samples is correct and if the functor works as intended.
 - `functor_args=()`: a collection of symbols of arguments to match functor parameters with.
 ...
 """
-function test_interface(lik, out_dist, D_in=1; kwargs...)
+function test_interface(lik, out_dist, D_in=nlatent(lik); kwargs...)
     return test_interface(Random.GLOBAL_RNG, lik, out_dist, D_in; kwargs...)
 end
 

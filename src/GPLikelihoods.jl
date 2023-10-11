@@ -29,6 +29,7 @@ export Link,
     ProbitLink,
     NormalCDFLink,
     SoftMaxLink
+export nlatent
 export expected_loglikelihood
 
 # Links
@@ -36,6 +37,16 @@ include("links.jl")
 
 # Likelihoods
 abstract type AbstractLikelihood end
+
+"""
+    nlatent(::AbstractLikelihood)::Int
+
+Returns the number of latent Gaussian processes needed to build the likelihood.
+In other terms the input dimensionality passed to the likelihood from the GP perspective.
+It is typically 1, but for some likelihoods like [`CategoricalLikelihood`](@ref) or 
+[`HeteroscedasticGaussianLikelihood`](@ref) multiple latent GPs are necessary.
+"""
+nlatent(::AbstractLikelihood) = 1 # Default number of latent GPs required is 1
 
 include("expectations.jl")
 include("likelihoods/bernoulli.jl")
