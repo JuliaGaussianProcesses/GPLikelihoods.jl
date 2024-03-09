@@ -36,7 +36,7 @@ if you need to transform an `AbstractMatrix`).
 fs = [2.0, 3.0, 4.5];
 CategoricalLikelihood()(fs) isa Categorical
 Fs = [rand(3) for _ in 1:4];
-CategoricalLikelihood()(Fs) isa Product{<:Any,<:Categorical}
+CategoricalLikelihood()(Fs) isa product_distribution{<:Any,<:Categorical}
 ```
 
 ### Constrained parameters

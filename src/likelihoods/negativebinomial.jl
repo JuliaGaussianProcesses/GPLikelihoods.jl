@@ -79,7 +79,7 @@ end
 
 @functor NegativeBinomialLikelihood
 
-(l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
+(l::NegativeBinomialLikelihood)(fs::AbstractVector{<:Real}) = product_distribution(map(l, fs))
 
 @doc raw"""
     NBParamSuccess(successes)

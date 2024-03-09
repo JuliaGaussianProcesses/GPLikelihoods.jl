@@ -18,7 +18,7 @@ PoissonLikelihood(l=exp) = PoissonLikelihood(link(l))
 
 (l::PoissonLikelihood)(f::Real) = Poisson(l.invlink(f))
 
-(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = Product(map(l, fs))
+(l::PoissonLikelihood)(fs::AbstractVector{<:Real}) = product_distribution(map(l, fs))
 
 function expected_loglikelihood(
     ::AnalyticExpectation,
