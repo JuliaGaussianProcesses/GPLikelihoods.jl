@@ -1,11 +1,13 @@
 using GPLikelihoods
 using GPLikelihoods: GaussHermiteExpectation, MonteCarloExpectation
 using GPLikelihoods.TestInterface: test_interface
-using Test
-using Random
-using Functors
+
+using Aqua
 using Distributions
+using Functors
+using Random
 using StatsFuns
+using Test
 using Zygote
 
 @testset "GPLikelihoods.jl" begin
@@ -20,4 +22,8 @@ using Zygote
         include("likelihoods/negativebinomial.jl")
     end
     include("expectations.jl")
+    @testset "Code quality (Aqua.jl)" begin
+        Aqua.test_all(GPLikelihoods; ambiguities = false)
+        Aqua.test_ambiguities([GPLikelihoods, Base, Core]; recursive=false)
+    end
 end
