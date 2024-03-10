@@ -29,9 +29,20 @@ function expected_loglikelihood(
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
 )
-    return sum(
-        -0.5 * (log(2π) .+ log.(lik.σ²) .+ ((y .- mean.(q_f)) .^ 2 .+ var.(q_f)) / lik.σ²)
-    )
+    return sum(_gaussian_exp_loglikelihood_kernel.(lik.σ², q_f, y))
+end
+
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    liks::AbstractVector{<:GaussianLikelihood},
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    return sum(_gaussian_exp_loglikelihood_kernel.(getfield.(liks, :σ²), q_f, y))
+end
+
+function _gaussian_exp_loglikelihood_kernel(σ², q_f, y)
+    return -0.5 * (log(2π) + log.(σ²) + ((y - mean(q_f))^ 2 + var(q_f)) / σ²)
 end
 
 default_expectation_method(::GaussianLikelihood) = AnalyticExpectation()

@@ -24,6 +24,7 @@
             m.lik for m in implementation_types if
             m.quadrature == GPLikelihoods.AnalyticExpectation && m.lik != Any
         ]
+        filter!(x -> !(x <: AbstractArray), analytic_likelihoods)
         for lik_type in analytic_likelihoods
             lik_type_instances = filter(lik -> isa(lik, lik_type), likelihoods_to_test)
             @test !isempty(lik_type_instances)

@@ -26,8 +26,20 @@ function expected_loglikelihood(
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
 )
-    f_μ = mean.(q_f)
-    return sum((y .* f_μ) - exp.(f_μ .+ (var.(q_f) / 2)) - loggamma.(y .+ 1))
+    return sum(_poisson_exp_loglikelihood_kernel.(q_f, y))
+end
+
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    ::AbstractArray{<:PoissonLikelihood{ExpLink}},
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    return sum(_poisson_exp_loglikelihood_kernel.(q_f, y))
+end
+
+function _poisson_exp_loglikelihood_kernel(q_f, y)
+    return (y * mean(q_f)) - exp(mean(q_f) + (var(q_f) / 2)) - loggamma(y + 1)
 end
 
 default_expectation_method(::PoissonLikelihood{ExpLink}) = AnalyticExpectation()
