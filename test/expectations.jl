@@ -120,4 +120,24 @@
         )
         @test isfinite(glogα)
     end
+
+    @testset "non-constant likelihood" begin
+        @testset "$(nameof(typeof(liks[1])))" for liks in (
+            NegativeBinomialLikelihood.(NBParamII.(rand(10))),
+        )
+            # Test that the various methods of computing expectations return the same
+            # result.
+            methods = [
+                GaussHermiteExpectation(100),
+                MonteCarloExpectation(1e7),
+                GPLikelihoods.DefaultExpectationMethod(),
+            ]
+            y = [rand(rng, lik(0.)) for lik in liks]
+
+            results = map(
+                m -> GPLikelihoods.expected_loglikelihood(m, liks, q_f, y), methods
+            )
+            @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
+        end
+    end
 end
