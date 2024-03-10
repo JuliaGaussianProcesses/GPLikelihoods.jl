@@ -136,7 +136,7 @@
             if def isa GPLikelihoods.AnalyticExpectation
                 push!(methods, def)
             end
-            y = [rand(rng, lik(0.)) for lik in liks]
+            y = [rand(rng, lik(0.0)) for lik in liks]
 
             results = map(
                 m -> GPLikelihoods.expected_loglikelihood(m, liks, q_f, y), methods
