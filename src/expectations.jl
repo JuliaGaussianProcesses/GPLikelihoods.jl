@@ -1,7 +1,9 @@
-using FastGaussQuadrature: gausshermite
+using FastGaussQuadrature: FastGaussQuadrature
 using SpecialFunctions: loggamma
 using ChainRulesCore: ChainRulesCore
 using IrrationalConstants: sqrt2, invsqrtπ
+
+gausshermite(n::Integer) = FastGaussQuadrature.gausshermite(n)
 
 struct DefaultExpectationMethod end
 
