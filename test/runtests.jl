@@ -24,6 +24,7 @@ using Zygote
     include("expectations.jl")
     @testset "Code quality (Aqua.jl)" begin
         Aqua.test_all(GPLikelihoods; ambiguities = false)
-        Aqua.test_ambiguities([GPLikelihoods, Base, Core]; recursive=false)
+        # Ref https://github.com/JuliaTesting/Aqua.jl/issues/77
+        Aqua.test_ambiguities(GPLikelihoods; recursive=false)
     end
 end
