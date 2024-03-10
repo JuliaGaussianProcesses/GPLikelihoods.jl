@@ -42,7 +42,7 @@ end
 
 function _gamma_exp_loglikelihood_kernel(α, q_f, y)
     return (α - 1) * log(y) - y * exp((var(q_f) / 2) - mean(q_f)) - α * mean(q_f) -
-        loggamma(α)
+           loggamma(α)
 end
 
 default_expectation_method(::GammaLikelihood{ExpLink}) = AnalyticExpectation()
