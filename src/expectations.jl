@@ -74,10 +74,14 @@ function expected_loglikelihood(
     mc::MonteCarloExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     # take `n_samples` reparameterised samples
-    f_μ = mean.(q_f)
-    fs = f_μ .+ std.(q_f) .* randn(eltype(f_μ), length(q_f), mc.n_samples)
-    lls = loglikelihood.(lik.(fs), y)
+    r = randn(typeof(mean(first(q_f))), length(q_f), mc.n_samples)
+    lls = _mc_exp_loglikelihood_kernel.(_maybe_ref(lik), q_f, y, r)
     return sum(lls) / mc.n_samples
+end
+
+function _mc_exp_loglikelihood_kernel(lik, q_f, y, r)
+    f = mean(q_f) + std(q_f) * r
+    return loglikelihood(lik(f), y)
 end
 
 # Compute the expected_loglikelihood over a collection of observations and marginal distributions
@@ -92,8 +96,12 @@ function expected_loglikelihood(
     # type stable. Compared to other type stable implementations, e.g.
     # using a custom two-argument pairwise sum, this is faster to
     # differentiate using Zygote.
-    A = loglikelihood.(lik.(sqrt2 .* std.(q_f) .* gh.xs' .+ mean.(q_f)), y) .* gh.ws'
+    A = _gh_exp_loglikelihood_kernel.(_maybe_ref(lik), q_f, y, gh.xs', gh.ws')
     return invsqrtπ * sum(A)
+end
+
+function _gh_exp_loglikelihood_kernel(lik, q_f, y, x, w)
+    return loglikelihood(lik(sqrt2 * std(q_f) * x + mean(q_f)), y) * w
 end
 
 function expected_loglikelihood(
@@ -103,3 +111,6 @@ function expected_loglikelihood(
         "No analytic solution exists for $(typeof(lik)). Use `DefaultExpectationMethod`, `GaussHermiteExpectation` or `MonteCarloExpectation` instead.",
     )
 end
+
+_maybe_ref(lik) = Ref(lik)
+_maybe_ref(lik::AbstractArray) = lik
