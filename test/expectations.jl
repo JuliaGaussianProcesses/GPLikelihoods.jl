@@ -131,6 +131,10 @@
                 MonteCarloExpectation(1e7),
                 GPLikelihoods.DefaultExpectationMethod(),
             ]
+            def = GPLikelihoods.default_expectation_method(lik)
+            if def isa GPLikelihoods.AnalyticExpectation
+                push!(methods, def)
+            end
             y = [rand(rng, lik(0.)) for lik in liks]
 
             results = map(
