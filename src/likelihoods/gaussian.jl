@@ -38,7 +38,7 @@ function expected_loglikelihood(
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
 )
-    return sum(_gaussian_exp_loglikelihood_kernel.(getfield.(liks, :σ²), q_f, y))
+    return sum(_gaussian_exp_loglikelihood_kernel.(only.(getfield.(liks, :σ²)), q_f, y))
 end
 
 function _gaussian_exp_loglikelihood_kernel(σ², q_f, y)
