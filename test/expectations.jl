@@ -122,9 +122,8 @@
     end
 
     @testset "non-constant likelihood" begin
-        @testset "$(nameof(typeof(liks[1])))" for liks in (
-            NegativeBinomialLikelihood.(NBParamII.(rand(10))),
-        )
+        @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
+            liks = fill(lik, 10)
             # Test that the various methods of computing expectations return the same
             # result.
             methods = [
