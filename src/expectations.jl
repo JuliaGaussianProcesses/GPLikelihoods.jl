@@ -113,4 +113,4 @@ function expected_loglikelihood(
 end
 
 _maybe_ref(lik) = Ref(lik)
-_maybe_ref(lik::AbstractArray) = lik
+_maybe_ref(liks::AbstractArray) = liks
