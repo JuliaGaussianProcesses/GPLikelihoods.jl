@@ -31,29 +31,18 @@ default_expectation_method(_) = GaussHermiteExpectation(20)
         y::AbstractVector,
     )
 
-This function computes the expected log likelihood:
-
+This function computes the sum of the expected log likelihoods:
 ```math
-    ∫ q(f) log p(y | f) df
+    ∑ᵢ ∫ qᵢ(f) log pᵢ(yᵢ | f) df
 ```
-where `p(y | f)` is the process likelihood. This is described by `lik`, which should be a
-callable that takes `f` as input and returns a Distribution over `y` that supports
-`loglikelihood(lik(f), y)`.
-
-`q(f)` is an approximation to the latent function values `f` given by:
-```math
-    q(f) = ∫ p(f | u) q(u) du
-```
-where `q(u)` is the variational distribution over inducing points.
-The marginal distributions of `q(f)` are given by `q_f`.
+where `pᵢ(yᵢ | f)` is the process likelihood and `yᵢ` the observation at location/site `i`.
+The argument `q_f` is the vector of normal distributions `qᵢ(f)`, and the argument `y` is
+the vector of observations `yᵢ`. The argument `lik` is one of the following:
+- A callable that takes `f` as input and returns a Distribution over `y` that supports `loglikelihood(lik(f), y)`. This corresponds to the case where `pᵢ` is independent of `i`.
+- A vector of such callables. Here, each element of the vector is the corresponding `pᵢ`.
 
 `quadrature` determines which method is used to calculate the expected log
 likelihood.
-
-# Extended help
-
-`q(f)` is assumed to be an `MvNormal` distribution and `p(y | f)` is assumed to
-have independent marginals such that only the marginals of `q(f)` are required.
 """
 expected_loglikelihood(quadrature, lik, q_f, y)
 
@@ -76,10 +65,14 @@ function expected_loglikelihood(
     mc::MonteCarloExpectation, lik, q_f::AbstractVector{<:Normal}, y::AbstractVector
 )
     # take `n_samples` reparameterised samples
-    f_μ = mean.(q_f)
-    fs = f_μ .+ std.(q_f) .* randn(eltype(f_μ), length(q_f), mc.n_samples)
-    lls = loglikelihood.(lik.(fs), y)
+    r = randn(typeof(mean(first(q_f))), length(q_f), mc.n_samples)
+    lls = _mc_exp_loglikelihood_kernel.(_maybe_ref(lik), q_f, y, r)
     return sum(lls) / mc.n_samples
+end
+
+function _mc_exp_loglikelihood_kernel(lik, q_f, y, r)
+    f = mean(q_f) + std(q_f) * r
+    return loglikelihood(lik(f), y)
 end
 
 # Compute the expected_loglikelihood over a collection of observations and marginal distributions
@@ -94,8 +87,12 @@ function expected_loglikelihood(
     # type stable. Compared to other type stable implementations, e.g.
     # using a custom two-argument pairwise sum, this is faster to
     # differentiate using Zygote.
-    A = loglikelihood.(lik.(sqrt2 .* std.(q_f) .* gh.xs' .+ mean.(q_f)), y) .* gh.ws'
+    A = _gh_exp_loglikelihood_kernel.(_maybe_ref(lik), q_f, y, gh.xs', gh.ws')
     return invsqrtπ * sum(A)
+end
+
+function _gh_exp_loglikelihood_kernel(lik, q_f, y, x, w)
+    return loglikelihood(lik(sqrt2 * std(q_f) * x + mean(q_f)), y) * w
 end
 
 function expected_loglikelihood(
@@ -105,3 +102,6 @@ function expected_loglikelihood(
         "No analytic solution exists for $(typeof(lik)). Use `DefaultExpectationMethod`, `GaussHermiteExpectation` or `MonteCarloExpectation` instead.",
     )
 end
+
+_maybe_ref(lik) = Ref(lik)
+_maybe_ref(liks::AbstractArray) = liks
