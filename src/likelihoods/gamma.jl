@@ -28,11 +28,21 @@ function expected_loglikelihood(
     q_f::AbstractVector{<:Normal},
     y::AbstractVector{<:Real},
 )
-    f_μ = mean.(q_f)
-    return sum(
-        (lik.α - 1) * log.(y) .- y .* exp.((var.(q_f) / 2) .- f_μ) .- lik.α * f_μ .-
-        loggamma(lik.α),
-    )
+    return sum(_gamma_exp_loglikelihood_kernel.(lik.α, q_f, y))
+end
+
+function expected_loglikelihood(
+    ::AnalyticExpectation,
+    liks::AbstractVector{<:GammaLikelihood{ExpLink}},
+    q_f::AbstractVector{<:Normal},
+    y::AbstractVector{<:Real},
+)
+    return sum(_gamma_exp_loglikelihood_kernel.(getfield.(liks, :α), q_f, y))
+end
+
+function _gamma_exp_loglikelihood_kernel(α, q_f, y)
+    return (α - 1) * log(y) - y * exp((var(q_f) / 2) - mean(q_f)) - α * mean(q_f) -
+           loggamma(α)
 end
 
 default_expectation_method(::GammaLikelihood{ExpLink}) = AnalyticExpectation()

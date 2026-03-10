@@ -24,6 +24,7 @@
             m.lik for m in implementation_types if
             m.quadrature == GPLikelihoods.AnalyticExpectation && m.lik != Any
         ]
+        filter!(x -> !(x <: AbstractArray), analytic_likelihoods)
         for lik_type in analytic_likelihoods
             lik_type_instances = filter(lik -> isa(lik, lik_type), likelihoods_to_test)
             @test !isempty(lik_type_instances)
@@ -119,5 +120,28 @@
             end,
         )
         @test isfinite(glogα)
+    end
+
+    @testset "non-constant likelihood" begin
+        @testset "$(nameof(typeof(lik)))" for lik in likelihoods_to_test
+            liks = fill(lik, 10)
+            # Test that the various methods of computing expectations return the same
+            # result.
+            methods = [
+                GaussHermiteExpectation(100),
+                MonteCarloExpectation(1e7),
+                GPLikelihoods.DefaultExpectationMethod(),
+            ]
+            def = GPLikelihoods.default_expectation_method(lik)
+            if def isa GPLikelihoods.AnalyticExpectation
+                push!(methods, def)
+            end
+            y = [rand(rng, lik(0.0)) for lik in liks]
+
+            results = map(
+                m -> GPLikelihoods.expected_loglikelihood(m, liks, q_f, y), methods
+            )
+            @test all(x -> isapprox(x, results[end]; atol=1e-6, rtol=1e-3), results)
+        end
     end
 end
